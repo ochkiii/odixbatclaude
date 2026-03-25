@@ -1,0 +1,65 @@
+{
+  "tools": [
+    {
+      "name": "ODX HALFTONE",
+      "status": "Free",
+      "type": "Texture / Effect",
+      "resolve": "17+",
+      "space": "Rec.709 / Any",
+      "short": "Halftone texture effect built as a DCTL. Adds a printable, grain-free dot pattern directly in your node tree.",
+      "desc": "ODX Halftone is a DCTL-based halftone texture generator for DaVinci Resolve. Apply a classic dot-pattern halftone effect directly inside your grade \u2014 no plugins, no roundtrip to After Effects.\n\nControl dot size, density, angle, and blend strength. Works in any color space. Built for colorists who want texture that feels intentional, not accidental.",
+      "github": "",
+      "externalUrl": "https://copper-vowel-11700427.figma.site/"
+    },
+    {
+      "name": "SKIN ANCHOR",
+      "status": "WIP",
+      "type": "Hue Manipulation",
+      "resolve": "18+",
+      "space": "Rec.709 / DWG",
+      "short": "Locks skin tone hue within a defined range while the rest of the image shifts freely.",
+      "desc": "Most colorists handle skin protection with a qualifier + correction node on every shot. SKIN ANCHOR does it in a single DCTL with one slider \u2014 Hue Range. You define where skin lives on the vectorscope, it stays there regardless of what you do to the rest of the image.\n\nBuilt after grading a commercial where the talent moved between warm tungsten and cool LED sources mid-shot. The qualifier kept drifting. This does not drift.",
+      "github": ""
+    },
+    {
+      "name": "PARADE MATCH",
+      "status": "WIP",
+      "type": "Balance / Match",
+      "resolve": "17+",
+      "space": "Scene Linear",
+      "short": "Auto-balances lift/gamma/gain channels to match a reference parade reading. One node. No guessing.",
+      "desc": "Auto-balances lift/gamma/gain channels to match a reference parade reading. Feed it reference values for R, G, B across shadows, midtones, and highlights \u2014 it outputs the correction. No eyeballing neutrals on an uncontrolled monitor.\n\nBuilt after working on a project where I had to match 6 cameras in 2 hours with no calibrated reference monitor. This would have saved me 45 minutes.",
+      "github": ""
+    },
+    {
+      "name": "BLEACH BP",
+      "status": "Soon",
+      "type": "Look / Effect",
+      "resolve": "17+",
+      "space": "Rec.709",
+      "short": "Physically accurate bleach bypass. Desaturates luminance selectively \u2014 preserves shadow detail.",
+      "desc": "Physically accurate bleach bypass simulation. The standard approach desaturates everything uniformly and crushes shadow detail.\n\nBLEACH BP desaturates luminance selectively \u2014 preserves the texture in the darks. Two controls: Strength and Shadow Protect. That's it. You do not need more than two controls for this.",
+      "github": ""
+    },
+    {
+      "name": "HALATION",
+      "status": "Soon",
+      "type": "Film Emulation",
+      "resolve": "18+",
+      "space": "Scene Linear",
+      "short": "Film halation that blooms red/orange into highlight edges. No plugins. Pure DCTL math.",
+      "desc": "Film halation blooms red/orange into highlight edges. Controllable radius, intensity, and color temperature of the bloom.\n\nNo external plugins. No After Effects roundtrip. Pure DCTL math running inside the node tree where it belongs. Works best in scene linear before your display transform \u2014 that is the correct place to do this.",
+      "github": ""
+    },
+    {
+      "name": "ZONE MAPPER",
+      "status": "Soon",
+      "type": "Tone / Contrast",
+      "resolve": "17+",
+      "space": "Scene / Display",
+      "short": "Ansel Adams zone system as a DCTL interface. 10 isolated tonal zones, more surgical than curves.",
+      "desc": "Ansel Adams zone system implemented as a DCTL interface. Divide the tonal range into 10 zones and adjust each independently.\n\nMore surgical than a curve because each zone is isolated with minimal bleed into adjacent zones. Better for preserving highlight structure while lifting shadows than standard lift/gamma/gain. If you have been using curves for everything, try this once.",
+      "github": ""
+    }
+  ]
+}
