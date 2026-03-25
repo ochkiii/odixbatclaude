@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Odixbat — Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0b09;--panel:#111010;--surface:#181614;--raised:#1f1d1a;--border:#272420;--border2:#323028;
+  --text:#e8e2d4;--mute:#5a5548;--faint:#1a1815;--dim:#2e2b27;
+  --cyan:#00c9b1;--yellow:#e8c840;--red:#d94f4f;--green:#4caf6e;
+  --cyan-dim:rgba(0,201,177,.08);--yellow-dim:rgba(232,200,64,.08);--red-dim:rgba(217,79,79,.08);
+  --disp:'Bebas Neue',sans-serif;--mono:'Space Mono',monospace;--body:'Inter',system-ui,sans-serif;
+  --radius:2px;--sidebar:260px;--topbar:52px;
+}
+html{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13px;line-height:1.6;height:100%;display:flex;flex-direction:column;overflow:hidden}
+
+/* ── SCROLLBARS ── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:var(--mute)}
+
+/* ── LAYOUT ── */
+.app{display:grid;grid-template-columns:var(--sidebar) 1fr;grid-template-rows:var(--topbar) 1fr;height:100vh;overflow:hidden}
+
+/* ── TOPBAR ── */
+.topbar{
+  grid-column:1/-1;grid-row:1;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem 0 0;
+  border-bottom:1px solid var(--border);
+  background:var(--panel);z-index:10;
+}
+.tb-brand{
+  display:flex;align-items:center;height:100%;
+  padding:0 1.5rem;border-right:1px solid var(--border);
+  gap:.75rem;min-width:var(--sidebar);
+}
+.tb-logo{font-family:var(--disp);font-size:1.1rem;letter-spacing:.18em;color:var(--text)}
+.tb-pill{font-family:var(--mono);font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;padding:.2rem .5rem;border:1px solid var(--border2);color:var(--mute)}
+.tb-right{display:flex;align-items:center;gap:.75rem}
+.tb-site{
+  font-family:var(--mono);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--mute);text-decoration:none;display:flex;align-items:center;gap:.4rem;
+  padding:.4rem .75rem;border:1px solid var(--border);transition:all .15s;
+}
+.tb-site:hover{color:var(--cyan);border-color:var(--cyan)}
+.tb-save{
+  font-family:var(--mono);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+  background:var(--cyan);color:var(--bg);border:none;cursor:pointer;
+  padding:.45rem 1rem;transition:background .15s;
+}
+.tb-save:hover{background:rgba(0,201,177,.85)}
+.tb-save:disabled{background:var(--dim);color:var(--mute);cursor:default}
+.status-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 3s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  grid-column:1;grid-row:2;
+  background:var(--panel);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow-y:auto;
+}
+.sb-section{padding:.75rem 1.25rem .3rem;font-family:var(--mono);font-size:.46rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+.sb-item{
+  display:flex;align-items:center;gap:.6rem;
+  padding:.5rem 1.25rem;font-family:var(--mono);font-size:.58rem;letter-spacing:.05em;
+  color:var(--mute);cursor:pointer;transition:all .15s;position:relative;
+  border-left:2px solid transparent;
+}
+.sb-item:hover{color:var(--text);background:rgba(240,236,226,.02)}
+.sb-item.active{color:var(--cyan);background:var(--cyan-dim);border-left-color:var(--cyan)}
+.sb-icon{width:14px;height:14px;flex-shrink:0;opacity:.5}
+.sb-item.active .sb-icon{opacity:1}
+.sb-count{margin-left:auto;font-family:var(--mono);font-size:.46rem;background:var(--dim);padding:.1rem .4rem;color:var(--mute);min-width:20px;text-align:center}
+.sb-item.active .sb-count{background:rgba(0,201,177,.12);color:var(--cyan)}
+.sb-divider{border:none;border-top:1px solid var(--border);margin:.5rem 0}
+.sb-footer{margin-top:auto;padding:1rem 1.25rem;border-top:1px solid var(--border)}
+.sb-hint{font-family:var(--mono);font-size:.48rem;color:var(--mute);letter-spacing:.05em;line-height:1.8}
+
+/* ── MAIN ── */
+.main{grid-column:2;grid-row:2;overflow-y:auto;background:var(--bg)}
+
+/* ── PANELS ── */
+.panel{display:none;height:100%}
+.panel.active{display:flex;flex-direction:column}
+
+/* ── PAGE HEADER ── */
+.page-hd{
+  padding:1.75rem 2rem 1.25rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-end;justify-content:space-between;flex-shrink:0;
+  background:var(--panel);
+}
+.page-hd-l{}
+.page-title{font-family:var(--disp);font-size:1.8rem;letter-spacing:.06em;color:var(--text);line-height:1}
+.page-sub{font-family:var(--mono);font-size:.52rem;color:var(--mute);letter-spacing:.06em;margin-top:.3rem}
+.page-hd-r{display:flex;gap:.6rem}
+
+/* ── CONTENT AREA ── */
+.content{flex:1;overflow-y:auto;padding:1.5rem 2rem}
+
+/* ── EMPTY STATE ── */
+.empty-state{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:4rem 2rem;text-align:center;border:1px dashed var(--border);margin:1rem 0;
+}
+.empty-num{font-family:var(--disp);font-size:5rem;line-height:1;color:var(--faint);margin-bottom:.5rem}
+.empty-txt{font-family:var(--mono);font-size:.55rem;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;line-height:2}
+
+/* ── PROJECT GRID ── */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1px;background:var(--border);margin-bottom:1px}
+.proj-card{
+  background:var(--panel);padding:0;
+  cursor:pointer;transition:background .15s;position:relative;overflow:hidden;
+}
+.proj-card:hover{background:var(--surface)}
+.proj-card:hover .pc-actions{opacity:1}
+.pc-thumb{
+  height:140px;position:relative;overflow:hidden;
+  background:var(--faint);
+}
+.pc-thumb img{width:100%;height:100%;object-fit:cover;object-position:center 15%;filter:grayscale(1) contrast(1.1);transition:filter .3s}
+.proj-card:hover .pc-thumb img{filter:grayscale(.6) contrast(1)}
+.pc-thumb-empty{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.5rem;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;
+}
+.pc-actions{
+  position:absolute;top:.5rem;right:.5rem;display:flex;gap:.3rem;
+  opacity:0;transition:opacity .15s;
+}
+.pc-body{padding:.85rem 1rem}
+.pc-cat{font-family:var(--mono);font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:.3rem}
+.pc-name{font-family:var(--disp);font-size:1.1rem;letter-spacing:.06em;color:var(--text);line-height:1;margin-bottom:.3rem}
+.pc-meta{font-family:var(--mono);font-size:.48rem;color:var(--mute);letter-spacing:.04em}
+.pc-drag{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  cursor:grab;opacity:0;
+}
+.pc-drag:active{cursor:grabbing}
+.drag-over{outline:2px solid var(--cyan)!important}
+
+/* ── TOOLS LIST ── */
+.tools-list{display:flex;flex-direction:column;gap:1px;background:var(--border)}
+.tool-row{
+  background:var(--panel);display:grid;grid-template-columns:36px 1fr auto auto;
+  gap:1rem;align-items:center;padding:.75rem 1rem;
+  cursor:pointer;transition:background .15s;
+}
+.tool-row:hover{background:var(--surface)}
+.tool-row:hover .tr-actions{opacity:1}
+.tr-icon{
+  width:36px;height:36px;border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.42rem;color:var(--mute);letter-spacing:.04em;flex-shrink:0;
+}
+.tr-icon.web{border-color:rgba(0,201,177,.3);color:var(--cyan)}
+.tr-body{}
+.tr-name{font-family:var(--disp);font-size:.95rem;letter-spacing:.06em;color:var(--text);line-height:1;margin-bottom:.2rem}
+.tr-meta{font-family:var(--mono);font-size:.48rem;color:var(--mute);letter-spacing:.04em}
+.tr-actions{display:flex;gap:.4rem;opacity:0;transition:opacity .15s;flex-shrink:0}
+.tr-order{display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.tr-order-btn{
+  background:none;border:1px solid var(--border);color:var(--mute);
+  width:20px;height:16px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:.6rem;transition:all .15s;padding:0;
+}
+.tr-order-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* ── BADGES ── */
+.badge{font-family:var(--mono);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;padding:.15rem .45rem;border:1px solid;flex-shrink:0}
+.badge-film{border-color:rgba(0,201,177,.25);color:var(--cyan);background:var(--cyan-dim)}
+.badge-commercial{border-color:rgba(232,200,64,.25);color:var(--yellow);background:var(--yellow-dim)}
+.badge-reel{border-color:rgba(200,64,200,.25);color:#c840c8;background:rgba(200,64,200,.06)}
+.badge-free{border-color:rgba(0,201,177,.3);color:var(--cyan);background:var(--cyan-dim)}
+.badge-wip{border-color:rgba(232,200,64,.3);color:var(--yellow);background:var(--yellow-dim)}
+.badge-soon{border-color:var(--border2);color:var(--mute)}
+.badge-web{border-color:rgba(0,201,177,.4);color:var(--cyan);background:var(--cyan-dim)}
+
+/* ── BUTTONS ── */
+.btn{
+  font-family:var(--mono);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.45rem .9rem;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:.4rem;
+}
+.btn-primary{background:var(--cyan);color:var(--bg);font-weight:700}
+.btn-primary:hover{background:rgba(0,201,177,.85)}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--mute)}
+.btn-ghost:hover{border-color:var(--text);color:var(--text)}
+.btn-danger{background:transparent;border:1px solid rgba(217,79,79,.3);color:var(--red)}
+.btn-danger:hover{border-color:var(--red);background:var(--red-dim)}
+.btn-yellow{background:var(--yellow);color:var(--bg);font-weight:700}
+.btn-yellow:hover{background:rgba(232,200,64,.85)}
+.btn-icon{padding:.4rem .5rem;min-width:28px;justify-content:center}
+
+/* ── DRAWER (slide-in editor) ── */
+.drawer-bg{
+  display:none;position:fixed;inset:0;background:rgba(12,11,9,.7);z-index:50;
+  backdrop-filter:blur(4px);
+}
+.drawer-bg.open{display:block}
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;width:520px;max-width:95vw;
+  background:var(--panel);border-left:1px solid var(--border);z-index:51;
+  display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+.drawer.open{transform:translateX(0)}
+.drawer-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.drawer-title{font-family:var(--disp);font-size:1.3rem;letter-spacing:.08em;color:var(--text)}
+.drawer-close{
+  background:none;border:none;color:var(--mute);cursor:pointer;
+  font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.3rem .6rem;border:1px solid var(--border);transition:all .15s;
+}
+.drawer-close:hover{color:var(--red);border-color:rgba(217,79,79,.4)}
+.drawer-body{flex:1;overflow-y:auto;padding:1.5rem}
+.drawer-footer{
+  padding:1rem 1.5rem;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-shrink:0;
+}
+
+/* ── FORM ── */
+.form-group{margin-bottom:1.1rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.1rem}
+.form-label{
+  display:block;font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--mute);margin-bottom:.4rem;
+}
+.form-label span{color:var(--red)}
+.form-input,.form-select,.form-textarea{
+  width:100%;background:var(--surface);border:1px solid var(--border2);
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.02em;
+  color:var(--text);padding:.6rem .85rem;outline:none;
+  transition:border-color .15s;border-radius:var(--radius);
+  -webkit-appearance:none;
+}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--mute)}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--cyan);background:rgba(0,201,177,.03)}
+.form-select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%235a5548'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right .85rem center;cursor:pointer;
+}
+.form-textarea{resize:vertical;min-height:80px;line-height:1.7;font-size:.6rem}
+.form-hint{font-family:var(--mono);font-size:.48rem;color:var(--mute);margin-top:.3rem;letter-spacing:.04em;line-height:1.6}
+
+/* ── IMAGE UPLOAD ── */
+.img-zone{
+  border:1px dashed var(--border2);position:relative;
+  text-align:center;padding:1.5rem 1rem;transition:all .2s;cursor:pointer;
+  background:var(--surface);
+}
+.img-zone:hover,.img-zone.over{border-color:var(--cyan);background:var(--cyan-dim)}
+.img-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.img-zone-label{font-family:var(--mono);font-size:.55rem;color:var(--mute);letter-spacing:.06em;line-height:2}
+.img-zone-label strong{color:var(--cyan)}
+.img-preview{
+  width:100%;height:140px;object-fit:cover;object-position:center 15%;
+  display:none;margin-top:.75rem;border:1px solid var(--border);
+}
+.img-preview.show{display:block}
+.img-preview-wrap{position:relative}
+.img-clear{
+  position:absolute;top:.35rem;right:.35rem;
+  background:rgba(12,11,9,.8);border:1px solid var(--border2);color:var(--mute);
+  font-family:var(--mono);font-size:.48rem;cursor:pointer;padding:.2rem .4rem;
+  transition:all .15s;display:none;
+}
+.img-clear.show{display:block}
+.img-clear:hover{color:var(--red);border-color:rgba(217,79,79,.4)}
+
+/* ── DASHBOARD ── */
+.dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:1px}
+.dash-stat{background:var(--panel);padding:1.5rem}
+.ds-val{font-family:var(--disp);font-size:2.5rem;letter-spacing:.04em;color:var(--text);line-height:1;margin-bottom:.3rem}
+.ds-label{font-family:var(--mono);font-size:.5rem;color:var(--mute);letter-spacing:.12em;text-transform:uppercase}
+.ds-val.cyan{color:var(--cyan)}
+.ds-val.yellow{color:var(--yellow)}
+
+.activity{margin-top:1rem}
+.activity-title{font-family:var(--mono);font-size:.5rem;color:var(--mute);letter-spacing:.12em;text-transform:uppercase;padding:.75rem 0;border-bottom:1px solid var(--border);margin-bottom:0}
+.act-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.65rem 0;border-bottom:1px solid var(--border);
+}
+.act-name{font-family:var(--mono);font-size:.58rem;color:var(--text)}
+.act-meta{font-family:var(--mono);font-size:.48rem;color:var(--mute)}
+
+/* ── GENERATE ── */
+.gen-block{border:1px solid var(--border);margin-bottom:1rem}
+.gen-hd{
+  padding:.75rem 1rem;background:var(--panel);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.gen-hd-title{font-family:var(--mono);font-size:.55rem;color:var(--cyan);letter-spacing:.1em;text-transform:uppercase}
+.gen-instruction{font-family:var(--mono);font-size:.52rem;color:var(--mute);line-height:1.9;padding:.75rem 1rem;border-bottom:1px solid var(--border);background:var(--faint)}
+.gen-instruction code{color:var(--text);background:var(--dim);padding:.1rem .3rem;font-size:.55rem}
+.gen-code{
+  padding:1rem;font-family:var(--mono);font-size:.55rem;line-height:1.8;
+  color:var(--mute);white-space:pre-wrap;word-break:break-all;
+  max-height:200px;overflow-y:auto;background:var(--bg);
+}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:1.5rem;right:1.5rem;z-index:200;
+  background:var(--surface);border:1px solid var(--border2);
+  font-family:var(--mono);font-size:.55rem;letter-spacing:.08em;
+  padding:.65rem 1rem;display:flex;align-items:center;gap:.6rem;
+  opacity:0;transform:translateY(.5rem);transition:all .2s;pointer-events:none;
+  max-width:280px;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.toast.ok .toast-dot{background:var(--green)}
+.toast.err .toast-dot{background:var(--red)}
+.toast.info .toast-dot{background:var(--cyan)}
+
+/* ── CONFIRM ── */
+.confirm-bg{
+  display:none;position:fixed;inset:0;background:rgba(12,11,9,.8);z-index:100;
+  align-items:center;justify-content:center;backdrop-filter:blur(4px);
+}
+.confirm-bg.open{display:flex}
+.confirm-box{
+  background:var(--panel);border:1px solid var(--border);
+  padding:1.5rem;width:320px;
+}
+.confirm-title{font-family:var(--disp);font-size:1.2rem;letter-spacing:.06em;color:var(--text);margin-bottom:.5rem}
+.confirm-body{font-family:var(--mono);font-size:.55rem;color:var(--mute);line-height:1.8;margin-bottom:1.25rem}
+.confirm-actions{display:flex;justify-content:flex-end;gap:.5rem}
+
+/* ── SCROLLABLE CONTENT ── */
+.scroll-content{flex:1;overflow-y:auto}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toast-msg"></span></div>
+
+<div class="confirm-bg" id="confirm-bg">
+  <div class="confirm-box">
+    <div class="confirm-title" id="confirm-title">Delete?</div>
+    <div class="confirm-body" id="confirm-body">This cannot be undone.</div>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-danger" id="confirm-ok">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+
+  <!-- ── TOPBAR ── -->
+  <header class="topbar">
+    <div class="tb-brand">
+      <div class="tb-logo">ODIXBAT</div>
+      <div class="tb-pill">Studio</div>
+      <div class="status-dot" title="Autosaved"></div>
+    </div>
+    <div class="tb-right">
+      <a href="https://odixbat.com" target="_blank" class="tb-site">↗ odixbat.com</a>
+      <button class="tb-save" id="save-btn" onclick="saveAll()" disabled>Saved</button>
+    </div>
+  </header>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sb-section">Overview</div>
+    <div class="sb-item active" onclick="switchPanel('dashboard')" id="nav-dashboard">
+      <svg class="sb-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+      Dashboard
+    </div>
+
+    <div class="sb-section">Content</div>
+    <div class="sb-item" onclick="switchPanel('portfolio')" id="nav-portfolio">
+      <svg class="sb-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10"/><path d="M5 3V1h6v2"/></svg>
+      Portfolio
+      <span class="sb-count" id="pf-cnt">0</span>
+    </div>
+    <div class="sb-item" onclick="switchPanel('tools')" id="nav-tools">
+      <svg class="sb-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2l4 4-8 8H2v-4l8-8z"/></svg>
+      DCTL Tools
+      <span class="sb-count" id="tools-cnt">0</span>
+    </div>
+
+    <div class="sb-section">Export</div>
+    <div class="sb-item" onclick="switchPanel('generate')" id="nav-generate">
+      <svg class="sb-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 2 8 4 10"/><polyline points="12 6 14 8 12 10"/><line x1="8" y1="2" x2="8" y2="14"/></svg>
+      Generate Code
+    </div>
+
+    <hr class="sb-divider">
+
+    <div class="sb-footer">
+      <div class="sb-hint">Data autosaved in browser.<br>Generate code → paste into<br>GitHub to go live.</div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="page-hd">
+        <div class="page-hd-l">
+          <div class="page-title">DASHBOARD</div>
+          <div class="page-sub" id="dash-date"></div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="dash-grid">
+          <div class="dash-stat">
+            <div class="ds-val cyan" id="dash-pf-count">0</div>
+            <div class="ds-label">Portfolio Projects</div>
+          </div>
+          <div class="dash-stat">
+            <div class="ds-val yellow" id="dash-tools-count">0</div>
+            <div class="ds-label">DCTL Tools</div>
+          </div>
+          <div class="dash-stat">
+            <div class="ds-val" id="dash-live-count">0</div>
+            <div class="ds-label">Tools Live</div>
+          </div>
+        </div>
+
+        <div class="activity">
+          <div class="activity-title">Quick Actions</div>
+          <div class="act-row">
+            <span class="act-name">Add new portfolio project</span>
+            <button class="btn btn-ghost" onclick="switchPanel('portfolio');setTimeout(openProjectDrawer,100)">+ Add Project</button>
+          </div>
+          <div class="act-row">
+            <span class="act-name">Add new DCTL tool</span>
+            <button class="btn btn-ghost" onclick="switchPanel('tools');setTimeout(openToolDrawer,100)">+ Add Tool</button>
+          </div>
+          <div class="act-row">
+            <span class="act-name">Generate updated site code</span>
+            <button class="btn btn-yellow" onclick="switchPanel('generate');setTimeout(generateAll,100)">Generate Code</button>
+          </div>
+          <div class="act-row">
+            <span class="act-name">View live site</span>
+            <a href="https://odixbat.com" target="_blank" class="btn btn-ghost">↗ odixbat.com</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PORTFOLIO -->
+    <div class="panel" id="panel-portfolio">
+      <div class="page-hd">
+        <div class="page-hd-l">
+          <div class="page-title">PORTFOLIO</div>
+          <div class="page-sub" id="pf-sub">Drag cards to reorder</div>
+        </div>
+        <div class="page-hd-r">
+          <button class="btn btn-ghost" onclick="filterPortfolio('all')" id="pf-all">All</button>
+          <button class="btn btn-ghost" onclick="filterPortfolio('film')" id="pf-film">Film</button>
+          <button class="btn btn-ghost" onclick="filterPortfolio('commercial')" id="pf-comm">Commercial</button>
+          <button class="btn btn-ghost" onclick="filterPortfolio('reel')" id="pf-reel">Reel</button>
+          <button class="btn btn-primary" onclick="openProjectDrawer()">+ Add Project</button>
+        </div>
+      </div>
+      <div class="scroll-content">
+        <div class="content" style="padding-bottom:2rem">
+          <div class="proj-grid" id="pf-grid"></div>
+          <div id="pf-empty" class="empty-state" style="display:none">
+            <div class="empty-num">0</div>
+            <div class="empty-txt">No projects yet<br>Click + Add Project to get started</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="panel" id="panel-tools">
+      <div class="page-hd">
+        <div class="page-hd-l">
+          <div class="page-title">DCTL TOOLS</div>
+          <div class="page-sub">Click a tool to edit · Use arrows to reorder</div>
+        </div>
+        <div class="page-hd-r">
+          <button class="btn btn-primary" onclick="openToolDrawer()">+ Add Tool</button>
+        </div>
+      </div>
+      <div class="scroll-content">
+        <div class="content" style="padding-bottom:2rem">
+          <div class="tools-list" id="tools-list"></div>
+          <div id="tools-empty" class="empty-state" style="display:none">
+            <div class="empty-num">0</div>
+            <div class="empty-txt">No tools yet<br>Click + Add Tool to get started</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GENERATE -->
+    <div class="panel" id="panel-generate">
+      <div class="page-hd">
+        <div class="page-hd-l">
+          <div class="page-title">GENERATE CODE</div>
+          <div class="page-sub">Generate → Copy → Paste into GitHub</div>
+        </div>
+        <div class="page-hd-r">
+          <button class="btn btn-yellow" onclick="generateAll()">⟳ Generate All</button>
+        </div>
+      </div>
+      <div class="scroll-content">
+        <div class="content">
+
+          <div class="gen-block">
+            <div class="gen-hd">
+              <span class="gen-hd-title">// Portfolio Grid</span>
+              <button class="btn btn-ghost btn-icon" onclick="copyBlock('out-pf')" title="Copy">Copy</button>
+            </div>
+            <div class="gen-instruction">
+              In <code>index.html</code> find <code>&lt;div class="port-grid" id="pg"&gt;</code> → delete everything inside it → paste this.
+            </div>
+            <div class="gen-code" id="out-pf">Click Generate All to build the code...</div>
+          </div>
+
+          <div class="gen-block">
+            <div class="gen-hd">
+              <span class="gen-hd-title">// Tools Grid</span>
+              <button class="btn btn-ghost btn-icon" onclick="copyBlock('out-tools')" title="Copy">Copy</button>
+            </div>
+            <div class="gen-instruction">
+              Find <code>&lt;div class="tools-grid" id="tools-grid"&gt;</code> → delete everything inside it → paste this.
+            </div>
+            <div class="gen-code" id="out-tools">Click Generate All to build the code...</div>
+          </div>
+
+          <div class="gen-block">
+            <div class="gen-hd">
+              <span class="gen-hd-title">// portfolio.json</span>
+              <button class="btn btn-ghost btn-icon" onclick="copyBlock('out-json-pf')" title="Copy">Copy</button>
+            </div>
+            <div class="gen-instruction">
+              In your GitHub repo, open <code>_data/portfolio.json</code> → select all → paste this → commit.
+            </div>
+            <div class="gen-code" id="out-json-pf">Click Generate All...</div>
+          </div>
+
+          <div class="gen-block">
+            <div class="gen-hd">
+              <span class="gen-hd-title">// tools.json</span>
+              <button class="btn btn-ghost btn-icon" onclick="copyBlock('out-json-tools')" title="Copy">Copy</button>
+            </div>
+            <div class="gen-instruction">
+              Open <code>_data/tools.json</code> → select all → paste this → commit.
+            </div>
+            <div class="gen-code" id="out-json-tools">Click Generate All...</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── PROJECT DRAWER ── -->
+<div class="drawer-bg" id="pf-drawer-bg" onclick="closeProjectDrawer()"></div>
+<div class="drawer" id="pf-drawer">
+  <div class="drawer-hd">
+    <div class="drawer-title" id="pf-drawer-title">ADD PROJECT</div>
+    <button class="drawer-close" onclick="closeProjectDrawer()">✕ Close</button>
+  </div>
+  <div class="drawer-body">
+
+    <div class="form-group">
+      <label class="form-label">Project Title <span>*</span></label>
+      <input class="form-input" id="pf-title" type="text" placeholder="e.g. STEPPE LIGHT" oninput="markDirty()">
+    </div>
+
+    <div class="form-row">
+      <div>
+        <label class="form-label">Category <span>*</span></label>
+        <select class="form-select" id="pf-cat" onchange="markDirty()">
+          <option value="film">Film</option>
+          <option value="commercial">Commercial</option>
+          <option value="reel">Reel</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Year</label>
+        <input class="form-input" id="pf-year" type="text" placeholder="2025" oninput="markDirty()">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div>
+        <label class="form-label">Tool / Software</label>
+        <input class="form-input" id="pf-tool" type="text" placeholder="DaVinci Resolve 18" oninput="markDirty()">
+      </div>
+      <div>
+        <label class="form-label">Color Space</label>
+        <input class="form-input" id="pf-space" type="text" placeholder="S-Log3 → Rec.709" oninput="markDirty()">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Genre</label>
+      <input class="form-input" id="pf-genre" type="text" placeholder="e.g. Documentary Film" oninput="markDirty()">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Grade Notes</label>
+      <textarea class="form-textarea" id="pf-notes" rows="4" placeholder="What was the brief? What was the real challenge? How did you solve it?" oninput="markDirty()"></textarea>
+      <div class="form-hint">This is shown on the project sub-page. Write like you're talking to another colorist.</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Project Image</label>
+      <div class="img-zone" id="pf-drop" ondrop="handleDrop(event,'pf')" ondragover="handleDragOver(event,'pf-drop')" ondragleave="handleDragLeave('pf-drop')">
+        <input type="file" accept="image/*" onchange="handleFile(event,'pf')">
+        <div class="img-zone-label">Drop image here or <strong>click to browse</strong><br><span style="font-size:.48rem">JPG or PNG — landscape 16:9 recommended</span></div>
+      </div>
+      <div class="img-preview-wrap" style="margin-top:.5rem">
+        <img class="img-preview" id="pf-preview" alt="Preview">
+        <button class="img-clear" id="pf-clear" onclick="clearImage('pf')">✕ Remove</button>
+      </div>
+      <div style="margin-top:.6rem">
+        <label class="form-label">— or paste image URL</label>
+        <input class="form-input" id="pf-url" type="text" placeholder="/images/steppe-light.jpg" oninput="previewUrl('pf');markDirty()">
+        <div class="form-hint">Upload to <code>/images/</code> folder in GitHub first, then reference as <code>/images/filename.jpg</code></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Image Focus</label>
+      <select class="form-select" id="pf-pos" onchange="markDirty()">
+        <option value="center 15%">Top — faces / headshots</option>
+        <option value="center 30%">Upper-middle</option>
+        <option value="center center">Center</option>
+        <option value="center bottom">Bottom</option>
+      </select>
+    </div>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="btn btn-danger" id="pf-delete-btn" onclick="deleteProjectConfirm()" style="display:none">Delete</button>
+    <div style="display:flex;gap:.5rem;margin-left:auto">
+      <button class="btn btn-ghost" onclick="closeProjectDrawer()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProject()">Save Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOOL DRAWER ── -->
+<div class="drawer-bg" id="tool-drawer-bg" onclick="closeToolDrawer()"></div>
+<div class="drawer" id="tool-drawer">
+  <div class="drawer-hd">
+    <div class="drawer-title" id="tool-drawer-title">ADD TOOL</div>
+    <button class="drawer-close" onclick="closeToolDrawer()">✕ Close</button>
+  </div>
+  <div class="drawer-body">
+
+    <div class="form-group">
+      <label class="form-label">Tool Name <span>*</span></label>
+      <input class="form-input" id="t-name" type="text" placeholder="e.g. SKIN ANCHOR" oninput="markDirty()">
+    </div>
+
+    <div class="form-row">
+      <div>
+        <label class="form-label">Type</label>
+        <select class="form-select" id="t-tooltype" onchange="updateToolTypeFields();markDirty()">
+          <option value="dctl">DCTL — DaVinci Resolve</option>
+          <option value="web">Web Tool — Browser</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Status</label>
+        <select class="form-select" id="t-status" onchange="markDirty()">
+          <option value="WIP">WIP — In development</option>
+          <option value="Soon">Soon — Coming next</option>
+          <option value="Free">Free — Released</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="t-dctl-fields">
+      <div class="form-row">
+        <div>
+          <label class="form-label">DCTL Type</label>
+          <input class="form-input" id="t-type" type="text" placeholder="e.g. Hue Manipulation" oninput="markDirty()">
+        </div>
+        <div>
+          <label class="form-label">Min. Resolve Version</label>
+          <input class="form-input" id="t-resolve" type="text" placeholder="17+" oninput="markDirty()">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Color Space</label>
+        <input class="form-input" id="t-space" type="text" placeholder="Rec.709 / DWG" oninput="markDirty()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">GitHub URL</label>
+        <input class="form-input" id="t-github" type="text" placeholder="https://github.com/odixbat/..." oninput="markDirty()">
+        <div class="form-hint">Leave blank if not released yet</div>
+      </div>
+    </div>
+
+    <div id="t-web-fields" style="display:none">
+      <div class="form-group">
+        <label class="form-label">External URL <span>*</span></label>
+        <input class="form-input" id="t-url" type="text" placeholder="https://your-tool-url.com" oninput="markDirty()">
+        <div class="form-hint">Clicking the card will open this URL directly</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Short Description <span style="color:var(--mute)">(shown on card)</span></label>
+      <input class="form-input" id="t-short" type="text" placeholder="One sentence. What does it do?" oninput="markDirty()">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Full Description <span style="color:var(--mute)">(shown on tool page)</span></label>
+      <textarea class="form-textarea" id="t-desc" rows="5" placeholder="Why did you build it? What problem does it solve exactly? Be specific — colorists will read this." oninput="markDirty()"></textarea>
+    </div>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="btn btn-danger" id="t-delete-btn" onclick="deleteToolConfirm()" style="display:none">Delete</button>
+    <div style="display:flex;gap:.5rem;margin-left:auto">
+      <button class="btn btn-ghost" onclick="closeToolDrawer()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTool()">Save Tool</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════
+// STATE
+// ════════════════════════════════
+var S = { portfolio: [], tools: [] };
+var editIdx = null;
+var editType = null;
+var dirty = false;
+var pfFilter = 'all';
+var pfImageData = '';
+
+// ════════════════════════════════
+// PERSIST
+// ════════════════════════════════
+function persist() {
+  try {
+    var lite = {
+      portfolio: S.portfolio.map(function(p){ return Object.assign({}, p, {imgData:''}); }),
+      tools: S.tools
+    };
+    localStorage.setItem('odx_admin', JSON.stringify(lite));
+    sessionStorage.setItem('odx_full', JSON.stringify(S));
+  } catch(e){}
+}
+function restore() {
+  try {
+    var full = sessionStorage.getItem('odx_full');
+    if (full) { S = JSON.parse(full); return; }
+    var lite = localStorage.getItem('odx_admin');
+    if (lite) { var d = JSON.parse(lite); S.portfolio = d.portfolio||[]; S.tools = d.tools||[]; }
+  } catch(e){}
+}
+
+// ════════════════════════════════
+// DIRTY TRACKING
+// ════════════════════════════════
+function markDirty() {
+  dirty = true;
+  var btn = document.getElementById('save-btn');
+  btn.textContent = 'Save Changes';
+  btn.disabled = false;
+}
+function clearDirty() {
+  dirty = false;
+  var btn = document.getElementById('save-btn');
+  btn.textContent = 'Saved ✓';
+  btn.disabled = true;
+}
+function saveAll() {
+  persist();
+  clearDirty();
+  toast('All changes saved', 'ok');
+}
+
+// ════════════════════════════════
+// NAV
+// ════════════════════════════════
+function switchPanel(name) {
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.sb-item').forEach(function(i){ i.classList.remove('active'); });
+  document.getElementById('panel-' + name).classList.add('active');
+  var nav = document.getElementById('nav-' + name);
+  if (nav) nav.classList.add('active');
+  if (name === 'generate') generateAll();
+}
+
+// ════════════════════════════════
+// TOAST
+// ════════════════════════════════
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  var msgEl = document.getElementById('toast-msg');
+  el.className = 'toast ' + (type || 'ok');
+  msgEl.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(window._toast);
+  window._toast = setTimeout(function(){ el.classList.remove('show'); }, 2500);
+}
+
+// ════════════════════════════════
+// CONFIRM
+// ════════════════════════════════
+var confirmCb = null;
+function confirm_(title, body, cb) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-body').textContent = body;
+  document.getElementById('confirm-bg').classList.add('open');
+  confirmCb = cb;
+  document.getElementById('confirm-ok').onclick = function(){ closeConfirm(); cb(); };
+}
+function closeConfirm() { document.getElementById('confirm-bg').classList.remove('open'); }
+
+// ════════════════════════════════
+// IMAGE HANDLING
+// ════════════════════════════════
+function handleDragOver(e, id) { e.preventDefault(); document.getElementById(id).classList.add('over'); }
+function handleDragLeave(id) { document.getElementById(id).classList.remove('over'); }
+function handleDrop(e, prefix) {
+  e.preventDefault();
+  document.getElementById(prefix + '-drop').classList.remove('over');
+  var file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) readImgFile(file, prefix);
+}
+function handleFile(e, prefix) {
+  var file = e.target.files[0];
+  if (file) readImgFile(file, prefix);
+}
+function readImgFile(file, prefix) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    pfImageData = e.target.result;
+    showPreview(prefix, e.target.result);
+    markDirty();
+  };
+  reader.readAsDataURL(file);
+}
+function showPreview(prefix, src) {
+  var prev = document.getElementById(prefix + '-preview');
+  var clr = document.getElementById(prefix + '-clear');
+  prev.src = src; prev.classList.add('show');
+  if (clr) clr.classList.add('show');
+}
+function clearImage(prefix) {
+  pfImageData = '';
+  var prev = document.getElementById(prefix + '-preview');
+  var clr = document.getElementById(prefix + '-clear');
+  prev.src = ''; prev.classList.remove('show');
+  if (clr) clr.classList.remove('show');
+  document.getElementById(prefix + '-url').value = '';
+  markDirty();
+}
+function previewUrl(prefix) {
+  var url = document.getElementById(prefix + '-url').value.trim();
+  if (url) { showPreview(prefix, url); pfImageData = ''; }
+  markDirty();
+}
+
+// ════════════════════════════════
+// PROJECT DRAWER
+// ════════════════════════════════
+function openProjectDrawer(idx) {
+  editIdx = idx !== undefined ? idx : null;
+  pfImageData = '';
+  document.getElementById('pf-drawer-title').textContent = idx !== undefined ? 'EDIT PROJECT' : 'ADD PROJECT';
+  document.getElementById('pf-delete-btn').style.display = idx !== undefined ? 'inline-flex' : 'none';
+  // reset
+  ['pf-title','pf-year','pf-tool','pf-space','pf-genre','pf-notes','pf-url'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('pf-cat').value = 'film';
+  document.getElementById('pf-pos').value = 'center 15%';
+  var prev = document.getElementById('pf-preview');
+  var clr = document.getElementById('pf-clear');
+  prev.src = ''; prev.classList.remove('show');
+  if (clr) clr.classList.remove('show');
+  // populate if editing
+  if (idx !== undefined) {
+    var p = S.portfolio[idx];
+    document.getElementById('pf-title').value = p.title || '';
+    document.getElementById('pf-cat').value = p.cat || 'film';
+    document.getElementById('pf-year').value = p.year || '';
+    document.getElementById('pf-tool').value = p.tool || '';
+    document.getElementById('pf-space').value = p.space || '';
+    document.getElementById('pf-genre').value = p.genre || '';
+    document.getElementById('pf-notes').value = p.notes || '';
+    document.getElementById('pf-url').value = p.imgUrl || '';
+    document.getElementById('pf-pos').value = p.imgPos || 'center 15%';
+    var src = p.imgData || p.imgUrl || '';
+    if (src) { showPreview('pf', src); if (p.imgData) pfImageData = p.imgData; }
+  }
+  document.getElementById('pf-drawer-bg').classList.add('open');
+  document.getElementById('pf-drawer').classList.add('open');
+  setTimeout(function(){ document.getElementById('pf-title').focus(); }, 300);
+}
+function closeProjectDrawer() {
+  document.getElementById('pf-drawer-bg').classList.remove('open');
+  document.getElementById('pf-drawer').classList.remove('open');
+}
+function saveProject() {
+  var title = document.getElementById('pf-title').value.trim();
+  if (!title) { toast('Enter a project title', 'err'); document.getElementById('pf-title').focus(); return; }
+  var proj = {
+    id: editIdx !== null ? S.portfolio[editIdx].id : Date.now(),
+    title: title.toUpperCase(),
+    cat: document.getElementById('pf-cat').value,
+    year: document.getElementById('pf-year').value.trim() || new Date().getFullYear().toString(),
+    tool: document.getElementById('pf-tool').value.trim() || 'DaVinci Resolve',
+    space: document.getElementById('pf-space').value.trim() || 'Rec.709',
+    genre: document.getElementById('pf-genre').value.trim(),
+    notes: document.getElementById('pf-notes').value.trim(),
+    imgUrl: document.getElementById('pf-url').value.trim(),
+    imgData: pfImageData,
+    imgPos: document.getElementById('pf-pos').value,
+  };
+  if (editIdx !== null) { S.portfolio[editIdx] = proj; }
+  else { S.portfolio.push(proj); }
+  persist(); renderPortfolio(); closeProjectDrawer(); updateCounts();
+  toast(editIdx !== null ? 'Project updated ✓' : 'Project added ✓', 'ok');
+  markDirty(); clearDirty();
+}
+function deleteProjectConfirm() {
+  if (editIdx === null) return;
+  var name = S.portfolio[editIdx].title;
+  confirm_('Delete Project', 'Delete "' + name + '"? This cannot be undone.', function(){
+    S.portfolio.splice(editIdx, 1);
+    persist(); renderPortfolio(); closeProjectDrawer(); updateCounts();
+    toast('Project deleted', 'info');
+    markDirty(); clearDirty();
+  });
+}
+
+// ════════════════════════════════
+// RENDER PORTFOLIO
+// ════════════════════════════════
+var catColors = {film:'badge-film', commercial:'badge-commercial', reel:'badge-reel'};
+function filterPortfolio(cat) {
+  pfFilter = cat;
+  ['all','film','comm','reel'].forEach(function(c){ document.getElementById('pf-'+c).classList.remove('btn-primary'); document.getElementById('pf-'+c).classList.add('btn-ghost'); });
+  var btn = cat === 'commercial' ? 'pf-comm' : ('pf-' + cat);
+  document.getElementById(btn).classList.remove('btn-ghost');
+  document.getElementById(btn).classList.add('btn-primary');
+  renderPortfolio();
+}
+function renderPortfolio() {
+  var grid = document.getElementById('pf-grid');
+  var empty = document.getElementById('pf-empty');
+  var items = pfFilter === 'all' ? S.portfolio : S.portfolio.filter(function(p){ return p.cat === pfFilter; });
+  document.getElementById('pf-sub').textContent = S.portfolio.length + ' project' + (S.portfolio.length !== 1 ? 's' : '') + (pfFilter !== 'all' ? ' · filtered by ' + pfFilter : ' · drag to reorder');
+  if (!items.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'flex';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = items.map(function(p, i) {
+    var realIdx = S.portfolio.indexOf(p);
+    var src = p.imgData || p.imgUrl || '';
+    var thumb = src
+      ? '<img src="' + src + '" alt="' + p.title + '" style="width:100%;height:100%;object-fit:cover;object-position:' + (p.imgPos||'center 15%') + ';filter:grayscale(1) contrast(1.1)">'
+      : '<div class="pc-thumb-empty">No image</div>';
+    return '<div class="proj-card" draggable="true" data-idx="' + realIdx + '" ondragstart="dragStart(event,' + realIdx + ')" ondragover="dragOver(event)" ondrop="dragDrop(event,' + realIdx + ')" ondragleave="dragLeave(event)">'
+      + '<div class="pc-thumb">' + thumb + '</div>'
+      + '<div class="pc-actions">'
+      + '<button class="btn btn-ghost btn-icon" onclick="event.stopPropagation();openProjectDrawer(' + realIdx + ')" title="Edit">✏</button>'
+      + '</div>'
+      + '<div class="pc-body" onclick="openProjectDrawer(' + realIdx + ')">'
+      + '<div class="pc-cat"><span class="badge ' + (catColors[p.cat]||'') + '">' + p.cat + '</span> &nbsp;' + p.year + '</div>'
+      + '<div class="pc-name">' + p.title + '</div>'
+      + '<div class="pc-meta">' + p.tool + ' &nbsp;·&nbsp; ' + p.space + '</div>'
+      + '</div></div>';
+  }).join('');
+}
+
+// drag reorder
+var dragSrcIdx = null;
+function dragStart(e, idx) { dragSrcIdx = idx; e.dataTransfer.effectAllowed = 'move'; }
+function dragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function dragDrop(e, targetIdx) {
+  e.preventDefault(); e.currentTarget.classList.remove('drag-over');
+  if (dragSrcIdx === null || dragSrcIdx === targetIdx) return;
+  var item = S.portfolio.splice(dragSrcIdx, 1)[0];
+  S.portfolio.splice(targetIdx, 0, item);
+  dragSrcIdx = null;
+  renderPortfolio(); persist(); markDirty(); clearDirty();
+  toast('Order updated ✓', 'ok');
+}
+
+// ════════════════════════════════
+// TOOL DRAWER
+// ════════════════════════════════
+function openToolDrawer(idx) {
+  editIdx = idx !== undefined ? idx : null;
+  document.getElementById('tool-drawer-title').textContent = idx !== undefined ? 'EDIT TOOL' : 'ADD TOOL';
+  document.getElementById('t-delete-btn').style.display = idx !== undefined ? 'inline-flex' : 'none';
+  ['t-name','t-type','t-resolve','t-space','t-desc','t-short','t-github','t-url'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('t-status').value = 'WIP';
+  document.getElementById('t-tooltype').value = 'dctl';
+  updateToolTypeFields();
+  if (idx !== undefined) {
+    var t = S.tools[idx];
+    document.getElementById('t-name').value = t.name || '';
+    document.getElementById('t-status').value = t.status || 'WIP';
+    document.getElementById('t-tooltype').value = t.externalUrl ? 'web' : 'dctl';
+    document.getElementById('t-type').value = t.type || '';
+    document.getElementById('t-resolve').value = t.resolve || '';
+    document.getElementById('t-space').value = t.space || '';
+    document.getElementById('t-desc').value = t.desc || '';
+    document.getElementById('t-short').value = t.short || '';
+    document.getElementById('t-github').value = t.github || '';
+    document.getElementById('t-url').value = t.externalUrl || '';
+    updateToolTypeFields();
+  }
+  document.getElementById('tool-drawer-bg').classList.add('open');
+  document.getElementById('tool-drawer').classList.add('open');
+  setTimeout(function(){ document.getElementById('t-name').focus(); }, 300);
+}
+function closeToolDrawer() {
+  document.getElementById('tool-drawer-bg').classList.remove('open');
+  document.getElementById('tool-drawer').classList.remove('open');
+}
+function updateToolTypeFields() {
+  var type = document.getElementById('t-tooltype').value;
+  document.getElementById('t-dctl-fields').style.display = type === 'dctl' ? '' : 'none';
+  document.getElementById('t-web-fields').style.display = type === 'web' ? '' : 'none';
+}
+function saveTool() {
+  var name = document.getElementById('t-name').value.trim();
+  if (!name) { toast('Enter a tool name', 'err'); document.getElementById('t-name').focus(); return; }
+  var isWeb = document.getElementById('t-tooltype').value === 'web';
+  var tool = {
+    id: editIdx !== null ? S.tools[editIdx].id : Date.now(),
+    name: name.toUpperCase(),
+    status: document.getElementById('t-status').value,
+    type: isWeb ? 'Web Tool' : document.getElementById('t-type').value.trim(),
+    resolve: isWeb ? '' : document.getElementById('t-resolve').value.trim(),
+    space: isWeb ? '' : document.getElementById('t-space').value.trim(),
+    desc: document.getElementById('t-desc').value.trim(),
+    short: document.getElementById('t-short').value.trim(),
+    github: isWeb ? '' : document.getElementById('t-github').value.trim(),
+    externalUrl: isWeb ? document.getElementById('t-url').value.trim() : '',
+  };
+  if (editIdx !== null) { S.tools[editIdx] = tool; }
+  else { S.tools.push(tool); }
+  persist(); renderTools(); closeToolDrawer(); updateCounts();
+  toast(editIdx !== null ? 'Tool updated ✓' : 'Tool added ✓', 'ok');
+  markDirty(); clearDirty();
+}
+function deleteToolConfirm() {
+  if (editIdx === null) return;
+  var name = S.tools[editIdx].name;
+  confirm_('Delete Tool', 'Delete "' + name + '"? This cannot be undone.', function(){
+    S.tools.splice(editIdx, 1);
+    persist(); renderTools(); closeToolDrawer(); updateCounts();
+    toast('Tool deleted', 'info');
+  });
+}
+
+// ════════════════════════════════
+// RENDER TOOLS
+// ════════════════════════════════
+var badgeMap = {WIP:'badge-wip', Soon:'badge-soon', Free:'badge-free'};
+function renderTools() {
+  var list = document.getElementById('tools-list');
+  var empty = document.getElementById('tools-empty');
+  if (!S.tools.length) { list.innerHTML = ''; empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+  list.innerHTML = S.tools.map(function(t, i) {
+    var isWeb = !!t.externalUrl;
+    var iconCls = isWeb ? 'tr-icon web' : 'tr-icon';
+    var iconLbl = isWeb ? 'web' : '.dctl';
+    var badge = badgeMap[t.status] || 'badge-soon';
+    var meta = isWeb
+      ? 'Web Tool &nbsp;·&nbsp; ' + (t.externalUrl || '')
+      : (t.type || '') + (t.resolve ? ' &nbsp;·&nbsp; Resolve ' + t.resolve : '') + (t.space ? ' &nbsp;·&nbsp; ' + t.space : '');
+    return '<div class="tool-row" onclick="openToolDrawer(' + i + ')">'
+      + '<div class="' + iconCls + '">' + iconLbl + '</div>'
+      + '<div class="tr-body">'
+      + '<div class="tr-name">' + t.name + ' &nbsp;<span class="badge ' + badge + '">' + t.status + '</span>' + (isWeb ? ' &nbsp;<span class="badge badge-web">Web</span>' : '') + '</div>'
+      + '<div class="tr-meta">' + meta + '</div>'
+      + '</div>'
+      + '<div class="tr-actions">'
+      + '<button class="btn btn-ghost btn-icon" onclick="event.stopPropagation();openToolDrawer(' + i + ')" title="Edit">✏</button>'
+      + '</div>'
+      + '<div class="tr-order">'
+      + (i > 0 ? '<button class="tr-order-btn" onclick="event.stopPropagation();moveTool(' + i + ',-1)" title="Move up">↑</button>' : '<div style="width:20px;height:16px"></div>')
+      + (i < S.tools.length - 1 ? '<button class="tr-order-btn" onclick="event.stopPropagation();moveTool(' + i + ',1)" title="Move down">↓</button>' : '<div style="width:20px;height:16px"></div>')
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+function moveTool(idx, dir) {
+  var newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= S.tools.length) return;
+  var tmp = S.tools[idx]; S.tools[idx] = S.tools[newIdx]; S.tools[newIdx] = tmp;
+  persist(); renderTools(); markDirty(); clearDirty();
+}
+
+// ════════════════════════════════
+// COUNTS + DASHBOARD
+// ════════════════════════════════
+function updateCounts() {
+  document.getElementById('pf-cnt').textContent = S.portfolio.length;
+  document.getElementById('tools-cnt').textContent = S.tools.length;
+  document.getElementById('dash-pf-count').textContent = S.portfolio.length;
+  document.getElementById('dash-tools-count').textContent = S.tools.length;
+  var live = S.tools.filter(function(t){ return t.status === 'Free'; }).length;
+  document.getElementById('dash-live-count').textContent = live;
+}
+
+// ════════════════════════════════
+// GENERATE CODE
+// ════════════════════════════════
+var piClasses = ['pi-a','pi-b','pi-c','pi-d','pi-e','pi-f','pi-g','pi-h'];
+function generateAll() {
+  // Portfolio HTML
+  var pfHtml = S.portfolio.length ? S.portfolio.map(function(p, i) {
+    var cls = piClasses[i] || ('pi-x' + i);
+    var cat = p.cat || 'film';
+    var tag = cat.charAt(0).toUpperCase() + cat.slice(1) + ' \u00b7 ' + p.year;
+    var imgSrc = p.imgData || p.imgUrl || '';
+    var imgTag = imgSrc
+      ? '<img src="' + imgSrc + '" alt="' + p.title + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:' + (p.imgPos||'center 15%') + ';filter:grayscale(1) contrast(1.1) brightness(.88);">'
+      : '<div style="position:absolute;inset:0;background:linear-gradient(135deg,#121110 0%,#0a0908 100%)"></div>';
+    return '    <div class="pi ' + cls + '" data-cat="' + cat + '" data-idx="' + i + '" style="cursor:pointer">\n'
+      + '      ' + imgTag + '\n'
+      + '      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(12,11,9,.55) 0%,transparent 50%);z-index:1"></div>\n'
+      + '      <div class="pi-ov" style="z-index:2"><div class="pi-inf">\n'
+      + '        <div class="pi-tag">' + tag + '</div>\n'
+      + '        <div class="pi-title">' + p.title + '</div>\n'
+      + '        <div class="pi-meta">Color Grade \u00b7 ' + p.tool + '</div>\n'
+      + '      </div></div>\n'
+      + '    </div>';
+  }).join('\n\n') : '    <!-- No projects yet -->';
+
+  // Tools HTML
+  var bmMap = {WIP:'bwip',Soon:'bsoon',Free:'bfree'};
+  var toolsHtml = S.tools.map(function(t) {
+    var badge = bmMap[t.status] || 'bsoon';
+    var isWeb = !!t.externalUrl;
+    var iconLabel = isWeb ? 'web' : '.dctl';
+    var iconStyle = isWeb ? ' style="border-color:var(--cyan);color:var(--cyan);width:auto;padding:0 .6rem;letter-spacing:.06em"' : '';
+    var typeLabel = isWeb ? 'Browser Tool' : 'DaVinci DCTL';
+    var liveBanner = isWeb && t.status === 'Free'
+      ? '      <div style="background:var(--cyan);margin:-2.5rem -2.5rem 1.75rem -2.5rem;padding:.6rem 1.25rem;display:flex;align-items:center;justify-content:space-between;">'
+        + '<span style="font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.15em;color:var(--ink)">&#8599; AVAILABLE NOW</span>'
+        + '<span style="font-family:var(--mono);font-size:.52rem;color:rgba(12,11,9,.55);letter-spacing:.08em">FREE</span>'
+        + '</div>\n'
+      : '';
+    return '    <div class="tc ' + (isWeb ? 'clickable' : 'clickable') + '" data-external="' + (t.externalUrl||'') + '">\n'
+      + liveBanner
+      + '      <div class="tc-top">\n'
+      + '        <div style="display:flex;align-items:center;gap:.6rem">\n'
+      + '          <div class="tc-icon"' + iconStyle + '>' + iconLabel + '</div>\n'
+      + '          <div class="lbl" style="color:var(--mute);font-size:.48rem">' + typeLabel + '</div>\n'
+      + '        </div>\n'
+      + '        <span class="badge ' + badge + '">' + t.status + '</span>\n'
+      + '      </div>\n'
+      + '      <div class="tc-name">' + t.name + '</div>\n'
+      + '      <div class="tc-desc">' + esc(t.short || t.desc.slice(0,120)) + '</div>\n'
+      + '      <div class="tc-sp">\n'
+      + '        <div class="tc-row"><span class="tc-rk">Type</span><span class="tc-rv c">' + esc(t.type) + '</span></div>\n'
+      + (t.resolve ? '        <div class="tc-row"><span class="tc-rk">Resolve</span><span class="tc-rv">' + esc(t.resolve) + '</span></div>\n' : '')
+      + (t.space ? '        <div class="tc-row"><span class="tc-rk">Space</span><span class="tc-rv">' + esc(t.space) + '</span></div>\n' : '')
+      + '      </div>\n'
+      + '    </div>';
+  }).join('\n\n') + '\n\n    <div class="tc no-click" style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.2rem;min-height:220px">\n'
+    + '      <div style="font-family:var(--disp);font-size:4rem;line-height:1;color:var(--faint)">+</div>\n'
+    + '      <div class="lbl" style="text-align:center;line-height:2.2">More dropping soon.<br>Follow <span style="color:var(--cyan)">@odixbat</span> to get notified.</div>\n'
+    + '    </div>';
+
+  // JSON
+  var pfJson = JSON.stringify({projects: S.portfolio.map(function(p){ return {title:p.title,cat:p.cat,year:p.year,tool:p.tool,space:p.space,genre:p.genre,notes:p.notes,image:p.imgUrl||'',imgPos:p.imgPos}; })}, null, 2);
+  var toolsJson = JSON.stringify({tools: S.tools.map(function(t){ return {name:t.name,status:t.status,type:t.type,resolve:t.resolve,space:t.space,short:t.short,desc:t.desc,github:t.github,externalUrl:t.externalUrl}; })}, null, 2);
+
+  document.getElementById('out-pf').textContent = pfHtml;
+  document.getElementById('out-tools').textContent = toolsHtml;
+  document.getElementById('out-json-pf').textContent = pfJson;
+  document.getElementById('out-json-tools').textContent = toolsJson;
+  toast('Code generated ✓', 'ok');
+}
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function copyBlock(id) {
+  var text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(function(){
+    toast('Copied to clipboard ✓', 'ok');
+  }).catch(function(){
+    var ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    toast('Copied ✓', 'ok');
+  });
+}
+
+// ════════════════════════════════
+// INIT
+// ════════════════════════════════
+restore();
+renderPortfolio();
+renderTools();
+updateCounts();
+clearDirty();
+// dashboard date
+var d = new Date();
+document.getElementById('dash-date').textContent = d.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
+// filter init
+filterPortfolio('all');
+// warn on close if dirty
+window.addEventListener('beforeunload', function(e){ if(dirty){ e.returnValue='You have unsaved changes'; return e.returnValue; } });
+</script>
+</body>
+</html>
