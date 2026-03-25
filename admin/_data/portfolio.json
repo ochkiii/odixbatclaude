@@ -11,9 +11,6 @@
       "image": "/images/vol2.jpg",
       "imgPos": "center 15%"
     },
-
-{
-  "projects": [
     {
       "title": "UNNU EXPLAINER",
       "cat": "film",
@@ -24,10 +21,7 @@
       "notes": "Script by @tenger",
       "image": "",
       "imgPos": "center 15%"
-    }
-  ]
-}
-    
+    },
     {
       "title": "GOLDEN HOUR",
       "cat": "commercial",
