@@ -1,0 +1,122 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images"
+public_folder: "/images"
+
+publish_mode: editorial_workflow
+
+collections:
+  - name: "portfolio"
+    label: "Portfolio"
+    files:
+      - label: "Portfolio Projects"
+        name: "portfolio"
+        file: "_data/portfolio.json"
+        fields:
+          - label: "Projects"
+            name: "projects"
+            widget: "list"
+            summary: "{{fields.title}} — {{fields.cat}} {{fields.year}}"
+            fields:
+              - label: "Title"
+                name: "title"
+                widget: "string"
+                hint: "Uppercase. e.g. STEPPE LIGHT"
+              - label: "Category"
+                name: "cat"
+                widget: "select"
+                options:
+                  - { label: "Film", value: "film" }
+                  - { label: "Commercial", value: "commercial" }
+                  - { label: "Reel", value: "reel" }
+              - label: "Year"
+                name: "year"
+                widget: "string"
+                default: "2025"
+              - label: "Tool / Software"
+                name: "tool"
+                widget: "string"
+                default: "DaVinci Resolve 18"
+              - label: "Color Space"
+                name: "space"
+                widget: "string"
+                default: "S-Log3 → Rec.709"
+                hint: "e.g. BRAW → Rec.709, ARRIRAW → Rec.709"
+              - label: "Genre"
+                name: "genre"
+                widget: "string"
+                hint: "e.g. Documentary Film, Commercial / Brand, Narrative Short"
+              - label: "Grade Notes"
+                name: "notes"
+                widget: "text"
+                hint: "What was the brief? What was the challenge? How did you solve it? This shows on the project sub-page."
+              - label: "Project Image"
+                name: "image"
+                widget: "image"
+                hint: "Upload your project still. Landscape 16:9 works best."
+              - label: "Image Focus"
+                name: "imgPos"
+                widget: "select"
+                default: "center 15%"
+                hint: "Where to focus the crop on the thumbnail"
+                options:
+                  - { label: "Top (faces / headshots)", value: "center 15%" }
+                  - { label: "Upper middle", value: "center 30%" }
+                  - { label: "Center", value: "center center" }
+                  - { label: "Bottom", value: "center bottom" }
+
+  - name: "tools"
+    label: "DCTL Tools"
+    files:
+      - label: "DCTL Tools"
+        name: "tools"
+        file: "_data/tools.json"
+        fields:
+          - label: "Tools"
+            name: "tools"
+            widget: "list"
+            summary: "{{fields.name}} — {{fields.status}}"
+            fields:
+              - label: "Tool Name"
+                name: "name"
+                widget: "string"
+                hint: "Uppercase. e.g. SKIN ANCHOR"
+              - label: "Status"
+                name: "status"
+                widget: "select"
+                options:
+                  - { label: "WIP — In development", value: "WIP" }
+                  - { label: "Soon — Coming next", value: "Soon" }
+                  - { label: "Free — Released", value: "Free" }
+              - label: "Type"
+                name: "type"
+                widget: "string"
+                hint: "e.g. Hue Manipulation, Film Emulation, Tone / Contrast"
+              - label: "Min. DaVinci Resolve Version"
+                name: "resolve"
+                widget: "string"
+                default: "17+"
+              - label: "Color Space"
+                name: "space"
+                widget: "string"
+                hint: "e.g. Rec.709 / DWG, Scene Linear"
+              - label: "Short Description (card)"
+                name: "short"
+                widget: "string"
+                hint: "One sentence shown on the card. Max ~100 chars."
+              - label: "Full Description (tool page)"
+                name: "desc"
+                widget: "text"
+                hint: "Full breakdown. Why you built it. What problem it solves. Be specific — colorists will read this."
+              - label: "GitHub URL"
+                name: "github"
+                widget: "string"
+                required: false
+                hint: "Leave blank if not released yet"
+              - label: "External URL (optional — overrides sub-page)"
+                name: "externalUrl"
+                widget: "string"
+                required: false
+                hint: "If set, clicking the tool card opens this URL directly. Use for tools on Figma, Gumroad, etc."
