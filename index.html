@@ -16,6 +16,7 @@
 <meta name="twitter:title" content="Odixbat — Colorist & Filmmaker">
 <meta name="twitter:description" content="Color grading, filmmaking, and DCTL tools for indie creators across Mongolia and Asia.">
 <link rel="canonical" href="https://www.odixbat.com">
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <style>
@@ -2032,6 +2033,19 @@ function loadSiteData() {
 }
 loadSiteData();
 
+</script>
+
+<script>
+// Handle Netlify Identity redirects (password reset, invite, etc.)
+if (window.netlifyIdentity) {
+  window.netlifyIdentity.on('init', function(user) {
+    if (!user) {
+      window.netlifyIdentity.on('login', function() {
+        document.location.href = '/admin/';
+      });
+    }
+  });
+}
 </script>
 </body>
 </html>
