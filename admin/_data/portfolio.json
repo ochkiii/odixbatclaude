@@ -1,0 +1,70 @@
+{
+  "projects": [
+    {
+      "title": "VOL. 2",
+      "cat": "commercial",
+      "year": "2024",
+      "tool": "DaVinci Resolve 18",
+      "space": "BRAW → Rec.709",
+      "genre": "Commercial / Brand",
+      "notes": "Multi-subject color grade across 5 talent. Scene-referred workflow, skin tone matching across different ethnicities and lighting conditions. Each subject was shot in a different environment with different practicals. The challenge was making all five feel like they belong in the same film.",
+      "image": "/images/vol2.jpg",
+      "imgPos": "center 15%"
+    },
+    {
+      "title": "GOLDEN HOUR",
+      "cat": "commercial",
+      "year": "2024",
+      "tool": "DaVinci Resolve 18",
+      "space": "S-Log3 → Rec.709",
+      "genre": "Commercial / Brand",
+      "notes": "Warm-toned commercial grade. The brief called for a golden hour feel that still felt honest — not oversaturated, not filtered. Built the warmth through selective hue rotation in the highlights while keeping the skin tones anchored.",
+      "image": "/images/golden-hour.jpg",
+      "imgPos": "center 15%"
+    },
+    {
+      "title": "BLUE HOUR",
+      "cat": "reel",
+      "year": "2024",
+      "tool": "DaVinci Resolve 18",
+      "space": "ARRIRAW → Rec.709",
+      "genre": "Short Form / Reel",
+      "notes": "Cinematography and grade combined. Cool, desaturated shadows with retained warmth in the highlights. Talking head format graded for emotional clarity — the grade has to support the performance, not compete with it.",
+      "image": "/images/blue-hour.jpg",
+      "imgPos": "center 15%"
+    },
+    {
+      "title": "ZUD",
+      "cat": "film",
+      "year": "2023",
+      "tool": "DaVinci Resolve 17",
+      "space": "S-Log3 → Rec.709",
+      "genre": "Documentary Film",
+      "notes": "Full documentary color grade. ZUD follows the aftermath of a Mongolian dzud. The grade needed to communicate cold, scarcity, and space without becoming desaturated or flat. Kept the earth tones alive while pushing the blues into the shadows.",
+      "image": "/images/zud.jpg",
+      "imgPos": "center 15%"
+    },
+    {
+      "title": "BLEACH",
+      "cat": "reel",
+      "year": "2023",
+      "tool": "DaVinci Resolve 17",
+      "space": "Rec.709 → Custom",
+      "genre": "Reel / Experimental",
+      "notes": "Custom DCTL bleach bypass look. The standard approach desaturates everything uniformly. This one desaturates luminance selectively — preserves the texture in the darks while washing out the highlights. Built entirely in DCTL.",
+      "image": "/images/bleach.jpg",
+      "imgPos": "center 15%"
+    },
+    {
+      "title": "NEON NOIR",
+      "cat": "commercial",
+      "year": "2023",
+      "tool": "DaVinci Resolve 18",
+      "space": "BRAW → Rec.2020",
+      "genre": "Commercial / Digital Cinema",
+      "notes": "High contrast commercial grade with punchy midtones. Finishing pass included HDR delivery and Rec.2020 output. The hardest part was keeping the neon practicals from clipping while the skin tones stayed believable.",
+      "image": "/images/neon-noir.jpg",
+      "imgPos": "center 15%"
+    }
+  ]
+}
