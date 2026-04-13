@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ODIX Parade Match — per-channel RGB shot matching for DaVinci Resolve. Free DCTL by Odbat Batsaikhan.">
+<title>Parade Match — ODIX Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#040404;--surface:rgba(255,255,255,0.02);--surface-elevated:rgba(255,255,255,0.04);--text-primary:#f5f5f5;--text-secondary:#888888;--text-meta:#444444;--text-whisper:#2e2e2e;--divider:0.5px solid rgba(255,255,255,0.06);--shadow-card:0 0 0 1px rgba(255,255,255,0.08),0 2px 4px rgba(0,0,0,0.4),0 8px 16px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,0.04);--font-display:'Geist',-apple-system,Helvetica Neue,sans-serif;--font-mono:'Geist Mono',ui-monospace,Menlo,monospace;--ease:cubic-bezier(0.16,1,0.3,1);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--font-display);font-weight:400;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;}
+@keyframes slideIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.nav{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;padding:0 6px;border-radius:100px;background:rgba(4,4,4,0.88);backdrop-filter:blur(24px) saturate(180%);box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 4px 24px rgba(0,0,0,0.7);animation:slideIn 600ms var(--ease) both;}
+.nav-logo{padding:10px 18px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-primary);}
+.nav-sep{width:0.5px;height:16px;background:rgba(255,255,255,0.09);flex-shrink:0;}
+.nav-links{display:flex;list-style:none;padding:0 8px;}
+.nav-links a{display:block;padding:10px 14px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);transition:color 0.2s;}
+.nav-links a:hover{color:var(--text-primary);}
+.nav-cta{display:inline-flex;align-items:center;padding:8px 16px;margin:4px;border-radius:100px;background:var(--surface-elevated);box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 0 0 1px rgba(255,255,255,0.07);font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-primary);transition:opacity 0.2s;}
+.nav-cta:hover{opacity:0.65;}
+.hero{padding:140px 64px 80px;border-bottom:var(--divider);position:relative;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(245,245,245,0.028) 1px,transparent 1px),linear-gradient(90deg,rgba(245,245,245,0.028) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;}
+.hero-ambient{position:absolute;top:0;right:0;width:55%;height:100%;background:radial-gradient(ellipse 65% 90% at 85% 40%,rgba(255,255,255,0.055) 0%,transparent 70%);pointer-events:none;}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;gap:80px;align-items:center;}
+.hero-tag{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);margin-bottom:18px;}
+.hero-title{font-size:clamp(40px,5vw,72px);letter-spacing:-2.4px;line-height:1.05;color:var(--text-primary);margin-top:12px;}
+.hero-subtitle{font-size:16px;letter-spacing:-0.16px;line-height:1.6;color:var(--text-secondary);margin-top:20px;max-width:480px;}
+.hero-actions{margin-top:36px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+.btn-download{display:inline-flex;align-items:center;gap:10px;padding:12px 24px;border-radius:100px;background:var(--surface-elevated);box-shadow:inset 0 1px 0 rgba(255,255,255,0.09),0 0 0 1px rgba(255,255,255,0.09);font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-primary);transition:opacity 0.2s;}
+.btn-download:hover{opacity:0.65;}
+.btn-ghost{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);transition:color 0.2s;}
+.btn-ghost:hover{color:var(--text-secondary);}
+.hero-meta-row{margin-top:32px;display:flex;gap:0;border-top:var(--divider);}
+.hero-meta-item{padding:14px 32px 14px 0;flex:1;border-right:var(--divider);}
+.hero-meta-item:last-child{border-right:none;}
+.hero-meta-label{font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);margin-bottom:5px;}
+.hero-meta-val{font-size:13px;letter-spacing:-0.16px;color:var(--text-secondary);}
+.hero-mark{opacity:0.055;}
+.body-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.04);border-top:var(--divider);}
+.body-cell{background:var(--bg);padding:48px 64px;}
+.body-cell--full{grid-column:span 2;padding:48px 64px;}
+.section-tag{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);margin-bottom:20px;}
+.body-title{font-size:22px;letter-spacing:-0.5px;line-height:1.19;color:var(--text-primary);margin-bottom:16px;}
+.body-text{font-size:14px;letter-spacing:normal;line-height:1.7;color:var(--text-secondary);}
+.usage-list{list-style:none;display:flex;flex-direction:column;gap:0;}
+.usage-item{display:flex;gap:16px;padding:14px 0;border-bottom:var(--divider);align-items:flex-start;}
+.usage-item:first-child{border-top:var(--divider);}
+.usage-item-num{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);padding-top:2px;flex-shrink:0;width:20px;}
+.usage-item-text{font-size:13px;letter-spacing:normal;line-height:1.6;color:var(--text-secondary);}
+.params-table{width:100%;border-collapse:collapse;}
+.params-table th{font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);text-align:left;padding:10px 0;border-bottom:var(--divider);}
+.params-table td{padding:14px 0;border-bottom:var(--divider);vertical-align:top;}
+.params-table tr:last-child td{border-bottom:none;}
+.param-name{font-family:var(--font-mono);font-size:10px;letter-spacing:0.06em;color:var(--text-primary);}
+.param-range{font-family:var(--font-mono);font-size:9px;color:var(--text-meta);}
+.param-desc{font-size:12px;letter-spacing:normal;line-height:1.6;color:var(--text-secondary);}
+.code-section{background:var(--surface);border-top:var(--divider);}
+.code-header{padding:16px 64px;border-bottom:var(--divider);display:flex;justify-content:space-between;align-items:center;}
+.code-title{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);}
+.code-actions{display:flex;gap:12px;align-items:center;}
+.btn-copy{padding:7px 16px;border-radius:100px;background:var(--surface-elevated);box-shadow:0 0 0 1px rgba(255,255,255,0.07);border:none;font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);cursor:pointer;transition:color 0.2s;}
+.btn-copy:hover,.btn-copy.copied{color:var(--text-primary);}
+.code-block{padding:32px 64px;overflow-x:auto;}
+.code-block pre{font-family:var(--font-mono);font-size:11px;line-height:1.8;color:var(--text-secondary);white-space:pre;}
+.related-section{padding:64px;border-top:var(--divider);}
+.related-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.04);margin-top:32px;}
+.related-card{background:var(--bg);padding:24px;transition:background 0.2s;position:relative;}
+.related-card:hover{background:var(--surface);}
+.related-card a{position:absolute;inset:0;}
+.related-num{font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);margin-bottom:12px;}
+.related-name{font-size:15px;letter-spacing:-0.16px;color:var(--text-primary);margin-bottom:6px;}
+.related-type{font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);}
+footer{border-top:var(--divider);padding:28px 64px;display:flex;justify-content:space-between;align-items:center;}
+.footer-left{display:flex;gap:24px;align-items:center;}
+.f-logo{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);}
+.f-copy{font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-whisper);}
+.footer-right{display:flex;gap:20px;}
+.f-link{font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);transition:color 0.2s;}
+.f-link:hover{color:var(--text-secondary);}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-logo">← Odixbat</a>
+  <div class="nav-sep"></div>
+  <ul class="nav-links"><li><a href="/tools/">All Tools</a></li><li><a href="/#contact">Contact</a></li></ul>
+  <div class="nav-sep"></div>
+  <a href="/dctl/ODIX_ParadeMatch_v1.dctl" download class="nav-cta">Download</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-ambient"></div>
+  <div class="hero-inner">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="hero-tag">ODIX Tool Suite · 002</div>
+        <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-whisper)">DCTL · DaVinci Resolve</div>
+      </div>
+      <h1 class="hero-title">Parade<br>Match</h1>
+      <p class="hero-subtitle">Per-channel RGB shot matching from parade readings. Enter source and target black/white values per channel — the tool remaps the grade numerically. No guessing. No eyeballing.</p>
+      <div class="hero-actions">
+        <a href="/dctl/ODIX_ParadeMatch_v1.dctl" download class="btn-download">↓ Download DCTL — Free</a>
+        <a href="/tools/" class="btn-ghost">← All Tools</a>
+      </div>
+      <div class="hero-meta-row">
+        <div class="hero-meta-item"><div class="hero-meta-label">Version</div><div class="hero-meta-val">v1.0</div></div>
+        <div class="hero-meta-item" style="padding-left:32px"><div class="hero-meta-label">Type</div><div class="hero-meta-val">Shot Match</div></div>
+        <div class="hero-meta-item" style="padding-left:32px"><div class="hero-meta-label">Format</div><div class="hero-meta-val">.dctl</div></div>
+        <div class="hero-meta-item" style="padding-left:32px"><div class="hero-meta-label">Price</div><div class="hero-meta-val">Free</div></div>
+      </div>
+    </div>
+    <svg class="hero-mark" width="240" height="240" viewBox="0 0 240 240">
+      <rect x="10" y="10" width="220" height="220" stroke="#f5f5f5" stroke-width="0.5" fill="none"/>
+      <line x1="10" y1="83" x2="230" y2="83" stroke="#f5f5f5" stroke-width="0.5"/>
+      <line x1="10" y1="156" x2="230" y2="156" stroke="#f5f5f5" stroke-width="0.5"/>
+      <line x1="83" y1="10" x2="83" y2="230" stroke="#f5f5f5" stroke-width="0.5"/>
+      <line x1="156" y1="10" x2="156" y2="230" stroke="#f5f5f5" stroke-width="0.5"/>
+      <line x1="10" y1="10" x2="230" y2="230" stroke="#f5f5f5" stroke-width="0.5"/>
+    </svg>
+  </div>
+</section>
+
+<div class="body-grid">
+  <div class="body-cell">
+    <div class="section-tag">What it does</div>
+    <h2 class="body-title">Numerical parade matching</h2>
+    <p class="body-text">Most colorists match shots by eye — nudging lift, gamma, gain until it looks close. That works, but it's slow and inconsistent. Parade Match reads your actual parade numbers and remaps each channel mathematically.</p>
+    <p class="body-text" style="margin-top:12px">You tell it where your source shot's blacks and whites sit per channel, and where you want them to sit. It handles the rest. The result is a repeatable, verifiable correction — not an approximation.</p>
+  </div>
+  <div class="body-cell">
+    <div class="section-tag">Usage</div>
+    <ul class="usage-list">
+      <li class="usage-item"><span class="usage-item-num">01</span><span class="usage-item-text">Open your reference shot. Open the RGB Parade in DaVinci Resolve.</span></li>
+      <li class="usage-item"><span class="usage-item-num">02</span><span class="usage-item-text">Read the shadow floor and highlight ceiling for each channel (R, G, B). Enter these in <strong style="color:var(--text-primary);font-weight:400">Src Black/White R/G/B</strong>.</span></li>
+      <li class="usage-item"><span class="usage-item-num">03</span><span class="usage-item-text">Switch to the shot you want to match. Read its parade. Enter in <strong style="color:var(--text-primary);font-weight:400">Tgt Black/White R/G/B</strong>.</span></li>
+      <li class="usage-item"><span class="usage-item-num">04</span><span class="usage-item-text">The tool remaps channels. Use <strong style="color:var(--text-primary);font-weight:400">Mid Correction</strong> to fine-tune midtone mapping if needed.</span></li>
+      <li class="usage-item"><span class="usage-item-num">05</span><span class="usage-item-text">Use <strong style="color:var(--text-primary);font-weight:400">Strength</strong> to blend back to original if the full correction is too strong.</span></li>
+    </ul>
+  </div>
+  <div class="body-cell--full" style="background:var(--surface)">
+    <div class="section-tag">Parameters</div>
+    <table class="params-table">
+      <thead><tr><th style="width:200px">Parameter</th><th style="width:160px">Range / Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><span class="param-name">Src Black R/G/B</span></td><td><span class="param-range">-0.2–0.6 · Default 0.0</span></td><td><span class="param-desc">Shadow floor of the reference shot per channel. Read from parade waveform.</span></td></tr>
+        <tr><td><span class="param-name">Src White R/G/B</span></td><td><span class="param-range">0.3–2.0 · Default 1.0</span></td><td><span class="param-desc">Highlight ceiling of the reference shot per channel.</span></td></tr>
+        <tr><td><span class="param-name">Tgt Black R/G/B</span></td><td><span class="param-range">-0.2–0.6 · Default 0.0</span></td><td><span class="param-desc">Target shadow position — where you want shadows to sit after matching.</span></td></tr>
+        <tr><td><span class="param-name">Tgt White R/G/B</span></td><td><span class="param-range">0.3–2.0 · Default 1.0</span></td><td><span class="param-desc">Target highlight position — where you want the highlights to sit after matching.</span></td></tr>
+        <tr><td><span class="param-name">Mid Correction</span></td><td><span class="param-range">0.5–2.0 · Default 1.0</span></td><td><span class="param-desc">Gamma adjustment on the matched result. &lt;1.0 lifts midtones, &gt;1.0 pulls them down.</span></td></tr>
+        <tr><td><span class="param-name">Strength</span></td><td><span class="param-range">0–1 · Default 1.0</span></td><td><span class="param-desc">Blend back to original. 1.0 = full correction applied.</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="code-section">
+  <div class="code-header">
+    <span class="code-title">ODIX_ParadeMatch_v1.dctl — Full Source</span>
+    <div class="code-actions">
+      <button class="btn-copy" id="copyBtn" onclick="copyCode()">Copy Code</button>
+      <a href="/dctl/ODIX_ParadeMatch_v1.dctl" download class="btn-download" style="padding:7px 16px;font-size:8px">↓ Download .dctl</a>
+    </div>
+  </div>
+  <div class="code-block">
+    <pre id="codeContent">// ═══════════════════════════════════════════════════════════════
+// ODIX Parade Match v1.0
+// Per-channel lift/gain matching from RGB parade readings
+//
+// USAGE:
+//   1. Open your reference shot. Read its parade:
+//      note the shadow floor and highlight ceiling per channel.
+//   2. Enter those values in SOURCE BLACK R/G/B and
+//      SOURCE WHITE R/G/B.
+//   3. Switch to your target shot (the one to match).
+//      Enter its parade values in TARGET BLACK/WHITE.
+//   4. The tool remaps each channel so the parade aligns.
+//   5. Use Strength to blend back if needed.
+//
+// by Odbat Batsaikhan — odixbat.com — @odixbat
+// ═══════════════════════════════════════════════════════════════
+
+DEFINE_UI_PARAMS(p_SrcBlkR, Src Black R, DCTLUI_SLIDER_FLOAT, 0.0,  -0.2, 0.6, 0.001)
+DEFINE_UI_PARAMS(p_SrcBlkG, Src Black G, DCTLUI_SLIDER_FLOAT, 0.0,  -0.2, 0.6, 0.001)
+DEFINE_UI_PARAMS(p_SrcBlkB, Src Black B, DCTLUI_SLIDER_FLOAT, 0.0,  -0.2, 0.6, 0.001)
+DEFINE_UI_PARAMS(p_SrcWhtR, Src White R, DCTLUI_SLIDER_FLOAT, 1.0,   0.3, 2.0, 0.001)
+DEFINE_UI_PARAMS(p_SrcWhtG, Src White G, DCTLUI_SLIDER_FLOAT, 1.0,   0.3, 2.0, 0.001)
+DEFINE_UI_PARAMS(p_SrcWhtB, Src White B, DCTLUI_SLIDER_FLOAT, 1.0,   0.3, 2.0, 0.001)
+DEFINE_UI_PARAMS(p_TgtBlkR, Tgt Black R, DCTLUI_SLIDER_FLOAT, 0.0,  -0.2, 0.6, 0.001)
+DEFINE_UI_PARAMS(p_TgtBlkG, Tgt Black G, DCTLUI_SLIDER_FLOAT, 0.0,  -0.2, 0.6, 0.001)
+DEFINE_UI_PARAMS(p_TgtBlkB, Tgt Black B, DCTLUI_SLIDER_FLOAT, 0.0,  -0.2, 0.6, 0.001)
+DEFINE_UI_PARAMS(p_TgtWhtR, Tgt White R, DCTLUI_SLIDER_FLOAT, 1.0,   0.3, 2.0, 0.001)
+DEFINE_UI_PARAMS(p_TgtWhtG, Tgt White G, DCTLUI_SLIDER_FLOAT, 1.0,   0.3, 2.0, 0.001)
+DEFINE_UI_PARAMS(p_TgtWhtB, Tgt White B, DCTLUI_SLIDER_FLOAT, 1.0,   0.3, 2.0, 0.001)
+DEFINE_UI_PARAMS(p_Strength,    Strength,       DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 1.0, 0.01)
+DEFINE_UI_PARAMS(p_MidCorrect,  Mid Correction, DCTLUI_SLIDER_FLOAT, 1.0, 0.5, 2.0, 0.01)
+
+__DEVICE__ float channelRemap(float v, float srcLo, float srcHi, float dstLo, float dstHi) {
+    float range = srcHi - srcLo;
+    if (_fabs(range) < 0.00001f) return dstLo;
+    float t = (v - srcLo) / range;
+    return dstLo + t * (dstHi - dstLo);
+}
+
+__DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B) {
+    float r_m = channelRemap(p_R, p_SrcBlkR, p_SrcWhtR, p_TgtBlkR, p_TgtWhtR);
+    float g_m = channelRemap(p_G, p_SrcBlkG, p_SrcWhtG, p_TgtBlkG, p_TgtWhtG);
+    float b_m = channelRemap(p_B, p_SrcBlkB, p_SrcWhtB, p_TgtBlkB, p_TgtWhtB);
+
+    float midPivot = (p_TgtBlkR + p_TgtWhtR) * 0.5f;
+    if (p_MidCorrect != 1.0f) {
+        float g_val = 1.0f / p_MidCorrect;
+        r_m = midPivot + _powf(_fmaxf((r_m - midPivot) / (1.0f - midPivot + 0.001f), 0.0f), g_val) * (1.0f - midPivot);
+        g_m = midPivot + _powf(_fmaxf((g_m - midPivot) / (1.0f - midPivot + 0.001f), 0.0f), g_val) * (1.0f - midPivot);
+        b_m = midPivot + _powf(_fmaxf((b_m - midPivot) / (1.0f - midPivot + 0.001f), 0.0f), g_val) * (1.0f - midPivot);
+    }
+
+    return make_float3(
+        p_R + (r_m - p_R) * p_Strength,
+        p_G + (g_m - p_G) * p_Strength,
+        p_B + (b_m - p_B) * p_Strength
+    );
+}</pre>
+  </div>
+</div>
+
+<section class="related-section">
+  <div class="section-tag">Other Tools</div>
+  <div class="related-grid">
+    <div class="related-card"><a href="/tools/skin-anchor.html"></a><div class="related-num">001</div><div class="related-name">Skin Anchor</div><div class="related-type">Hue Control</div></div>
+    <div class="related-card"><a href="/tools/halation.html"></a><div class="related-num">003</div><div class="related-name">Halation</div><div class="related-type">Film Look</div></div>
+    <div class="related-card"><a href="/tools/zone-mapper.html"></a><div class="related-num">004</div><div class="related-name">Zone Mapper</div><div class="related-type">Tone Control</div></div>
+    <div class="related-card"><a href="/tools/bleach-bp.html"></a><div class="related-num">005</div><div class="related-name">Bleach BP</div><div class="related-type">Film Process</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-left"><span class="f-logo">Odixbat</span><span class="f-copy">© 2026 Odbat Batsaikhan</span></div>
+  <div class="footer-right"><a href="/tools/" class="f-link">All Tools</a><a href="/" class="f-link">Home</a><span style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-whisper)">ODIXBAT.COM</span></div>
+</footer>
+<script>function copyCode(){const c=document.getElementById('codeContent').textContent;navigator.clipboard.writeText(c).then(()=>{const b=document.getElementById('copyBtn');b.textContent='Copied';b.classList.add('copied');setTimeout(()=>{b.textContent='Copy Code';b.classList.remove('copied');},2000);});}</script>
+</body>
+</html>

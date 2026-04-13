@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ODIX Skin Anchor — locks skin tone hue to a consistent angle. Free DCTL for DaVinci Resolve by Odbat Batsaikhan.">
+<title>Skin Anchor — ODIX Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#040404;--surface:rgba(255,255,255,0.02);--surface-elevated:rgba(255,255,255,0.04);--text-primary:#f5f5f5;--text-secondary:#888888;--text-meta:#444444;--text-whisper:#2e2e2e;--divider:0.5px solid rgba(255,255,255,0.06);--shadow-card:0 0 0 1px rgba(255,255,255,0.08),0 2px 4px rgba(0,0,0,0.4),0 8px 16px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,0.04);--font-display:'Geist',-apple-system,Helvetica Neue,sans-serif;--font-mono:'Geist Mono',ui-monospace,Menlo,monospace;--ease:cubic-bezier(0.16,1,0.3,1);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text-primary);font-family:var(--font-display);font-weight:400;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;}
+@keyframes slideIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+.nav{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;padding:0 6px;border-radius:100px;background:rgba(4,4,4,0.88);backdrop-filter:blur(24px) saturate(180%);box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 4px 24px rgba(0,0,0,0.7);animation:slideIn 600ms var(--ease) both;}
+.nav-logo{padding:10px 18px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-primary);}
+.nav-sep{width:0.5px;height:16px;background:rgba(255,255,255,0.09);flex-shrink:0;}
+.nav-links{display:flex;list-style:none;padding:0 8px;}
+.nav-links a{display:block;padding:10px 14px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);transition:color 0.2s;}
+.nav-links a:hover{color:var(--text-primary);}
+.nav-cta{display:inline-flex;align-items:center;padding:8px 16px;margin:4px;border-radius:100px;background:var(--surface-elevated);box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 0 0 1px rgba(255,255,255,0.07);font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-primary);transition:opacity 0.2s;}
+.nav-cta:hover{opacity:0.65;}
+
+.hero{padding:140px 64px 80px;border-bottom:var(--divider);position:relative;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(245,245,245,0.028) 1px,transparent 1px),linear-gradient(90deg,rgba(245,245,245,0.028) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;}
+.hero-ambient{position:absolute;top:0;right:0;width:55%;height:100%;background:radial-gradient(ellipse 65% 90% at 85% 40%,rgba(255,255,255,0.06) 0%,transparent 70%);pointer-events:none;}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;gap:80px;align-items:center;}
+.hero-tag{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);margin-bottom:18px;}
+.hero-num{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);}
+.hero-title{font-size:clamp(40px,5vw,72px);letter-spacing:-2.4px;line-height:1.05;color:var(--text-primary);margin-top:12px;}
+.hero-subtitle{font-size:16px;letter-spacing:-0.16px;line-height:1.6;color:var(--text-secondary);margin-top:20px;max-width:480px;}
+.hero-actions{margin-top:36px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+.btn-download{display:inline-flex;align-items:center;gap:10px;padding:12px 24px;border-radius:100px;background:var(--surface-elevated);box-shadow:inset 0 1px 0 rgba(255,255,255,0.09),0 0 0 1px rgba(255,255,255,0.09);font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-primary);transition:opacity 0.2s;}
+.btn-download:hover{opacity:0.65;}
+.btn-ghost{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);transition:color 0.2s;}
+.btn-ghost:hover{color:var(--text-secondary);}
+.hero-meta-row{margin-top:32px;display:flex;gap:0;border-top:var(--divider);}
+.hero-meta-item{padding:14px 0;flex:1;border-right:var(--divider);}
+.hero-meta-item:last-child{border-right:none;}
+.hero-meta-label{font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);margin-bottom:5px;}
+.hero-meta-val{font-size:13px;letter-spacing:-0.16px;color:var(--text-secondary);}
+.hero-mark{opacity:0.06;}
+
+/* Body */
+.body-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.04);border-top:var(--divider);}
+.body-cell{background:var(--bg);padding:48px 64px;}
+.body-cell--full{grid-column:span 2;padding:48px 64px;}
+.section-tag{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);margin-bottom:20px;}
+.body-title{font-size:22px;letter-spacing:-0.5px;line-height:1.19;color:var(--text-primary);margin-bottom:16px;}
+.body-text{font-size:14px;letter-spacing:normal;line-height:1.7;color:var(--text-secondary);}
+.body-text + .body-text{margin-top:12px;}
+.usage-list{list-style:none;display:flex;flex-direction:column;gap:0;}
+.usage-item{display:flex;gap:16px;padding:14px 0;border-bottom:var(--divider);align-items:flex-start;}
+.usage-item:first-child{border-top:var(--divider);}
+.usage-item-num{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);padding-top:2px;flex-shrink:0;width:20px;}
+.usage-item-text{font-size:13px;letter-spacing:normal;line-height:1.6;color:var(--text-secondary);}
+
+/* Params table */
+.params-table{width:100%;border-collapse:collapse;}
+.params-table th{font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);text-align:left;padding:10px 0;border-bottom:var(--divider);}
+.params-table td{padding:14px 0;border-bottom:var(--divider);vertical-align:top;}
+.params-table tr:last-child td{border-bottom:none;}
+.param-name{font-family:var(--font-mono);font-size:10px;letter-spacing:0.06em;color:var(--text-primary);}
+.param-range{font-family:var(--font-mono);font-size:9px;color:var(--text-meta);}
+.param-desc{font-size:12px;letter-spacing:normal;line-height:1.6;color:var(--text-secondary);}
+
+/* Code block */
+.code-section{background:var(--surface);border-top:var(--divider);}
+.code-header{padding:16px 64px;border-bottom:var(--divider);display:flex;justify-content:space-between;align-items:center;}
+.code-title{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);}
+.code-actions{display:flex;gap:12px;align-items:center;}
+.btn-copy{padding:7px 16px;border-radius:100px;background:var(--surface-elevated);box-shadow:0 0 0 1px rgba(255,255,255,0.07);border:none;font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);cursor:pointer;transition:color 0.2s;}
+.btn-copy:hover{color:var(--text-primary);}
+.btn-copy.copied{color:var(--text-secondary);}
+.code-block{padding:32px 64px;overflow-x:auto;}
+.code-block pre{font-family:var(--font-mono);font-size:11px;line-height:1.8;color:var(--text-secondary);white-space:pre;}
+.code-block .c-comment{color:var(--text-meta);}
+.code-block .c-keyword{color:#c8c8c8;}
+.code-block .c-type{color:#a8a8a8;}
+.code-block .c-num{color:#888;}
+.code-block .c-macro{color:#b8b8b8;}
+
+/* Related */
+.related-section{padding:64px;border-top:var(--divider);}
+.related-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.04);margin-top:32px;}
+.related-card{background:var(--bg);padding:24px;transition:background 0.2s;position:relative;}
+.related-card:hover{background:var(--surface);}
+.related-card a{position:absolute;inset:0;}
+.related-num{font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);margin-bottom:12px;}
+.related-name{font-size:15px;letter-spacing:-0.16px;color:var(--text-primary);margin-bottom:6px;}
+.related-type{font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);}
+
+/* Footer */
+footer{border-top:var(--divider);padding:28px 64px;display:flex;justify-content:space-between;align-items:center;}
+.footer-left{display:flex;gap:24px;align-items:center;}
+.f-logo{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);}
+.f-copy{font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-whisper);}
+.footer-right{display:flex;gap:20px;}
+.f-link{font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-meta);transition:color 0.2s;}
+.f-link:hover{color:var(--text-secondary);}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">← Odixbat</a>
+  <div class="nav-sep"></div>
+  <ul class="nav-links">
+    <li><a href="/tools/">All Tools</a></li>
+    <li><a href="/#contact">Contact</a></li>
+  </ul>
+  <div class="nav-sep"></div>
+  <a href="/dctl/ODIX_SkinAnchor_v1.dctl" download class="nav-cta">Download</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-ambient"></div>
+  <div class="hero-inner">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="hero-tag">ODIX Tool Suite · 001</div>
+        <div class="hero-num" style="color:var(--text-whisper)">DCTL · DaVinci Resolve</div>
+      </div>
+      <h1 class="hero-title">Skin<br>Anchor</h1>
+      <p class="hero-subtitle">Locks skin tone hue to a consistent target angle across shots. Eliminates the drift that makes multicam grades look inconsistent — without touching anything outside the skin hue range.</p>
+      <div class="hero-actions">
+        <a href="/dctl/ODIX_SkinAnchor_v1.dctl" download class="btn-download">↓ Download DCTL — Free</a>
+        <a href="/tools/" class="btn-ghost">← All Tools</a>
+      </div>
+      <div class="hero-meta-row">
+        <div class="hero-meta-item" style="padding-right:32px">
+          <div class="hero-meta-label">Version</div>
+          <div class="hero-meta-val">v1.0</div>
+        </div>
+        <div class="hero-meta-item" style="padding:14px 32px">
+          <div class="hero-meta-label">Type</div>
+          <div class="hero-meta-val">Hue Control</div>
+        </div>
+        <div class="hero-meta-item" style="padding:14px 32px">
+          <div class="hero-meta-label">Format</div>
+          <div class="hero-meta-val">.dctl</div>
+        </div>
+        <div class="hero-meta-item" style="padding:14px 32px">
+          <div class="hero-meta-label">Price</div>
+          <div class="hero-meta-val">Free</div>
+        </div>
+      </div>
+    </div>
+    <svg class="hero-mark" width="240" height="240" viewBox="0 0 240 240">
+      <circle cx="120" cy="120" r="110" stroke="#f5f5f5" stroke-width="0.5" fill="none"/>
+      <circle cx="120" cy="120" r="80" stroke="#f5f5f5" stroke-width="0.5" fill="none"/>
+      <circle cx="120" cy="120" r="50" stroke="#f5f5f5" stroke-width="0.5" fill="none"/>
+      <circle cx="120" cy="120" r="20" stroke="#f5f5f5" stroke-width="0.5" fill="none"/>
+      <line x1="120" y1="0" x2="120" y2="240" stroke="#f5f5f5" stroke-width="0.5"/>
+      <line x1="0" y1="120" x2="240" y2="120" stroke="#f5f5f5" stroke-width="0.5"/>
+      <line x1="42" y1="42" x2="198" y2="198" stroke="#f5f5f5" stroke-width="0.5"/>
+      <line x1="198" y1="42" x2="42" y2="198" stroke="#f5f5f5" stroke-width="0.5"/>
+    </svg>
+  </div>
+</section>
+
+<div class="body-grid">
+  <div class="body-cell">
+    <div class="section-tag">What it does</div>
+    <h2 class="body-title">Hue anchoring for skin tones</h2>
+    <p class="body-text">Skin tones occupy a narrow hue band — roughly 15–35° on the vectorscope. Across shots, camera differences, lighting changes, and white balance inconsistencies cause that hue to drift. The drift is subtle enough that you don't notice it per shot, but obvious when you see them cut together.</p>
+    <p class="body-text" style="margin-top:12px">Skin Anchor defines where skin should sit (Target Hue), where it currently is (Source Hue Center), and rotates only the pixels within that hue range to close the gap. Everything outside that range is untouched.</p>
+  </div>
+  <div class="body-cell">
+    <div class="section-tag">Usage</div>
+    <ul class="usage-list">
+      <li class="usage-item">
+        <span class="usage-item-num">01</span>
+        <span class="usage-item-text">Read your skin tone hue on the vectorscope. Note where it sits in degrees.</span>
+      </li>
+      <li class="usage-item">
+        <span class="usage-item-num">02</span>
+        <span class="usage-item-text">Set <strong style="color:var(--text-primary);font-weight:400">Source Hue Center</strong> to that value. This tells the tool what you're starting from.</span>
+      </li>
+      <li class="usage-item">
+        <span class="usage-item-num">03</span>
+        <span class="usage-item-text">Set <strong style="color:var(--text-primary);font-weight:400">Target Hue</strong> to where you want skin to land across all shots.</span>
+      </li>
+      <li class="usage-item">
+        <span class="usage-item-num">04</span>
+        <span class="usage-item-text">Adjust <strong style="color:var(--text-primary);font-weight:400">Range</strong> until the correction captures all skin tones without bleeding into adjacent colors.</span>
+      </li>
+      <li class="usage-item">
+        <span class="usage-item-num">05</span>
+        <span class="usage-item-text">Combine with a Qualifier for precision on complex shots. Strength blends back to original if needed.</span>
+      </li>
+    </ul>
+  </div>
+  <div class="body-cell--full" style="background:var(--surface)">
+    <div class="section-tag">Parameters</div>
+    <table class="params-table">
+      <thead>
+        <tr>
+          <th style="width:200px">Parameter</th>
+          <th style="width:160px">Range / Default</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="param-name">Target Hue</span></td>
+          <td><span class="param-range">0–60° · Default 24</span></td>
+          <td><span class="param-desc">The hue angle you want skin tones anchored to. 24° is a common neutral. Adjust per project.</span></td>
+        </tr>
+        <tr>
+          <td><span class="param-name">Source Hue Center</span></td>
+          <td><span class="param-range">0–60° · Default 24</span></td>
+          <td><span class="param-desc">The current skin hue in your footage. Read from the vectorscope. Match this to your source shot.</span></td>
+        </tr>
+        <tr>
+          <td><span class="param-name">Hue Range</span></td>
+          <td><span class="param-range">5–90° · Default 28</span></td>
+          <td><span class="param-desc">Width of the selection around Source Hue Center. Wider catches more tones but risks color bleed.</span></td>
+        </tr>
+        <tr>
+          <td><span class="param-name">Strength</span></td>
+          <td><span class="param-range">0–1 · Default 1.0</span></td>
+          <td><span class="param-desc">Master blend. 1.0 = full correction. Reduce if the shift feels too strong for a particular shot.</span></td>
+        </tr>
+        <tr>
+          <td><span class="param-name">Saturation Floor</span></td>
+          <td><span class="param-range">0–0.4 · Default 0.06</span></td>
+          <td><span class="param-desc">Minimum saturation for a pixel to be affected. Excludes near-neutral grays and whites from correction.</span></td>
+        </tr>
+        <tr>
+          <td><span class="param-name">Falloff Softness</span></td>
+          <td><span class="param-range">0.05–1.0 · Default 0.35</span></td>
+          <td><span class="param-desc">Controls how gradually the selection fades at the hue range boundary. Higher = softer edges.</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Code block -->
+<div class="code-section">
+  <div class="code-header">
+    <span class="code-title">ODIX_SkinAnchor_v1.dctl — Full Source</span>
+    <div class="code-actions">
+      <button class="btn-copy" id="copyBtn" onclick="copyCode()">Copy Code</button>
+      <a href="/dctl/ODIX_SkinAnchor_v1.dctl" download class="btn-download" style="padding:7px 16px;font-size:8px">↓ Download .dctl</a>
+    </div>
+  </div>
+  <div class="code-block">
+    <pre id="codeContent">// ═══════════════════════════════════════════════════════════════
+// ODIX Skin Anchor v1.0
+// Locks skin tone hue to a consistent target angle
+//
+// USAGE:
+//   Place in a serial or parallel node after primary correction.
+//   Set Source Hue Center to match your footage's current skin hue
+//   (read it from the vectorscope — skin tone line is ~25°).
+//   Set Target Hue to where you want it anchored.
+//   Increase Range if the tool isn't catching all skin tones.
+//   Combine with a Qualifier for surgical precision.
+//
+// COLOR SPACE:
+//   Works in any color space. Best in a balanced log or
+//   normalized scene-linear node before output LUT.
+//
+// by Odbat Batsaikhan — odixbat.com — @odixbat
+// ═══════════════════════════════════════════════════════════════
+
+DEFINE_UI_PARAMS(p_TargetHue,   Target Hue,           DCTLUI_SLIDER_FLOAT, 24.0,  0.0,  60.0, 0.5)
+DEFINE_UI_PARAMS(p_SkinCenter,  Source Hue Center,     DCTLUI_SLIDER_FLOAT, 24.0,  0.0,  60.0, 0.5)
+DEFINE_UI_PARAMS(p_Range,       Hue Range,             DCTLUI_SLIDER_FLOAT, 28.0,  5.0,  90.0, 0.5)
+DEFINE_UI_PARAMS(p_Strength,    Strength,              DCTLUI_SLIDER_FLOAT,  1.0,  0.0,   1.0, 0.01)
+DEFINE_UI_PARAMS(p_SatMin,      Saturation Floor,      DCTLUI_SLIDER_FLOAT,  0.06, 0.0,   0.4, 0.005)
+DEFINE_UI_PARAMS(p_FalloffSoft, Falloff Softness,      DCTLUI_SLIDER_FLOAT,  0.35, 0.05,  1.0, 0.01)
+
+__DEVICE__ float3 RGBtoHSL(float r, float g, float b) {
+    float maxC  = _fmaxf(r, _fmaxf(g, b));
+    float minC  = _fminf(r, _fminf(g, b));
+    float delta = maxC - minC;
+    float l     = (maxC + minC) * 0.5f;
+    float s     = 0.0f;
+    float h     = 0.0f;
+
+    if (delta > 0.00001f) {
+        float denom = 1.0f - _fabs(2.0f * l - 1.0f);
+        s = (denom > 0.00001f) ? delta / denom : 0.0f;
+
+        if      (maxC == r) h = 60.0f * _fmod((g - b) / delta, 6.0f);
+        else if (maxC == g) h = 60.0f * ((b - r) / delta + 2.0f);
+        else                h = 60.0f * ((r - g) / delta + 4.0f);
+
+        if (h < 0.0f) h += 360.0f;
+    }
+    return make_float3(h, s, l);
+}
+
+__DEVICE__ float3 HSLtoRGB(float h, float s, float l) {
+    float c  = (1.0f - _fabs(2.0f * l - 1.0f)) * s;
+    float x  = c * (1.0f - _fabs(_fmod(h / 60.0f, 2.0f) - 1.0f));
+    float m  = l - c * 0.5f;
+    float r  = 0.0f, g = 0.0f, b = 0.0f;
+
+    if      (h < 60.0f)  { r = c; g = x; b = 0.0f; }
+    else if (h < 120.0f) { r = x; g = c; b = 0.0f; }
+    else if (h < 180.0f) { r = 0.0f; g = c; b = x;  }
+    else if (h < 240.0f) { r = 0.0f; g = x; b = c;  }
+    else if (h < 300.0f) { r = x; g = 0.0f; b = c;  }
+    else                  { r = c; g = 0.0f; b = x;  }
+
+    return make_float3(r + m, g + m, b + m);
+}
+
+__DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B) {
+    float3 hsl = RGBtoHSL(p_R, p_G, p_B);
+    float  h   = hsl.x, s = hsl.y, l = hsl.z;
+
+    float diff = _fabs(h - p_SkinCenter);
+    if (diff > 180.0f) diff = 360.0f - diff;
+
+    float hardEdge   = p_Range * 0.5f;
+    float softRegion = hardEdge * p_FalloffSoft;
+    float rangeMask  = 1.0f - _clampf((diff - (hardEdge - softRegion)) / (softRegion + 0.001f), 0.0f, 1.0f);
+    float satMask    = _clampf((s - p_SatMin) / (_fmaxf(p_SatMin, 0.02f)), 0.0f, 1.0f);
+    float mask       = rangeMask * satMask * p_Strength;
+
+    float hueShift = p_TargetHue - p_SkinCenter;
+    float newH     = h + hueShift * mask;
+    if (newH <    0.0f) newH += 360.0f;
+    if (newH >= 360.0f) newH -= 360.0f;
+
+    return HSLtoRGB(newH, s, l);
+}</pre>
+  </div>
+</div>
+
+<!-- Related tools -->
+<section class="related-section">
+  <div class="section-tag">Other Tools</div>
+  <div class="related-grid">
+    <div class="related-card">
+      <a href="/tools/parade-match.html"></a>
+      <div class="related-num">002</div>
+      <div class="related-name">Parade Match</div>
+      <div class="related-type">Shot Match</div>
+    </div>
+    <div class="related-card">
+      <a href="/tools/halation.html"></a>
+      <div class="related-num">003</div>
+      <div class="related-name">Halation</div>
+      <div class="related-type">Film Look</div>
+    </div>
+    <div class="related-card">
+      <a href="/tools/zone-mapper.html"></a>
+      <div class="related-num">004</div>
+      <div class="related-name">Zone Mapper</div>
+      <div class="related-type">Tone Control</div>
+    </div>
+    <div class="related-card">
+      <a href="/tools/bleach-bp.html"></a>
+      <div class="related-num">005</div>
+      <div class="related-name">Bleach BP</div>
+      <div class="related-type">Film Process</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-left">
+    <span class="f-logo">Odixbat</span>
+    <span class="f-copy">© 2026 Odbat Batsaikhan</span>
+  </div>
+  <div class="footer-right">
+    <a href="/tools/" class="f-link">All Tools</a>
+    <a href="/" class="f-link">Home</a>
+    <span style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-whisper)">ODIXBAT.COM</span>
+  </div>
+</footer>
+
+<script>
+function copyCode() {
+  const code = document.getElementById('codeContent').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy Code'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

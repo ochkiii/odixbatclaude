@@ -1,0 +1,89 @@
+// ═══════════════════════════════════════════════════════════════
+// ODIX Skin Anchor v1.0
+// Locks skin tone hue to a consistent target angle
+//
+// USAGE:
+//   Place in a serial or parallel node after primary correction.
+//   Set Source Hue Center to match your footage's current skin hue
+//   (read it from the vectorscope — skin tone line is ~25°).
+//   Set Target Hue to where you want it anchored.
+//   Increase Range if the tool isn't catching all skin tones.
+//   Combine with a Qualifier for surgical precision.
+//
+// COLOR SPACE:
+//   Works in any color space. Best in a balanced log or
+//   normalized scene-linear node before output LUT.
+//
+// by Odbat Batsaikhan — odixbat.com — @odixbat
+// ═══════════════════════════════════════════════════════════════
+
+DEFINE_UI_PARAMS(p_TargetHue,   Target Hue,           DCTLUI_SLIDER_FLOAT, 24.0,  0.0,  60.0, 0.5)
+DEFINE_UI_PARAMS(p_SkinCenter,  Source Hue Center,     DCTLUI_SLIDER_FLOAT, 24.0,  0.0,  60.0, 0.5)
+DEFINE_UI_PARAMS(p_Range,       Hue Range,             DCTLUI_SLIDER_FLOAT, 28.0,  5.0,  90.0, 0.5)
+DEFINE_UI_PARAMS(p_Strength,    Strength,              DCTLUI_SLIDER_FLOAT,  1.0,  0.0,   1.0, 0.01)
+DEFINE_UI_PARAMS(p_SatMin,      Saturation Floor,      DCTLUI_SLIDER_FLOAT,  0.06, 0.0,   0.4, 0.005)
+DEFINE_UI_PARAMS(p_FalloffSoft, Falloff Softness,      DCTLUI_SLIDER_FLOAT,  0.35, 0.05,  1.0, 0.01)
+
+__DEVICE__ float3 RGBtoHSL(float r, float g, float b) {
+    float maxC  = _fmaxf(r, _fmaxf(g, b));
+    float minC  = _fminf(r, _fminf(g, b));
+    float delta = maxC - minC;
+    float l     = (maxC + minC) * 0.5f;
+    float s     = 0.0f;
+    float h     = 0.0f;
+
+    if (delta > 0.00001f) {
+        float denom = 1.0f - _fabs(2.0f * l - 1.0f);
+        s = (denom > 0.00001f) ? delta / denom : 0.0f;
+
+        if      (maxC == r) h = 60.0f * _fmod((g - b) / delta, 6.0f);
+        else if (maxC == g) h = 60.0f * ((b - r) / delta + 2.0f);
+        else                h = 60.0f * ((r - g) / delta + 4.0f);
+
+        if (h < 0.0f) h += 360.0f;
+    }
+    return make_float3(h, s, l);
+}
+
+__DEVICE__ float3 HSLtoRGB(float h, float s, float l) {
+    float c  = (1.0f - _fabs(2.0f * l - 1.0f)) * s;
+    float x  = c * (1.0f - _fabs(_fmod(h / 60.0f, 2.0f) - 1.0f));
+    float m  = l - c * 0.5f;
+    float r  = 0.0f, g = 0.0f, b = 0.0f;
+
+    if      (h < 60.0f)  { r = c; g = x; b = 0.0f; }
+    else if (h < 120.0f) { r = x; g = c; b = 0.0f; }
+    else if (h < 180.0f) { r = 0.0f; g = c; b = x;  }
+    else if (h < 240.0f) { r = 0.0f; g = x; b = c;  }
+    else if (h < 300.0f) { r = x; g = 0.0f; b = c;  }
+    else                  { r = c; g = 0.0f; b = x;  }
+
+    return make_float3(r + m, g + m, b + m);
+}
+
+__DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B) {
+    float3 hsl = RGBtoHSL(p_R, p_G, p_B);
+    float  h   = hsl.x, s = hsl.y, l = hsl.z;
+
+    // Angular distance from skin center
+    float diff = _fabs(h - p_SkinCenter);
+    if (diff > 180.0f) diff = 360.0f - diff;
+
+    // Range mask with soft falloff
+    float hardEdge   = p_Range * 0.5f;
+    float softRegion = hardEdge * p_FalloffSoft;
+    float rangeMask  = 1.0f - _clampf((diff - (hardEdge - softRegion)) / (softRegion + 0.001f), 0.0f, 1.0f);
+
+    // Saturation mask — skip near-neutral pixels
+    float satMask = _clampf((s - p_SatMin) / (_fmaxf(p_SatMin, 0.02f)), 0.0f, 1.0f);
+
+    float mask    = rangeMask * satMask * p_Strength;
+
+    // Rotate hue toward target
+    float hueShift = p_TargetHue - p_SkinCenter;
+    float newH     = h + hueShift * mask;
+    if (newH <   0.0f) newH += 360.0f;
+    if (newH >= 360.0f) newH -= 360.0f;
+
+    return HSLtoRGB(newH, s, l);
+}

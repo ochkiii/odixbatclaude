@@ -1,0 +1,98 @@
+// ═══════════════════════════════════════════════════════════════
+// ODIX Halation v1.0
+// Film halation simulation — warm highlight bleed
+//
+// Halation is caused by light passing through film emulsion,
+// reflecting off the film base, and re-exposing the emulsion
+// from behind. It creates warm, soft glows around bright areas —
+// particularly light sources and specular highlights.
+//
+// USAGE — Two modes:
+//
+//   MODE A — Full halation (recommended):
+//     1. Duplicate your node.
+//     2. On the duplicate: add a Gaussian Blur (4–10px).
+//     3. Apply this DCTL AFTER the blur.
+//     4. Composite back over the original with Screen or Add
+//        blend mode at 30–60% opacity.
+//
+//   MODE B — Standalone color shift only:
+//     Apply directly. No blur. Adds warm highlight shift without
+//     spatial spread. Useful for subtle warmth on highlights.
+//
+// PARAMETERS:
+//   Threshold     — luminance level where halation starts (0=black, 1=white)
+//   Knee Softness — how gradually it rolls into the threshold
+//   Warmth        — intensity of the warm color shift
+//   Color Temp    — 0=cool blue halation (rare), 1=warm orange-red (typical)
+//   Bleed Mix     — how much the color bleeds toward the halation color
+//   Strength      — master blend control
+//
+// COLOR SPACE:
+//   Scene-linear. Place before output LUT.
+//   Works in log but reduce Threshold to 0.5–0.65 range.
+//
+// by Odbat Batsaikhan — odixbat.com — @odixbat
+// ═══════════════════════════════════════════════════════════════
+
+DEFINE_UI_PARAMS(p_Threshold,  Threshold,        DCTLUI_SLIDER_FLOAT, 0.72, 0.2,  1.0, 0.01)
+DEFINE_UI_PARAMS(p_Knee,       Knee Softness,     DCTLUI_SLIDER_FLOAT, 0.22, 0.01, 0.6, 0.01)
+DEFINE_UI_PARAMS(p_Warmth,     Warmth,            DCTLUI_SLIDER_FLOAT, 0.55, 0.0,  1.0, 0.01)
+DEFINE_UI_PARAMS(p_ColorTemp,  Color Temperature, DCTLUI_SLIDER_FLOAT, 0.72, 0.0,  1.0, 0.01)
+DEFINE_UI_PARAMS(p_BleedMix,   Bleed Mix,         DCTLUI_SLIDER_FLOAT, 0.35, 0.0,  1.0, 0.01)
+DEFINE_UI_PARAMS(p_Strength,   Strength,          DCTLUI_SLIDER_FLOAT, 0.6,  0.0,  1.0, 0.01)
+DEFINE_UI_PARAMS(p_ChromaBoost,Chroma Lift,       DCTLUI_SLIDER_FLOAT, 0.12, 0.0,  0.5, 0.01)
+
+__DEVICE__ float softKnee(float x, float threshold, float knee) {
+    float lo = threshold - knee;
+    float hi = threshold + knee;
+    if (x <= lo) return 0.0f;
+    if (x >= hi) return x - threshold;
+    float t = (x - lo) / (2.0f * knee + 0.00001f);
+    return t * t * knee;
+}
+
+__DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B) {
+    // Luminance for mask
+    float luma = 0.2126f * p_R + 0.7152f * p_G + 0.0722f * p_B;
+
+    // Highlight mask using soft knee
+    float kneeOut = softKnee(luma, p_Threshold, p_Knee);
+    float mask    = _clampf(kneeOut / (p_Knee + 0.00001f), 0.0f, 1.0f);
+
+    // Halation color: film base reflects red-orange light
+    // ColorTemp: 0.0 = blue-ish (rare, cold film stocks), 1.0 = red-orange (typical)
+    float haloR = 0.85f + p_ColorTemp * 0.15f;
+    float haloG = 0.30f + p_ColorTemp * 0.05f - (1.0f - p_ColorTemp) * 0.1f;
+    float haloB = 0.05f + (1.0f - p_ColorTemp) * 0.55f;
+
+    // Normalize halation color
+    float haloMax = _fmaxf(haloR, _fmaxf(haloG, haloB));
+    haloR /= haloMax;
+    haloG /= haloMax;
+    haloB /= haloMax;
+
+    // Bleed: shift pixel color toward halation color in highlight areas
+    float bleedR = p_R + (haloR * luma - p_R) * p_BleedMix * mask;
+    float bleedG = p_G + (haloG * luma - p_G) * p_BleedMix * mask;
+    float bleedB = p_B + (haloB * luma - p_B) * p_BleedMix * mask;
+
+    // Add warmth glow on top
+    float glowR = bleedR + haloR * mask * p_Warmth * 0.18f;
+    float glowG = bleedG + haloG * mask * p_Warmth * 0.08f;
+    float glowB = bleedB + haloB * mask * p_Warmth * 0.03f;
+
+    // Slight chroma/saturation lift in near-threshold areas (border glow)
+    float borderMask = mask * (1.0f - mask) * 4.0f; // peaks at mid-mask
+    float lumaG = 0.2126f * glowR + 0.7152f * glowG + 0.0722f * glowB;
+    glowR = lumaG + (glowR - lumaG) * (1.0f + p_ChromaBoost * borderMask);
+    glowG = lumaG + (glowG - lumaG) * (1.0f + p_ChromaBoost * borderMask);
+    glowB = lumaG + (glowB - lumaG) * (1.0f + p_ChromaBoost * borderMask);
+
+    // Master blend
+    float r = p_R + (glowR - p_R) * p_Strength;
+    float g = p_G + (glowG - p_G) * p_Strength;
+    float b = p_B + (glowB - p_B) * p_Strength;
+
+    return make_float3(r, g, b);
+}
