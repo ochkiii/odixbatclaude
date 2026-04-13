@@ -1,0 +1,87 @@
+// ═══════════════════════════════════════════════════════════════
+// ODIX Bleach BP v1.0
+// Bleach bypass / silver retention process simulation
+//
+// The bleach bypass (silver retention) process skips the bleach
+// stage of film development — silver halides are retained
+// alongside color dyes. The result is a unique look:
+//   — Increased contrast (silver + dye layers)
+//   — Reduced color saturation
+//   — Lifted blacks (silver in shadows)
+//   — Slightly crushed highlights
+//   — A gritty, desaturated quality
+//
+// This is NOT a flat, washed-out look.
+// It is high-contrast and desaturated simultaneously.
+// Famous uses: Saving Private Ryan, Se7en, Minority Report.
+//
+// USAGE:
+//   Start with Strength at 0.3–0.5. Adjust Contrast and
+//   Saturation to taste. Silver Tone shifts the retained
+//   silver layer warmer (positive) or cooler (negative).
+//   Black Lift raises the shadow floor as real silver retention
+//   would — do not set to 0 for an authentic result.
+//
+// COLOR SPACE:
+//   Scene-linear. Place in a post-CST node before output LUT.
+//   Works best when contrast is balanced going in.
+//
+// by Odbat Batsaikhan — odixbat.com — @odixbat
+// ═══════════════════════════════════════════════════════════════
+
+DEFINE_UI_PARAMS(p_Strength,    Strength,         DCTLUI_SLIDER_FLOAT, 0.5,  0.0, 1.0,  0.01)
+DEFINE_UI_PARAMS(p_Contrast,    Silver Contrast,  DCTLUI_SLIDER_FLOAT, 0.45, 0.0, 1.0,  0.01)
+DEFINE_UI_PARAMS(p_Saturation,  Color Saturation, DCTLUI_SLIDER_FLOAT, 0.35, 0.0, 1.0,  0.01)
+DEFINE_UI_PARAMS(p_BlackLift,   Black Lift,       DCTLUI_SLIDER_FLOAT, 0.025, 0.0, 0.12, 0.001)
+DEFINE_UI_PARAMS(p_HighCrush,   Highlight Crush,  DCTLUI_SLIDER_FLOAT, 0.03, 0.0, 0.15, 0.001)
+DEFINE_UI_PARAMS(p_SilverTone,  Silver Tone,      DCTLUI_SLIDER_FLOAT, 0.0, -1.0, 1.0,  0.01)
+DEFINE_UI_PARAMS(p_MidPivot,    Contrast Pivot,   DCTLUI_SLIDER_FLOAT, 0.42, 0.2, 0.7,  0.01)
+DEFINE_UI_PARAMS(p_ShadowDesat, Shadow Desat,     DCTLUI_SLIDER_FLOAT, 0.6,  0.0, 1.0,  0.01)
+
+__DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B) {
+    // ── Luminance ──
+    float luma = 0.2126f * p_R + 0.7152f * p_G + 0.0722f * p_B;
+
+    // ── Silver layer construction ──
+    // Start from luma, apply lift and crush (real process characteristics)
+    float silver = luma;
+
+    // Black lift: retained silver raises shadow floor
+    silver = silver + p_BlackLift * _powf(_fmaxf(1.0f - silver, 0.0f), 2.0f);
+
+    // Highlight crush: silver dye combination reduces headroom
+    silver = silver - p_HighCrush * silver * silver;
+
+    // Contrast: silver layer is inherently higher contrast than dye layer
+    float silverContrasted = (silver - p_MidPivot) * (1.0f + p_Contrast * 0.8f) + p_MidPivot;
+
+    // Silver tone: warm or cool tint on the silver layer
+    float silverR = silverContrasted * (1.0f + p_SilverTone * 0.06f);
+    float silverG = silverContrasted;
+    float silverB = silverContrasted * (1.0f - p_SilverTone * 0.06f);
+
+    // ── Color layer construction ──
+    // Desaturate proportionally to strength and param
+    // Shadow areas desaturate more than highlights (authentic to process)
+    float shadowWeight = _powf(_fmaxf(1.0f - luma, 0.0f), 1.5f) * p_ShadowDesat;
+    float globalDesat  = 1.0f - p_Saturation;
+    float desatAmount  = _clampf(globalDesat + shadowWeight * (1.0f - globalDesat), 0.0f, 1.0f);
+
+    float cr = luma + (p_R - luma) * (1.0f - desatAmount);
+    float cg = luma + (p_G - luma) * (1.0f - desatAmount);
+    float cb = luma + (p_B - luma) * (1.0f - desatAmount);
+
+    // ── Blend silver layer with color layer ──
+    // Core bleach bypass operation: multiply chroma by silver/luma ratio
+    float lumaGuard = _fmaxf(luma, 0.001f);
+    float blendR = cr * silverR / lumaGuard;
+    float blendG = cg * silverG / lumaGuard;
+    float blendB = cb * silverB / lumaGuard;
+
+    // ── Strength blend ──
+    float r = p_R + (blendR - p_R) * p_Strength;
+    float g = p_G + (blendG - p_G) * p_Strength;
+    float b = p_B + (blendB - p_B) * p_Strength;
+
+    return make_float3(r, g, b);
+}
