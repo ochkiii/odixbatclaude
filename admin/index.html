@@ -391,6 +391,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13
       <span class="sb-count" id="tools-cnt">0</span>
     </div>
 
+    <div class="sb-section">Print Lab</div>
+    <div class="sb-item" onclick="switchPanel('printlab')" id="nav-printlab">
+      <svg class="sb-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="14" height="10"/><path d="M4 14h8M8 11v3"/></svg>
+      LUT Packs
+      <span class="sb-count" id="lut-cnt">12</span>
+    </div>
+
     <div class="sb-section">Export</div>
     <div class="sb-item" onclick="switchPanel('generate')" id="nav-generate">
       <svg class="sb-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 2 8 4 10"/><polyline points="12 6 14 8 12 10"/><line x1="8" y1="2" x2="8" y2="14"/></svg>
@@ -497,6 +504,48 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13
             <div class="empty-num">0</div>
             <div class="empty-txt">No tools yet<br>Click + Add Tool to get started</div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRINT LAB -->
+    <div class="panel" id="panel-printlab">
+      <div class="page-hd">
+        <div class="page-hd-l">
+          <div class="page-title">PRINT LAB</div>
+          <div class="page-sub">Edit LUT cards, hero text, and pricing — changes live instantly on the Print Lab page</div>
+        </div>
+        <div class="page-hd-r">
+          <a href="/odixprintlab" target="_blank" class="btn btn-ghost">↗ Preview</a>
+        </div>
+      </div>
+      <div class="content" style="padding-bottom:3rem">
+
+        <!-- LUT CARDS -->
+        <div style="font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);padding:.75rem 0;border-bottom:1px solid var(--border);margin-bottom:1rem">LUT Cards — Click any card to edit</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:var(--border);margin-bottom:1px" id="lut-grid"></div>
+
+        <!-- HERO -->
+        <div style="font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);padding:.75rem 0;border-bottom:1px solid var(--border);margin:2rem 0 1rem">Hero Section</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;max-width:720px">
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Eyebrow label</label>
+            <input class="form-input" id="pl-eyebrow" type="text" placeholder="Ulaanbaatar · Mongolia · 2026" oninput="plDirty()">
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Sub-heading</label>
+            <textarea class="form-textarea" id="pl-sub" rows="3" oninput="plDirty()"></textarea>
+          </div>
+          <div id="pl-stats-grid" style="grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem"></div>
+        </div>
+
+        <!-- PRICING -->
+        <div style="font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);padding:.75rem 0;border-bottom:1px solid var(--border);margin:2rem 0 1rem">Pricing Cards</div>
+        <div id="pl-pricing-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;max-width:900px"></div>
+
+        <div style="margin-top:2rem">
+          <button class="btn btn-primary" onclick="savePrintLab()">Save Print Lab Changes</button>
+          <span style="font-family:var(--mono);font-size:.48rem;color:var(--mute);letter-spacing:.06em;margin-left:1rem">Changes are saved to browser storage and appear instantly on the Print Lab page</span>
         </div>
       </div>
     </div>
@@ -736,6 +785,56 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13
   </div>
 </div>
 
+<!-- ── LUT DRAWER ── -->
+<div class="drawer-bg" id="lut-drawer-bg" onclick="closeLutDrawer()"></div>
+<div class="drawer" id="lut-drawer">
+  <div class="drawer-hd">
+    <div class="drawer-title" id="lut-drawer-title">EDIT LUT</div>
+    <button class="drawer-close" onclick="closeLutDrawer()">✕ Close</button>
+  </div>
+  <div class="drawer-body">
+    <div class="form-row">
+      <div>
+        <label class="form-label">LUT ID (e.g. 001)</label>
+        <input class="form-input" id="lut-id" type="text" placeholder="001" oninput="plDirty()">
+      </div>
+      <div>
+        <label class="form-label">Badge (e.g. DX-001)</label>
+        <input class="form-input" id="lut-badge" type="text" placeholder="DX-001" oninput="plDirty()">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">LUT Name <span>*</span></label>
+      <input class="form-input" id="lut-name" type="text" placeholder="e.g. Steppe Dawn" oninput="plDirty()">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Style / Description</label>
+      <input class="form-input" id="lut-style" type="text" placeholder="Warm · Open Shadow · Outdoor" oninput="plDirty()">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Image URL (production still)</label>
+      <input class="form-input" id="lut-img" type="url" placeholder="https://... or /images/lut-001.jpg" oninput="previewLutUrl();plDirty()">
+      <div class="form-hint">Upload image to <code>/images/</code> in GitHub first, then link as <code>/images/filename.jpg</code></div>
+    </div>
+    <div class="img-preview-wrap" style="margin-top:.5rem">
+      <img class="img-preview" id="lut-preview" alt="Preview">
+    </div>
+    <div class="form-group" style="margin-top:1rem">
+      <label class="form-label">Wide card (spans 2 columns)</label>
+      <select class="form-select" id="lut-wide" onchange="plDirty()">
+        <option value="false">No — portrait card</option>
+        <option value="true">Yes — wide landscape card</option>
+      </select>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <div style="display:flex;gap:.5rem;margin-left:auto">
+      <button class="btn btn-ghost" onclick="closeLutDrawer()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLut()">Save LUT</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ════════════════════════════════
 // STATE
@@ -800,6 +899,7 @@ function switchPanel(name) {
   var nav = document.getElementById('nav-' + name);
   if (nav) nav.classList.add('active');
   if (name === 'generate') generateAll();
+  if (name === 'printlab') renderPrintLab();
 }
 
 // ════════════════════════════════
@@ -1209,11 +1309,197 @@ function copyBlock(id) {
 }
 
 // ════════════════════════════════
+// PRINT LAB
+// ════════════════════════════════
+var PL_KEY = 'odix_content';
+var PL = null;
+var lutEditIdx = null;
+
+function plDefault() {
+  return {
+    printlab: {
+      hero: {
+        eyebrow: 'Ulaanbaatar · Mongolia · 2026',
+        sub: 'Mongolian light in every frame. LUTs graded from real log footage shot in Ulaanbaatar — not theory, not stock. Works on S-Log, D-Log M, and flat profiles.',
+        stats: [
+          {n:'12', label:'Cinematic LUTs'},
+          {n:'Free', label:'Vol 01'},
+          {n:'6yr', label:'Real production'},
+          {n:'.cube', label:'Format'}
+        ]
+      },
+      luts: [
+        {id:'001',badge:'DX-001',name:'Steppe Dawn',style:'Warm · Open Shadow · Outdoor',image:'',wide:true},
+        {id:'002',badge:'DX-002',name:'Urban Grey',style:'Neutral · Lifted Blacks',image:'',wide:false},
+        {id:'003',badge:'DX-003',name:'Desert Bleach',style:'Faded · High Key',image:'',wide:false},
+        {id:'004',badge:'DX-004',name:'Silver Print',style:'Cool · Film Grain',image:'',wide:false},
+        {id:'005',badge:'DX-005',name:'Kodak Amber',style:'Warm · Film Reference',image:'',wide:false},
+        {id:'006',badge:'DX-006',name:'Night Flat',style:'Low Contrast · Tungsten',image:'',wide:false},
+        {id:'007',badge:'DX-007',name:'Raw Landscape',style:'Natural · Wide Gamut · Outdoors',image:'',wide:true},
+        {id:'008',badge:'DX-008',name:'Fuji Flat',style:'Cool · Green Shadow',image:'',wide:false},
+        {id:'009',badge:'DX-009',name:'Print Black',style:'Contrast · Crushed Blacks',image:'',wide:false},
+        {id:'010',badge:'DX-010',name:'Ember Tone',style:'Warm Shadow · Mid Push',image:'',wide:false},
+        {id:'011',badge:'DX-011',name:'ODIX Signature',style:'House Grade · All-round',image:'',wide:false},
+        {id:'012',badge:'DX-012',name:'UB Street',style:'Urban · Desaturated',image:'',wide:false}
+      ],
+      pricing: [
+        {badge:'Vol 01 — Free forever',name:'ODX Print Lab Vol 01',price:'Free',price_sub:'DM "LUT" on Instagram',features:['12 cinematic LUTs (.cube)','S-Log, D-Log M, Flat profiles','DaVinci · Premiere · FCP · LR','Application guide included','Personal & commercial use'],cta_text:'DM to Get It ↗',cta_href:'https://instagram.com/odixbat'},
+        {badge:'Vol 02 — Available now',name:'ODX Print Lab Vol 02',price:'DM',price_sub:'Pricing via Instagram',features:['Expanded film stock references','Kodak · Fuji · ODIX originals','All Vol 01 profiles + F-Log 2','Node tree presets for DaVinci','PDF reference card'],cta_text:'Inquire ↗',cta_href:'https://instagram.com/odixbat'},
+        {badge:'Coming soon',name:'DaVinci Masterclass',price:'—',price_sub:'Subscribe for updates',features:['Full color grading course','Real production node trees','Film emulation workflow','Grading for Mongolian light','Lifetime access'],cta_text:'Follow for Updates ↗',cta_href:'https://instagram.com/odixbat'}
+      ]
+    }
+  };
+}
+
+function restorePrintLab() {
+  try {
+    var raw = localStorage.getItem(PL_KEY);
+    PL = raw ? JSON.parse(raw) : plDefault();
+    if (!PL.printlab) PL = plDefault();
+  } catch(e) { PL = plDefault(); }
+}
+
+function persistPrintLab() {
+  localStorage.setItem(PL_KEY, JSON.stringify(PL));
+}
+
+function plDirty() { markDirty(); }
+
+function savePrintLab() {
+  collectPrintLab();
+  persistPrintLab();
+  clearDirty();
+  toast('Print Lab saved — refresh /odixprintlab to see changes', 'ok');
+}
+
+function collectPrintLab() {
+  // Hero
+  var h = PL.printlab.hero;
+  h.eyebrow = document.getElementById('pl-eyebrow').value || h.eyebrow;
+  h.sub = document.getElementById('pl-sub').value || h.sub;
+  h.stats = h.stats.map(function(s, i) {
+    return {
+      n: (document.getElementById('pl-stat-n-'+i) || {}).value || s.n,
+      label: (document.getElementById('pl-stat-l-'+i) || {}).value || s.label
+    };
+  });
+  // Pricing
+  PL.printlab.pricing = PL.printlab.pricing.map(function(p, i) {
+    var featEl = document.getElementById('pl-pfeatures-'+i);
+    return {
+      badge: (document.getElementById('pl-pbadge-'+i)||{}).value || p.badge,
+      name: (document.getElementById('pl-pname-'+i)||{}).value || p.name,
+      price: (document.getElementById('pl-pprice-'+i)||{}).value || p.price,
+      price_sub: (document.getElementById('pl-pprice-sub-'+i)||{}).value || p.price_sub,
+      features: featEl ? featEl.value.split('\n').filter(Boolean) : p.features,
+      cta_text: (document.getElementById('pl-pcta-text-'+i)||{}).value || p.cta_text,
+      cta_href: (document.getElementById('pl-pcta-href-'+i)||{}).value || p.cta_href
+    };
+  });
+}
+
+function renderPrintLab() {
+  // LUT grid
+  var grid = document.getElementById('lut-grid');
+  if (!grid) return;
+  grid.innerHTML = PL.printlab.luts.map(function(lut, i) {
+    var thumb = lut.image
+      ? '<img src="'+lut.image+'" style="width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.1)" alt="">'
+      : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.45rem;color:var(--mute);letter-spacing:.1em;text-transform:uppercase">No image</div>';
+    return '<div class="proj-card" onclick="openLutDrawer('+i+')" style="cursor:pointer">'
+      + '<div class="pc-thumb" style="height:120px;background:var(--faint)">'+thumb+'</div>'
+      + '<div class="pc-body">'
+      + '<div class="pc-cat"><span class="badge badge-film">'+lut.badge+'</span>'+(lut.wide?' &nbsp;<span class="badge badge-wip">wide</span>':'')+'</div>'
+      + '<div class="pc-name" style="font-size:.85rem">'+lut.name+'</div>'
+      + '<div class="pc-meta">'+lut.style+'</div>'
+      + '</div></div>';
+  }).join('');
+
+  // Hero
+  var h = PL.printlab.hero;
+  document.getElementById('pl-eyebrow').value = h.eyebrow || '';
+  document.getElementById('pl-sub').value = h.sub || '';
+  var sg = document.getElementById('pl-stats-grid');
+  sg.innerHTML = (h.stats||[]).map(function(s,i){
+    return '<div style="background:var(--surface);border:1px solid var(--border);padding:1rem">'
+      + '<div class="form-group"><label class="form-label">Value</label>'
+      + '<input class="form-input" id="pl-stat-n-'+i+'" value="'+esc(s.n)+'" oninput="plDirty()"></div>'
+      + '<div class="form-group"><label class="form-label">Label</label>'
+      + '<input class="form-input" id="pl-stat-l-'+i+'" value="'+esc(s.label)+'" oninput="plDirty()"></div>'
+      + '</div>';
+  }).join('');
+
+  // Pricing
+  var pg = document.getElementById('pl-pricing-grid');
+  pg.innerHTML = PL.printlab.pricing.map(function(p, i) {
+    return '<div style="background:var(--surface);border:1px solid var(--border);padding:1.25rem">'
+      + '<div class="form-group"><label class="form-label">Badge</label><input class="form-input" id="pl-pbadge-'+i+'" value="'+esc(p.badge)+'" oninput="plDirty()"></div>'
+      + '<div class="form-group"><label class="form-label">Name</label><input class="form-input" id="pl-pname-'+i+'" value="'+esc(p.name)+'" oninput="plDirty()"></div>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">'
+      + '<div class="form-group"><label class="form-label">Price</label><input class="form-input" id="pl-pprice-'+i+'" value="'+esc(p.price)+'" oninput="plDirty()"></div>'
+      + '<div class="form-group"><label class="form-label">Sub-label</label><input class="form-input" id="pl-pprice-sub-'+i+'" value="'+esc(p.price_sub)+'" oninput="plDirty()"></div>'
+      + '</div>'
+      + '<div class="form-group"><label class="form-label">Features (one per line)</label><textarea class="form-textarea" id="pl-pfeatures-'+i+'" rows="4" oninput="plDirty()">'+esc(p.features.join('\n'))+'</textarea></div>'
+      + '<div class="form-group"><label class="form-label">CTA Text</label><input class="form-input" id="pl-pcta-text-'+i+'" value="'+esc(p.cta_text)+'" oninput="plDirty()"></div>'
+      + '<div class="form-group"><label class="form-label">CTA Link</label><input class="form-input" id="pl-pcta-href-'+i+'" value="'+esc(p.cta_href)+'" oninput="plDirty()"></div>'
+      + '</div>';
+  }).join('');
+}
+
+// LUT Drawer
+function openLutDrawer(idx) {
+  lutEditIdx = idx;
+  var lut = PL.printlab.luts[idx];
+  document.getElementById('lut-drawer-title').textContent = 'EDIT LUT — ' + (lut.badge||'');
+  document.getElementById('lut-id').value = lut.id || '';
+  document.getElementById('lut-badge').value = lut.badge || '';
+  document.getElementById('lut-name').value = lut.name || '';
+  document.getElementById('lut-style').value = lut.style || '';
+  document.getElementById('lut-img').value = lut.image || '';
+  document.getElementById('lut-wide').value = lut.wide ? 'true' : 'false';
+  var prev = document.getElementById('lut-preview');
+  if (lut.image) { prev.src = lut.image; prev.classList.add('show'); }
+  else { prev.src = ''; prev.classList.remove('show'); }
+  document.getElementById('lut-drawer-bg').classList.add('open');
+  document.getElementById('lut-drawer').classList.add('open');
+  setTimeout(function(){ document.getElementById('lut-name').focus(); }, 300);
+}
+function closeLutDrawer() {
+  document.getElementById('lut-drawer-bg').classList.remove('open');
+  document.getElementById('lut-drawer').classList.remove('open');
+}
+function saveLut() {
+  var name = document.getElementById('lut-name').value.trim();
+  if (!name) { toast('Enter a LUT name', 'err'); return; }
+  PL.printlab.luts[lutEditIdx] = {
+    id: document.getElementById('lut-id').value.trim(),
+    badge: document.getElementById('lut-badge').value.trim(),
+    name: name,
+    style: document.getElementById('lut-style').value.trim(),
+    image: document.getElementById('lut-img').value.trim(),
+    wide: document.getElementById('lut-wide').value === 'true'
+  };
+  persistPrintLab();
+  renderPrintLab();
+  closeLutDrawer();
+  clearDirty();
+  toast('LUT updated ✓', 'ok');
+}
+function previewLutUrl() {
+  var url = document.getElementById('lut-img').value.trim();
+  var prev = document.getElementById('lut-preview');
+  if (url) { prev.src = url; prev.classList.add('show'); }
+  else { prev.classList.remove('show'); }
+}
+
+// ════════════════════════════════
 // INIT
 // ════════════════════════════════
 restore();
+restorePrintLab();
 renderPortfolio();
 renderTools();
+renderPrintLab();
 updateCounts();
 clearDirty();
 // dashboard date

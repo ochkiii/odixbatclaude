@@ -30,6 +30,17 @@
   to     = "/odixprintlab/index.html"
   status = 200
 
+# Admin
+[[redirects]]
+  from   = "/admin"
+  to     = "/admin/index.html"
+  status = 200
+
+[[redirects]]
+  from   = "/admin/"
+  to     = "/admin/index.html"
+  status = 200
+
 # Tools hub
 [[redirects]]
   from   = "/tools"

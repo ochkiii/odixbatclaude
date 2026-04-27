@@ -18,7 +18,6 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--t);font-family:var(--sans);font-weight:400;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 img{display:block;width:100%;height:100%;object-fit:cover}
-body::before{content:'';position:fixed;inset:0;z-index:300;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.022}
 .wrap{max-width:1360px;margin:0 auto;padding:0 48px}
 @media(max-width:768px){.wrap{padding:0 24px}}
 .label{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--tc)}
@@ -49,8 +48,6 @@ nav{position:fixed;top:24px;left:50%;z-index:200;transform:translateX(-50%);disp
 .hero-marks{position:absolute;inset:0;z-index:1;pointer-events:none}
 .hero-content{position:relative;z-index:2;padding:0 48px 64px;display:grid;grid-template-columns:1fr 1fr;align-items:flex-end;gap:48px;max-width:1360px;margin:0 auto;width:100%}
 .hero-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:28px}
-.hero-dot{width:4px;height:4px;border-radius:50%;background:var(--tc);animation:blink 2.8s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
 .hero-title{font-family:var(--mono);font-size:clamp(72px,10vw,148px);letter-spacing:-0.04em;line-height:0.88;color:var(--t);margin-bottom:36px}
 .hero-edition{display:flex;align-items:center;gap:16px;margin-bottom:20px}
 .hero-edition-line{flex:0 0 40px;height:0.5px;background:rgba(255,255,255,0.2)}
@@ -199,26 +196,17 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-
     <img src="https://picsum.photos/seed/odx-hero-v3/1800/1000" alt=""><!-- Replace: real production still -->
     <div class="hero-bg-grad"></div>
   </div>
-  <svg class="hero-marks" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
-    <circle cx="1180" cy="160" r="240" fill="none" stroke="rgba(245,245,245,0.04)" stroke-width="0.5"/>
-    <circle cx="1180" cy="160" r="420" fill="none" stroke="rgba(245,245,245,0.025)" stroke-width="0.5"/>
-    <line x1="0" y1="210" x2="840" y2="210" stroke="rgba(245,245,245,0.04)" stroke-width="0.5"/>
-    <line x1="980" y1="0" x2="1440" y2="480" stroke="rgba(245,245,245,0.03)" stroke-width="0.5"/>
-    <rect x="56" y="830" width="88" height="0.5" fill="rgba(245,245,245,0.1)"/>
-    <rect x="154" y="830" width="32" height="0.5" fill="rgba(245,245,245,0.05)"/>
-  </svg>
   <div class="hero-content">
     <div class="hero-left">
       <div class="hero-eyebrow">
-        <div class="hero-dot"></div>
-        <span class="label">Ulaanbaatar · Mongolia · 2026</span>
+        <span class="label" id="hero-eyebrow">Ulaanbaatar · Mongolia · 2026</span>
       </div>
       <h1 class="hero-title">ODX<br>PRINT<br>LAB</h1>
       <div class="hero-edition">
         <div class="hero-edition-line"></div>
         <span class="label">[ Volume 01 ] — 12 Cinematic Looks</span>
       </div>
-      <p class="hero-sub">Mongolian light in every frame. LUTs graded from real log footage shot in Ulaanbaatar — not theory, not stock. Works on S-Log, D-Log M, and flat profiles.</p>
+      <p class="hero-sub" id="hero-sub">Mongolian light in every frame. LUTs graded from real log footage shot in Ulaanbaatar — not theory, not stock. Works on S-Log, D-Log M, and flat profiles.</p>
       <div class="hero-ctas">
         <a href="#cta" class="btn btn-solid">Get Vol 01 — Free</a>
         <a href="#looks" class="btn btn-ghost">Explore the Looks</a>
@@ -309,18 +297,18 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-
   </div>
   <div class="wrap">
     <div class="luts-g">
-      <div class="lc lc--wide r"><img src="https://picsum.photos/seed/lw1/800/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-001</div><div class="lc-info"><div class="lc-id">001</div><div class="lc-name">Steppe Dawn</div><div class="lc-style">Warm · Open Shadow · Outdoor</div></div></div>
-      <div class="lc r d1"><img src="https://picsum.photos/seed/lp2/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-002</div><div class="lc-info"><div class="lc-id">002</div><div class="lc-name">Urban Grey</div><div class="lc-style">Neutral · Lifted Blacks</div></div></div>
-      <div class="lc r d2"><img src="https://picsum.photos/seed/lp3/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-003</div><div class="lc-info"><div class="lc-id">003</div><div class="lc-name">Desert Bleach</div><div class="lc-style">Faded · High Key</div></div></div>
-      <div class="lc r"><img src="https://picsum.photos/seed/lp4/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-004</div><div class="lc-info"><div class="lc-id">004</div><div class="lc-name">Silver Print</div><div class="lc-style">Cool · Film Grain</div></div></div>
-      <div class="lc r d1"><img src="https://picsum.photos/seed/lp5/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-005</div><div class="lc-info"><div class="lc-id">005</div><div class="lc-name">Kodak Amber</div><div class="lc-style">Warm · Film Reference</div></div></div>
-      <div class="lc r d2"><img src="https://picsum.photos/seed/lp6/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-006</div><div class="lc-info"><div class="lc-id">006</div><div class="lc-name">Night Flat</div><div class="lc-style">Low Contrast · Tungsten</div></div></div>
-      <div class="lc lc--wide r"><img src="https://picsum.photos/seed/lw2/800/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-007</div><div class="lc-info"><div class="lc-id">007</div><div class="lc-name">Raw Landscape</div><div class="lc-style">Natural · Wide Gamut · Outdoors</div></div></div>
-      <div class="lc r d1"><img src="https://picsum.photos/seed/lp8/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-008</div><div class="lc-info"><div class="lc-id">008</div><div class="lc-name">Fuji Flat</div><div class="lc-style">Cool · Green Shadow</div></div></div>
-      <div class="lc r d2"><img src="https://picsum.photos/seed/lp9/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-009</div><div class="lc-info"><div class="lc-id">009</div><div class="lc-name">Print Black</div><div class="lc-style">Contrast · Crushed Blacks</div></div></div>
-      <div class="lc r"><img src="https://picsum.photos/seed/lp10/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-010</div><div class="lc-info"><div class="lc-id">010</div><div class="lc-name">Ember Tone</div><div class="lc-style">Warm Shadow · Mid Push</div></div></div>
-      <div class="lc r d1"><img src="https://picsum.photos/seed/lp11/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-011</div><div class="lc-info"><div class="lc-id">011</div><div class="lc-name">ODIX Signature</div><div class="lc-style">House Grade · All-round</div></div></div>
-      <div class="lc r d2"><img src="https://picsum.photos/seed/lp12/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-012</div><div class="lc-info"><div class="lc-id">012</div><div class="lc-name">UB Street</div><div class="lc-style">Urban · Desaturated</div></div></div>
+      <div class="lc lc--wide r" data-lut-index="0"><img src="https://picsum.photos/seed/lw1/800/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-001</div><div class="lc-info"><div class="lc-id">001</div><div class="lc-name">Steppe Dawn</div><div class="lc-style">Warm · Open Shadow · Outdoor</div></div></div>
+      <div class="lc r d1" data-lut-index="1"><img src="https://picsum.photos/seed/lp2/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-002</div><div class="lc-info"><div class="lc-id">002</div><div class="lc-name">Urban Grey</div><div class="lc-style">Neutral · Lifted Blacks</div></div></div>
+      <div class="lc r d2" data-lut-index="2"><img src="https://picsum.photos/seed/lp3/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-003</div><div class="lc-info"><div class="lc-id">003</div><div class="lc-name">Desert Bleach</div><div class="lc-style">Faded · High Key</div></div></div>
+      <div class="lc r" data-lut-index="3"><img src="https://picsum.photos/seed/lp4/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-004</div><div class="lc-info"><div class="lc-id">004</div><div class="lc-name">Silver Print</div><div class="lc-style">Cool · Film Grain</div></div></div>
+      <div class="lc r d1" data-lut-index="4"><img src="https://picsum.photos/seed/lp5/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-005</div><div class="lc-info"><div class="lc-id">005</div><div class="lc-name">Kodak Amber</div><div class="lc-style">Warm · Film Reference</div></div></div>
+      <div class="lc r d2" data-lut-index="5"><img src="https://picsum.photos/seed/lp6/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-006</div><div class="lc-info"><div class="lc-id">006</div><div class="lc-name">Night Flat</div><div class="lc-style">Low Contrast · Tungsten</div></div></div>
+      <div class="lc lc--wide r" data-lut-index="6"><img src="https://picsum.photos/seed/lw2/800/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-007</div><div class="lc-info"><div class="lc-id">007</div><div class="lc-name">Raw Landscape</div><div class="lc-style">Natural · Wide Gamut · Outdoors</div></div></div>
+      <div class="lc r d1" data-lut-index="7"><img src="https://picsum.photos/seed/lp8/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-008</div><div class="lc-info"><div class="lc-id">008</div><div class="lc-name">Fuji Flat</div><div class="lc-style">Cool · Green Shadow</div></div></div>
+      <div class="lc r d2" data-lut-index="8"><img src="https://picsum.photos/seed/lp9/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-009</div><div class="lc-info"><div class="lc-id">009</div><div class="lc-name">Print Black</div><div class="lc-style">Contrast · Crushed Blacks</div></div></div>
+      <div class="lc r" data-lut-index="9"><img src="https://picsum.photos/seed/lp10/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-010</div><div class="lc-info"><div class="lc-id">010</div><div class="lc-name">Ember Tone</div><div class="lc-style">Warm Shadow · Mid Push</div></div></div>
+      <div class="lc r d1" data-lut-index="10"><img src="https://picsum.photos/seed/lp11/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-011</div><div class="lc-info"><div class="lc-id">011</div><div class="lc-name">ODIX Signature</div><div class="lc-style">House Grade · All-round</div></div></div>
+      <div class="lc r d2" data-lut-index="11"><img src="https://picsum.photos/seed/lp12/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-012</div><div class="lc-info"><div class="lc-id">012</div><div class="lc-name">UB Street</div><div class="lc-style">Urban · Desaturated</div></div></div>
     </div>
     <div class="luts-strip r">
       <div class="luts-strip-item"><div class="label" style="margin-bottom:6px">Format</div><div style="font-size:13px;color:var(--tb)">.cube — industry standard</div></div>
@@ -402,7 +390,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-
           <div class="pc-feature"><span class="pc-check">—</span><span>Grading for Mongolian light</span></div>
           <div class="pc-feature"><span class="pc-check">—</span><span>Lifetime access</span></div>
         </div>
-        <a href="/" class="btn btn-ghost" style="width:100%;justify-content:center">Subscribe ↗</a>
+        <a href="https://instagram.com/odixbat" target="_blank" class="btn btn-ghost" style="width:100%;justify-content:center">Follow for Updates ↗</a>
       </div>
     </div>
   </div>
@@ -424,13 +412,6 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-
 <section id="cta">
   <div class="wrap">
     <div class="cta-inner r">
-      <svg class="cta-marks" viewBox="0 0 1200 480" preserveAspectRatio="xMidYMid slice">
-        <circle cx="1100" cy="240" r="320" fill="none" stroke="rgba(245,245,245,0.04)" stroke-width="0.5"/>
-        <circle cx="1100" cy="240" r="200" fill="none" stroke="rgba(245,245,245,0.03)" stroke-width="0.5"/>
-        <line x1="0" y1="80" x2="720" y2="80" stroke="rgba(245,245,245,0.05)" stroke-width="0.5"/>
-        <line x1="0" y1="400" x2="580" y2="400" stroke="rgba(245,245,245,0.04)" stroke-width="0.5"/>
-        <rect x="80" y="372" width="48" height="0.5" fill="rgba(245,245,245,0.1)"/>
-      </svg>
       <span class="cta-label">Vol 01 · Free · 12 LUTs</span>
       <h2 class="cta-h">DM "LUT"<br>on Instagram.</h2>
       <p class="cta-sub">Send the keyword to @odixbat. The pack arrives in your DMs — 12 cinematic LUTs, no strings. Free forever.</p>
@@ -454,6 +435,7 @@ footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-
 </footer>
 
 <script>
+/* ── Before/After slider ── */
 const outer=document.getElementById('baOuter'),bfr=document.getElementById('baBefore'),line=document.getElementById('baLine'),grip=document.getElementById('baGrip'),lutId=document.getElementById('baLutId');
 let drag=false;
 function pos(p){p=Math.min(95,Math.max(5,p));bfr.style.clipPath=`inset(0 ${100-p}% 0 0)`;line.style.left=grip.style.left=p+'%'}
@@ -465,8 +447,57 @@ window.addEventListener('touchend',()=>drag=false);
 window.addEventListener('mousemove',e=>{if(drag){const r=outer.getBoundingClientRect();pos(((e.clientX-r.left)/r.width)*100)}});
 window.addEventListener('touchmove',e=>{if(drag){const r=outer.getBoundingClientRect();pos(((e.touches[0].clientX-r.left)/r.width)*100)}},{passive:true});
 document.querySelectorAll('.ba-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.ba-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');lutId.textContent=b.dataset.lut;pos(50)})});
+
+/* ── Scroll reveal ── */
 const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:0.05,rootMargin:'0px 0px -32px 0px'});
 document.querySelectorAll('.r').forEach(el=>io.observe(el));
+
+/* ── Load content from admin ── */
+(function(){
+  const raw=localStorage.getItem('odix_content');
+  if(!raw)return;
+  let c;try{c=JSON.parse(raw)}catch(e){return}
+  const pl=c.printlab;if(!pl)return;
+
+  /* Hero */
+  if(pl.hero){
+    const h=pl.hero;
+    if(h.eyebrow)document.getElementById('hero-eyebrow').textContent=h.eyebrow;
+    if(h.sub)document.getElementById('hero-sub').textContent=h.sub;
+    if(h.stats){
+      const sn=document.querySelectorAll('.hero-stat-n');
+      const sl=document.querySelectorAll('.hero-stat .label');
+      h.stats.forEach((s,i)=>{if(sn[i])sn[i].textContent=s.n;if(sl[i])sl[i].textContent=s.label});
+    }
+  }
+
+  /* LUT cards */
+  if(pl.luts){
+    pl.luts.forEach((lut,i)=>{
+      const card=document.querySelector(`[data-lut-index="${i}"]`);
+      if(!card)return;
+      if(lut.name)card.querySelector('.lc-name').textContent=lut.name;
+      if(lut.style)card.querySelector('.lc-style').textContent=lut.style;
+      if(lut.badge)card.querySelector('.lc-badge').textContent=lut.badge;
+      if(lut.id)card.querySelector('.lc-id').textContent=lut.id;
+      if(lut.image){const img=card.querySelector('img');if(img)img.src=lut.image}
+    });
+  }
+
+  /* Pricing */
+  if(pl.pricing){
+    const cards=document.querySelectorAll('.pc');
+    pl.pricing.forEach((p,i)=>{
+      const card=cards[i];if(!card)return;
+      if(p.badge)card.querySelector('.pc-badge').textContent=p.badge;
+      if(p.name)card.querySelector('.pc-name').textContent=p.name;
+      if(p.price)card.querySelector('.pc-price').textContent=p.price;
+      if(p.price_sub)card.querySelector('.pc-price-sub').textContent=p.price_sub;
+      if(p.cta_text){const a=card.querySelector('a.btn');if(a)a.textContent=p.cta_text}
+      if(p.cta_href){const a=card.querySelector('a.btn');if(a)a.href=p.cta_href}
+    });
+  }
+})();
 </script>
 </body>
 </html>
