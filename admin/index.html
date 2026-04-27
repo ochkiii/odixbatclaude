@@ -1357,10 +1357,34 @@ function restorePrintLab() {
     PL = raw ? JSON.parse(raw) : plDefault();
     if (!PL.printlab) PL = plDefault();
   } catch(e) { PL = plDefault(); }
+  // Sync latest from server in background
+  fetch('/api/content').then(function(r){ return r.json(); }).then(function(data){
+    if (data && data.printlab) {
+      PL = data;
+      localStorage.setItem(PL_KEY, JSON.stringify(PL));
+      renderPrintLab();
+    }
+  }).catch(function(){});
 }
 
 function persistPrintLab() {
   localStorage.setItem(PL_KEY, JSON.stringify(PL));
+  var token = localStorage.getItem(PW_KEY) || 'odix2026';
+  fetch('/api/content', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+    body: JSON.stringify(PL)
+  }).then(function(r){
+    return r.json();
+  }).then(function(j){
+    if (j && j.ok) {
+      toast('Saved to server — changes are now live ✓', 'ok');
+    } else {
+      toast('Server error: check ADMIN_TOKEN in Netlify env vars', 'err');
+    }
+  }).catch(function(){
+    toast('Offline — saved locally only', 'info');
+  });
 }
 
 function plDirty() { markDirty(); }
@@ -1369,7 +1393,6 @@ function savePrintLab() {
   collectPrintLab();
   persistPrintLab();
   clearDirty();
-  toast('Print Lab saved — refresh /odixprintlab to see changes', 'ok');
 }
 
 function collectPrintLab() {

@@ -452,14 +452,9 @@ document.querySelectorAll('.ba-btn').forEach(b=>{b.addEventListener('click',()=>
 const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:0.05,rootMargin:'0px 0px -32px 0px'});
 document.querySelectorAll('.r').forEach(el=>io.observe(el));
 
-/* ── Load content from admin ── */
-(function(){
-  const raw=localStorage.getItem('odix_content');
-  if(!raw)return;
-  let c;try{c=JSON.parse(raw)}catch(e){return}
-  const pl=c.printlab;if(!pl)return;
-
-  /* Hero */
+/* ── Apply content to DOM ── */
+function applyContent(c){
+  const pl=c&&c.printlab;if(!pl)return;
   if(pl.hero){
     const h=pl.hero;
     if(h.eyebrow)document.getElementById('hero-eyebrow').textContent=h.eyebrow;
@@ -470,12 +465,9 @@ document.querySelectorAll('.r').forEach(el=>io.observe(el));
       h.stats.forEach((s,i)=>{if(sn[i])sn[i].textContent=s.n;if(sl[i])sl[i].textContent=s.label});
     }
   }
-
-  /* LUT cards */
   if(pl.luts){
     pl.luts.forEach((lut,i)=>{
-      const card=document.querySelector(`[data-lut-index="${i}"]`);
-      if(!card)return;
+      const card=document.querySelector(`[data-lut-index="${i}"]`);if(!card)return;
       if(lut.name)card.querySelector('.lc-name').textContent=lut.name;
       if(lut.style)card.querySelector('.lc-style').textContent=lut.style;
       if(lut.badge)card.querySelector('.lc-badge').textContent=lut.badge;
@@ -483,8 +475,6 @@ document.querySelectorAll('.r').forEach(el=>io.observe(el));
       if(lut.image){const img=card.querySelector('img');if(img)img.src=lut.image}
     });
   }
-
-  /* Pricing */
   if(pl.pricing){
     const cards=document.querySelectorAll('.pc');
     pl.pricing.forEach((p,i)=>{
@@ -497,7 +487,16 @@ document.querySelectorAll('.r').forEach(el=>io.observe(el));
       if(p.cta_href){const a=card.querySelector('a.btn');if(a)a.href=p.cta_href}
     });
   }
-})();
+}
+/* Apply cached content immediately (no flash) */
+(function(){try{const r=localStorage.getItem('odix_content');if(r)applyContent(JSON.parse(r))}catch(e){}})();
+/* Then fetch latest from server */
+fetch('/api/content').then(r=>r.json()).then(data=>{
+  if(data&&data.printlab){
+    applyContent(data);
+    try{localStorage.setItem('odix_content',JSON.stringify(data))}catch(e){}
+  }
+}).catch(()=>{});
 </script>
 </body>
 </html>
