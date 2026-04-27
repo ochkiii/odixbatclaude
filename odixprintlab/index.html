@@ -1,678 +1,332 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ODX Print Lab — Cinematic LUTs</title>
-  <meta name="description" content="12 cinematic LUTs built from real production in Ulaanbaatar, Mongolia. S-Log · D-Log M · Flat profiles. DaVinci Resolve + Premiere ready.">
-  <meta property="og:title" content="ODX Print Lab — Cinematic LUTs">
-  <meta property="og:description" content="12 cinematic LUTs. Mongolian light. Film grain. Real production.">
-  <meta property="og:image" content="https://picsum.photos/seed/odx-og/1200/630">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400&family=Geist+Mono:wght@400&display=swap">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ODX Print Lab — Cinematic LUTs by Odbat Batsaikhan</title>
+<meta name="description" content="12 cinematic LUTs built from real production in Ulaanbaatar, Mongolia. S-Log · D-Log M · Flat. DaVinci Resolve + Premiere + FCP.">
+<meta property="og:title" content="ODX Print Lab — Cinematic LUTs">
+<meta property="og:description" content="Mongolian light in every frame. 12 LUTs from real production. Free.">
+<link rel="canonical" href="https://odixbat.com/odixprintlab">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#040404;--sf:rgba(255,255,255,0.02);--su:rgba(255,255,255,0.04);--t:#f5f5f5;--tb:#888;--tc:#555;--td:#333;--dv:0.5px solid rgba(255,255,255,0.06);--card:0 0 0 1px rgba(255,255,255,0.08),0 2px 4px rgba(0,0,0,0.4),0 8px 16px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,0.04);--sans:'Geist',-apple-system,Helvetica Neue,sans-serif;--mono:'Geist Mono',ui-monospace,monospace;--ease:cubic-bezier(0.16,1,0.3,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t);font-family:var(--sans);font-weight:400;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{display:block;width:100%;height:100%;object-fit:cover}
+body::before{content:'';position:fixed;inset:0;z-index:300;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.022}
+.wrap{max-width:1360px;margin:0 auto;padding:0 48px}
+@media(max-width:768px){.wrap{padding:0 24px}}
+.label{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--tc)}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;padding:14px 28px;border-radius:3px;transition:opacity 0.2s var(--ease)}
+.btn:hover{opacity:0.6}
+.btn-solid{background:var(--su);box-shadow:inset 0 1px 0 rgba(255,255,255,0.09),inset 0 -1px 0 rgba(0,0,0,0.2),0 0 0 1px rgba(255,255,255,0.08);color:var(--t)}
+.btn-ghost{box-shadow:0 0 0 1px rgba(255,255,255,0.08);color:var(--tb)}
+.btn-pill{border-radius:100px}
+.r{opacity:0;transform:translateY(20px);transition:opacity 700ms var(--ease),transform 700ms var(--ease)}
+.r.in{opacity:1;transform:translateY(0)}
+.d1{transition-delay:80ms}.d2{transition-delay:160ms}.d3{transition-delay:240ms}
 
-  <style>
-    /* ── TOKENS ── */
-    :root {
-      --bg:         #040404;
-      --surface:    rgba(255,255,255,0.02);
-      --surface-el: rgba(255,255,255,0.04);
-      --surface-hv: rgba(255,255,255,0.05);
-      --text-hi:    #f5f5f5;
-      --text-body:  #888888;
-      --text-meta:  #444444;
-      --text-dim:   #333333;
-      --border:     rgba(255,255,255,0.08);
-      --border-sub: rgba(255,255,255,0.05);
-      --divider:    0.5px solid rgba(255,255,255,0.06);
-      --sans:       'Geist', -apple-system, Helvetica Neue, sans-serif;
-      --mono:       'Geist Mono', SF Mono, monospace;
-      --spring:     cubic-bezier(0.16, 1, 0.3, 1);
-    }
+/* NAV */
+nav{position:fixed;top:24px;left:50%;z-index:200;transform:translateX(-50%);display:flex;align-items:center;gap:20px;background:rgba(4,4,4,0.88);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);box-shadow:0 0 0 0.5px rgba(255,255,255,0.09),0 4px 32px rgba(0,0,0,0.7);border-radius:100px;padding:10px 22px}
+.nav-brand{font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--t)}
+.nav-pipe{width:1px;height:10px;background:rgba(255,255,255,0.08)}
+.nav-link{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--tc);transition:color 0.2s}
+.nav-link:hover{color:var(--t)}
+.nav-cta{font-family:var(--mono);font-size:9px;letter-spacing:0.13em;text-transform:uppercase;color:var(--t);padding:7px 16px;background:var(--su);box-shadow:0 0 0 1px rgba(255,255,255,0.08);border-radius:100px;transition:opacity 0.2s}
+.nav-cta:hover{opacity:0.6}
+@media(max-width:600px){nav{gap:14px;padding:10px 18px}.nav-link{display:none}}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text-hi);
-      font-family: var(--sans);
-      font-weight: 400;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
-    a { color: inherit; text-decoration: none; }
-    img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* HERO */
+#hero{min-height:100dvh;position:relative;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg img{filter:brightness(0.35) grayscale(18%)}
+.hero-bg-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,4,1) 0%,rgba(4,4,4,0.25) 55%,rgba(4,4,4,0.1) 100%)}
+.hero-marks{position:absolute;inset:0;z-index:1;pointer-events:none}
+.hero-content{position:relative;z-index:2;padding:0 48px 64px;display:grid;grid-template-columns:1fr 1fr;align-items:flex-end;gap:48px;max-width:1360px;margin:0 auto;width:100%}
+.hero-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.hero-dot{width:4px;height:4px;border-radius:50%;background:var(--tc);animation:blink 2.8s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
+.hero-title{font-family:var(--mono);font-size:clamp(72px,10vw,148px);letter-spacing:-0.04em;line-height:0.88;color:var(--t);margin-bottom:36px}
+.hero-edition{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.hero-edition-line{flex:0 0 40px;height:0.5px;background:rgba(255,255,255,0.2)}
+.hero-sub{font-size:clamp(14px,1.6vw,18px);line-height:1.65;color:var(--tb);max-width:440px;letter-spacing:-0.01em;margin-bottom:40px}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+.hero-right{display:flex;flex-direction:column;gap:1px}
+.hero-stat-row{display:flex;gap:1px;background:rgba(255,255,255,0.05)}
+.hero-stat{flex:1;background:rgba(4,4,4,0.72);backdrop-filter:blur(12px);padding:22px 24px;border-top:var(--dv)}
+.hero-stat-n{font-size:clamp(26px,3vw,40px);letter-spacing:-0.03em;line-height:1;color:var(--t);margin-bottom:5px}
+.hero-strip{position:relative;z-index:2;border-top:var(--dv);padding:16px 48px;display:flex;justify-content:space-between;align-items:center;max-width:1360px;margin:0 auto;width:100%}
+@media(max-width:900px){.hero-content{grid-template-columns:1fr;padding:0 24px 48px}.hero-right{display:none}.hero-strip{padding:16px 24px}}
 
-    /* ── GRAIN ── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 200;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      opacity: 0.025;
-      pointer-events: none;
-    }
+/* MARQUEE */
+.mq-wrap{border-top:var(--dv);border-bottom:var(--dv);overflow:hidden;padding:13px 0;background:var(--sf)}
+.mq-track{display:flex;animation:mq 30s linear infinite;width:max-content}
+.mq-track:hover{animation-play-state:paused}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.mq-item{display:flex;align-items:center;gap:28px;padding:0 28px;white-space:nowrap;font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--tc)}
+.mq-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,0.14);flex-shrink:0}
 
-    /* ── LAYOUT ── */
-    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 48px; }
-    @media (max-width: 768px) { .wrap { padding: 0 24px; } }
+/* STATEMENT */
+#statement{padding:120px 0;border-bottom:var(--dv)}
+.stmt-grid{display:grid;grid-template-columns:280px 1fr;gap:96px;align-items:start}
+.stmt-kv{display:flex;justify-content:space-between;padding:13px 0;border-bottom:var(--dv);font-size:12px;color:var(--tb)}
+.stmt-kv:first-child{border-top:var(--dv)}
+.stmt-kv span:first-child{font-family:var(--mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--tc)}
+.stmt-body{font-size:clamp(20px,2.4vw,30px);line-height:1.45;letter-spacing:-0.025em;color:var(--t)}
+.stmt-sub{font-size:15px;line-height:1.75;color:var(--tb);margin-top:28px;max-width:560px}
+@media(max-width:768px){#statement{padding:80px 0}.stmt-grid{grid-template-columns:1fr;gap:48px}}
 
-    /* ── MONO LABELS ── */
-    .mono {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-meta);
-    }
+/* BEFORE/AFTER */
+#ba{padding:120px 0;border-bottom:var(--dv)}
+.ba-header{margin-bottom:40px;display:flex;justify-content:space-between;align-items:baseline}
+.ba-title{font-size:clamp(22px,2.8vw,36px);letter-spacing:-0.025em;color:var(--t)}
+.ba-outer{position:relative;overflow:hidden;aspect-ratio:16/9;box-shadow:var(--card);cursor:ew-resize;user-select:none}
+.ba-after{position:absolute;inset:0}
+.ba-after img{filter:brightness(0.9)}
+.ba-before{position:absolute;inset:0;overflow:hidden;clip-path:inset(0 50% 0 0)}
+.ba-before img{filter:brightness(0.88) grayscale(80%) contrast(0.82)}
+.ba-line{position:absolute;top:0;bottom:0;z-index:10;width:1px;background:rgba(255,255,255,0.4);left:50%;transform:translateX(-50%);pointer-events:none}
+.ba-grip{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:rgba(4,4,4,0.88);box-shadow:0 0 0 1px rgba(255,255,255,0.22),0 4px 16px rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.55);pointer-events:none;z-index:11}
+.ba-tag{position:absolute;bottom:20px;z-index:12;font-family:var(--mono);font-size:8px;letter-spacing:0.14em;text-transform:uppercase;padding:5px 12px;background:rgba(4,4,4,0.78);backdrop-filter:blur(8px);box-shadow:0 0 0 1px rgba(255,255,255,0.08)}
+.ba-tag--before{left:20px;color:var(--tc)}
+.ba-tag--after{right:20px;color:var(--t)}
+.ba-lut-id{position:absolute;top:20px;right:20px;z-index:12;font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--t);padding:6px 14px;background:rgba(4,4,4,0.82);backdrop-filter:blur(8px);box-shadow:0 0 0 1px rgba(255,255,255,0.1)}
+.ba-btns{display:flex;gap:1px;background:rgba(255,255,255,0.04);margin-top:1px}
+.ba-btn{flex:1;padding:14px;background:var(--bg);font-family:var(--mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--tc);border:none;cursor:pointer;transition:all 0.2s;font-weight:400}
+.ba-btn:hover{background:var(--sf);color:var(--tb)}
+.ba-btn.on{background:var(--su);color:var(--t)}
 
-    /* ── NAV ── */
-    nav {
-      position: fixed; top: 24px; left: 50%; z-index: 100;
-      transform: translateX(-50%);
-      display: flex; align-items: center; gap: 24px;
-      background: rgba(4,4,4,0.85);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      box-shadow: 0 0 0 0.5px rgba(255,255,255,0.08), 0 4px 24px rgba(0,0,0,0.6);
-      border-radius: 100px;
-      padding: 10px 24px;
-    }
-    .nav-brand {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--text-hi);
-    }
-    .nav-by {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-meta);
-    }
-    .nav-sep { width: 1px; height: 10px; background: rgba(255,255,255,0.08); }
-    .nav-cta {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-body);
-      transition: color 200ms var(--spring);
-    }
-    .nav-cta:hover { color: var(--text-hi); }
+/* LOOKS */
+#looks{padding:120px 0;border-bottom:var(--dv)}
+.sec-hd{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:32px;margin-bottom:2px;border-bottom:var(--dv)}
+.sec-n{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--tc)}
+.sec-h{font-size:clamp(24px,3vw,40px);letter-spacing:-0.03em;color:var(--t)}
+.luts-g{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.05);margin-bottom:1px}
+.lc{background:var(--bg);position:relative;overflow:hidden;cursor:default;aspect-ratio:3/4}
+.lc img{opacity:0.6;transition:opacity 500ms var(--ease),transform 600ms var(--ease)}
+.lc:hover img{opacity:0.88;transform:scale(1.04)}
+.lc-frame{position:absolute;inset:8px;box-shadow:inset 0 0 0 0.5px rgba(255,255,255,0.07);pointer-events:none;z-index:1}
+.lc-info{position:absolute;inset:0;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;background:linear-gradient(to top,rgba(4,4,4,0.96) 0%,rgba(4,4,4,0.4) 45%,transparent 100%);z-index:2}
+.lc-id{font-family:var(--mono);font-size:7px;letter-spacing:0.18em;text-transform:uppercase;color:var(--td);margin-bottom:5px}
+.lc-name{font-size:13px;color:var(--t);letter-spacing:-0.01em;line-height:1.25}
+.lc-style{font-family:var(--mono);font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--tc);margin-top:4px}
+.lc-badge{position:absolute;top:14px;left:14px;z-index:3;font-family:var(--mono);font-size:7px;letter-spacing:0.16em;text-transform:uppercase;color:var(--td);padding:3px 8px;background:rgba(4,4,4,0.65);box-shadow:0 0 0 0.5px rgba(255,255,255,0.06)}
+.lc--wide{grid-column:span 2;aspect-ratio:3/2}
+.luts-strip{display:flex;gap:1px;background:rgba(255,255,255,0.05)}
+.luts-strip-item{flex:1;background:var(--bg);padding:20px 24px}
+.luts-strip-item:hover{background:var(--sf)}
+@media(max-width:1024px){.luts-g{grid-template-columns:repeat(3,1fr)}.lc--wide{grid-column:span 1;aspect-ratio:3/4}}
+@media(max-width:640px){.luts-g{grid-template-columns:repeat(2,1fr)}}
 
-    /* ── HERO ── */
-    #hero {
-      min-height: 100dvh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      border-bottom: var(--divider);
-      position: relative;
-    }
+/* COMPAT */
+#compat{padding:120px 0;border-bottom:var(--dv)}
+.compat-g{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.05);margin-top:48px}
+.compat-col{background:var(--bg);padding:48px}
+.compat-col--alt{background:var(--sf)}
+.compat-col-label{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--tc);margin-bottom:28px}
+.compat-col-h{font-size:clamp(18px,2vw,26px);letter-spacing:-0.02em;color:var(--t);margin-bottom:20px;line-height:1.25}
+.compat-col-b{font-size:13px;line-height:1.75;color:var(--tb)}
+.compat-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:var(--dv)}
+.compat-row:first-child{border-top:var(--dv)}
+.compat-key{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--tc)}
+.compat-val{font-family:var(--mono);font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--tc);padding:3px 8px;box-shadow:0 0 0 0.5px rgba(255,255,255,0.08)}
+@media(max-width:768px){.compat-g{grid-template-columns:1fr}.compat-col{padding:40px 24px}}
 
-    .hero-left {
-      padding: 160px 48px 80px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border-right: var(--divider);
-    }
-    .hero-eyebrow {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 48px;
-    }
-    .hero-dot {
-      width: 4px; height: 4px; border-radius: 50%;
-      background: var(--text-meta);
-      animation: blink 2.8s ease-in-out infinite;
-    }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
+/* PRICING */
+#pricing{padding:120px 0;border-bottom:var(--dv)}
+.pricing-g{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.05);margin-top:48px}
+.pc{background:var(--bg);padding:40px;display:flex;flex-direction:column}
+.pc--alt{background:var(--sf)}
+.pc-badge{font-family:var(--mono);font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:var(--tc);padding:4px 10px;box-shadow:0 0 0 0.5px rgba(255,255,255,0.08);border-radius:2px;align-self:flex-start;margin-bottom:24px}
+.pc-name{font-size:18px;letter-spacing:-0.02em;color:var(--t);margin-bottom:6px}
+.pc-price{font-family:var(--mono);font-size:clamp(28px,3vw,44px);letter-spacing:-0.03em;color:var(--t);line-height:1;margin-bottom:6px}
+.pc-price-sub{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--tc);margin-bottom:32px}
+.pc-features{display:flex;flex-direction:column;flex:1;margin-bottom:32px}
+.pc-feature{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:var(--dv);font-size:12px;color:var(--tb);line-height:1.5}
+.pc-feature:first-child{border-top:var(--dv)}
+.pc-check{font-family:var(--mono);font-size:9px;color:var(--tc);flex-shrink:0;margin-top:1px}
+@media(max-width:900px){.pricing-g{grid-template-columns:1fr}}
+@media(max-width:640px){.pc{padding:32px 24px}}
 
-    .hero-product {
-      font-family: var(--mono);
-      font-size: clamp(56px, 8vw, 108px);
-      letter-spacing: -0.04em;
-      line-height: 0.9;
-      color: var(--text-hi);
-      margin-bottom: 32px;
-    }
-    .hero-edition {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--text-meta);
-      margin-bottom: 40px;
-    }
-    .hero-line { width: 32px; height: 0.5px; background: rgba(255,255,255,0.12); margin-bottom: 40px; }
+/* HOW TO */
+#howto{padding:120px 0;border-bottom:var(--dv)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.05);margin-top:48px}
+.step{background:var(--bg);padding:48px 40px}
+.step-n{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--td);display:block;margin-bottom:48px}
+.step-h{font-size:16px;letter-spacing:-0.02em;color:var(--t);margin-bottom:12px}
+.step-b{font-size:13px;line-height:1.75;color:var(--tb)}
+@media(max-width:768px){.steps{grid-template-columns:1fr}.step{padding:40px 24px}}
 
-    .hero-desc {
-      font-size: clamp(14px, 1.6vw, 18px);
-      line-height: 1.65;
-      color: var(--text-body);
-      max-width: 380px;
-      margin-bottom: 48px;
-      letter-spacing: -0.01em;
-    }
+/* CTA */
+#cta{padding:0 0 120px}
+.cta-inner{position:relative;overflow:hidden;background:var(--sf);box-shadow:0 0 0 1px rgba(255,255,255,0.06),inset 0 1px 0 rgba(255,255,255,0.04);padding:120px 80px}
+.cta-marks{position:absolute;inset:0;pointer-events:none}
+.cta-label{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--tc);margin-bottom:28px;display:block;position:relative;z-index:1}
+.cta-h{font-size:clamp(40px,6vw,92px);letter-spacing:-0.04em;line-height:0.94;color:var(--t);margin-bottom:28px;position:relative;z-index:1}
+.cta-sub{font-size:15px;line-height:1.7;color:var(--tb);max-width:460px;margin-bottom:48px;position:relative;z-index:1}
+.cta-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:relative;z-index:1}
+.cta-note{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--td)}
+@media(max-width:768px){.cta-inner{padding:72px 24px}}
 
-    .hero-cta-group { display: flex; flex-direction: column; gap: 12px; }
-    .btn-primary {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: rgba(255,255,255,0.08);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.06);
-      border-radius: 4px;
-      padding: 13px 24px;
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-hi);
-      transition: opacity 200ms var(--spring);
-      width: fit-content;
-    }
-    .btn-primary:hover { opacity: 0.6; }
-    .btn-ghost {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-meta);
-      transition: color 200ms var(--spring);
-      width: fit-content;
-      padding: 4px 0;
-    }
-    .btn-ghost:hover { color: var(--text-body); }
-
-    .hero-right {
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-img {
-      position: absolute; inset: 0;
-      filter: grayscale(25%) brightness(0.7);
-    }
-    .hero-img img { height: 100%; }
-
-    /* SVG composition layer */
-    .hero-marks {
-      position: absolute; inset: 0;
-      pointer-events: none; z-index: 1;
-    }
-
-    .hero-meta-overlay {
-      position: absolute; bottom: 32px; left: 32px; right: 32px;
-      z-index: 2;
-      display: flex; justify-content: space-between; align-items: flex-end;
-    }
-
-    @media (max-width: 768px) {
-      #hero { grid-template-columns: 1fr; }
-      .hero-left { padding: 120px 24px 64px; border-right: none; border-bottom: var(--divider); }
-      .hero-right { height: 65vw; }
-    }
-
-    /* ── SPECS BAR ── */
-    #specs {
-      border-bottom: var(--divider);
-      overflow: hidden;
-    }
-    .specs-inner {
-      display: flex;
-      align-items: stretch;
-    }
-    .spec-item {
-      flex: 1;
-      padding: 28px 32px;
-      border-right: var(--divider);
-      display: flex; flex-direction: column; gap: 8px;
-    }
-    .spec-item:last-child { border-right: none; }
-    .spec-val {
-      font-size: clamp(24px, 3vw, 40px);
-      letter-spacing: -0.03em;
-      line-height: 1;
-      color: var(--text-hi);
-    }
-
-    @media (max-width: 768px) {
-      .specs-inner { flex-wrap: wrap; }
-      .spec-item { flex: 1 1 50%; border-bottom: var(--divider); }
-      .spec-item:nth-child(even) { border-right: none; }
-    }
-
-    /* ── LUTS GRID ── */
-    #luts { padding: 120px 0; }
-    .section-header {
-      display: flex; justify-content: space-between; align-items: baseline;
-      padding-bottom: 32px;
-      margin-bottom: 48px;
-      border-bottom: var(--divider);
-    }
-    .section-num { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-meta); }
-
-    .luts-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: rgba(255,255,255,0.04);
-    }
-    .lut-card {
-      background: var(--bg);
-      overflow: hidden;
-      position: relative;
-      aspect-ratio: 4/3;
-      cursor: default;
-    }
-    .lut-card img {
-      opacity: 0.55;
-      filter: grayscale(20%);
-      transition: opacity 500ms var(--spring), transform 600ms var(--spring);
-    }
-    .lut-card:hover img { opacity: 0.8; transform: scale(1.04); }
-    .lut-info {
-      position: absolute; inset: 0; padding: 16px;
-      display: flex; flex-direction: column; justify-content: flex-end;
-      background: linear-gradient(to top, rgba(4,4,4,0.92) 0%, rgba(4,4,4,0.3) 50%, transparent 100%);
-    }
-    .lut-num {
-      font-family: var(--mono); font-size: 8px;
-      letter-spacing: 0.16em; text-transform: uppercase;
-      color: var(--text-meta); margin-bottom: 4px;
-    }
-    .lut-name { font-size: 12px; color: var(--text-hi); letter-spacing: -0.01em; line-height: 1.3; }
-    .lut-style { font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-meta); margin-top: 2px; }
-
-    @media (max-width: 1024px) { .luts-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 600px) { .luts-grid { grid-template-columns: repeat(2, 1fr); } }
-
-    /* ── COMPAT SECTION ── */
-    #compat {
-      padding: 0 0 120px;
-    }
-    .compat-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: rgba(255,255,255,0.04);
-    }
-    .compat-panel {
-      background: var(--bg);
-      padding: 48px;
-    }
-    .compat-panel-el {
-      background: var(--surface);
-    }
-    .compat-label {
-      font-family: var(--mono); font-size: 9px;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--text-meta); margin-bottom: 24px;
-    }
-    .compat-title {
-      font-size: clamp(20px, 2.5vw, 30px);
-      letter-spacing: -0.02em;
-      line-height: 1.25;
-      color: var(--text-hi);
-      margin-bottom: 20px;
-    }
-    .compat-body {
-      font-size: 13px;
-      line-height: 1.75;
-      color: var(--text-body);
-      max-width: 380px;
-    }
-    .compat-list {
-      list-style: none;
-      display: flex; flex-direction: column;
-    }
-    .compat-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 14px 0;
-      border-bottom: var(--divider);
-      font-size: 12px;
-      color: var(--text-body);
-    }
-    .compat-item:first-child { border-top: var(--divider); }
-    .compat-key {
-      font-family: var(--mono); font-size: 9px;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--text-meta);
-    }
-    .compat-check {
-      font-family: var(--mono); font-size: 8px;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--text-meta);
-    }
-
-    @media (max-width: 768px) {
-      .compat-grid { grid-template-columns: 1fr; }
-      .compat-panel { padding: 40px 24px; }
-    }
-
-    /* ── HOW TO USE ── */
-    #howto { padding: 0 0 120px; }
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: rgba(255,255,255,0.04);
-    }
-    .step {
-      background: var(--bg);
-      padding: 48px 40px;
-    }
-    .step-n {
-      font-family: var(--mono); font-size: 9px;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--text-meta); margin-bottom: 40px;
-      display: block;
-    }
-    .step-title {
-      font-size: 16px;
-      letter-spacing: -0.02em;
-      color: var(--text-hi);
-      margin-bottom: 12px;
-    }
-    .step-body {
-      font-size: 12px;
-      line-height: 1.75;
-      color: var(--text-body);
-    }
-    @media (max-width: 768px) {
-      .steps-grid { grid-template-columns: 1fr; }
-      .step { padding: 40px 24px; }
-    }
-
-    /* ── BIG CTA ── */
-    #get {
-      padding: 0 0 120px;
-    }
-    .get-inner {
-      padding: 96px 80px;
-      background: var(--surface);
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.04);
-      position: relative;
-      overflow: hidden;
-    }
-    .get-marks {
-      position: absolute; inset: 0; pointer-events: none;
-    }
-    .get-label {
-      font-family: var(--mono); font-size: 9px;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--text-meta); margin-bottom: 32px;
-      display: block;
-    }
-    .get-headline {
-      font-size: clamp(32px, 5vw, 64px);
-      letter-spacing: -0.035em;
-      line-height: 1.05;
-      color: var(--text-hi);
-      margin-bottom: 20px;
-      position: relative; z-index: 1;
-    }
-    .get-sub {
-      font-size: 14px;
-      line-height: 1.7;
-      color: var(--text-body);
-      max-width: 440px;
-      margin-bottom: 48px;
-      position: relative; z-index: 1;
-    }
-    .get-cta-row {
-      display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
-      position: relative; z-index: 1;
-    }
-    .get-note {
-      font-family: var(--mono); font-size: 9px;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--text-meta);
-    }
-
-    @media (max-width: 768px) {
-      .get-inner { padding: 64px 24px; }
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      padding: 32px 0;
-      border-top: var(--divider);
-    }
-    footer .wrap {
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .footer-links { display: flex; gap: 24px; }
-    .footer-link {
-      font-family: var(--mono); font-size: 9px;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--text-meta);
-      transition: color 200ms;
-    }
-    .footer-link:hover { color: var(--text-body); }
-
-    /* ── REVEAL ── */
-    .r {
-      opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 600ms var(--spring), transform 600ms var(--spring);
-    }
-    .r.in { opacity: 1; transform: translateY(0); }
-    .d1 { transition-delay: 80ms; }
-    .d2 { transition-delay: 160ms; }
-    .d3 { transition-delay: 240ms; }
-  </style>
+/* FOOTER */
+footer{border-top:var(--dv);padding:32px 0}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-links{display:flex;gap:24px}
+.footer-link{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--td);transition:color 0.2s}
+.footer-link:hover{color:var(--tb)}
+</style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <span class="nav-brand">ODX Print Lab</span>
-  <div class="nav-sep"></div>
-  <span class="nav-by">by @odixbat</span>
-  <div class="nav-sep"></div>
-  <a href="#get" class="nav-cta">Get Free ↗</a>
+  <a href="/odixprintlab" class="nav-brand">ODX Print Lab</a>
+  <div class="nav-pipe"></div>
+  <a href="#looks" class="nav-link">Looks</a>
+  <a href="#pricing" class="nav-link">Pricing</a>
+  <a href="/" class="nav-link">ODIXBAT.COM</a>
+  <div class="nav-pipe"></div>
+  <a href="#cta" class="nav-cta">Get Free ↗</a>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-left">
-    <div>
+  <div class="hero-bg">
+    <img src="https://picsum.photos/seed/odx-hero-v3/1800/1000" alt=""><!-- Replace: real production still -->
+    <div class="hero-bg-grad"></div>
+  </div>
+  <svg class="hero-marks" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <circle cx="1180" cy="160" r="240" fill="none" stroke="rgba(245,245,245,0.04)" stroke-width="0.5"/>
+    <circle cx="1180" cy="160" r="420" fill="none" stroke="rgba(245,245,245,0.025)" stroke-width="0.5"/>
+    <line x1="0" y1="210" x2="840" y2="210" stroke="rgba(245,245,245,0.04)" stroke-width="0.5"/>
+    <line x1="980" y1="0" x2="1440" y2="480" stroke="rgba(245,245,245,0.03)" stroke-width="0.5"/>
+    <rect x="56" y="830" width="88" height="0.5" fill="rgba(245,245,245,0.1)"/>
+    <rect x="154" y="830" width="32" height="0.5" fill="rgba(245,245,245,0.05)"/>
+  </svg>
+  <div class="hero-content">
+    <div class="hero-left">
       <div class="hero-eyebrow">
         <div class="hero-dot"></div>
-        <span class="mono">Ulaanbaatar · Mongolia</span>
+        <span class="label">Ulaanbaatar · Mongolia · 2026</span>
       </div>
-
-      <div class="hero-product">ODX<br>PRINT<br>LAB</div>
-      <div class="hero-edition">[ Volume 01 ] — Free</div>
-      <div class="hero-line"></div>
-      <p class="hero-desc">
-        12 cinematic LUTs built from real production in Mongolia. Designed for S-Log, D-Log M, and flat profiles. Every grade tested in the field — not in theory.
-      </p>
+      <h1 class="hero-title">ODX<br>PRINT<br>LAB</h1>
+      <div class="hero-edition">
+        <div class="hero-edition-line"></div>
+        <span class="label">[ Volume 01 ] — 12 Cinematic Looks</span>
+      </div>
+      <p class="hero-sub">Mongolian light in every frame. LUTs graded from real log footage shot in Ulaanbaatar — not theory, not stock. Works on S-Log, D-Log M, and flat profiles.</p>
+      <div class="hero-ctas">
+        <a href="#cta" class="btn btn-solid">Get Vol 01 — Free</a>
+        <a href="#looks" class="btn btn-ghost">Explore the Looks</a>
+      </div>
     </div>
-
-    <div class="hero-cta-group">
-      <a href="#get" class="btn-primary">
-        Get the Pack — Free
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8L8 2M8 2H3M8 2v5"/></svg>
-      </a>
-      <a href="https://instagram.com/odixbat" target="_blank" class="btn-ghost">
-        @odixbat · Instagram
-        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7L7 1M7 1H3M7 1v4"/></svg>
-      </a>
+    <div class="hero-right">
+      <div class="hero-stat-row">
+        <div class="hero-stat"><div class="hero-stat-n">12</div><div class="label">Cinematic LUTs</div></div>
+        <div class="hero-stat"><div class="hero-stat-n">Free</div><div class="label">Vol 01</div></div>
+      </div>
+      <div class="hero-stat-row">
+        <div class="hero-stat"><div class="hero-stat-n">6yr</div><div class="label">Real production</div></div>
+        <div class="hero-stat"><div class="hero-stat-n">.cube</div><div class="label">Format</div></div>
+      </div>
     </div>
   </div>
+  <div class="hero-strip wrap">
+    <span class="label">S-Log 2/3 · D-Log M · F-Log · Flat Profile</span>
+    <span class="label">DaVinci · Premiere · FCP · Lightroom</span>
+  </div>
+</section>
 
-  <div class="hero-right">
-    <div class="hero-img">
-      <!-- Replace with real production still -->
-      <img src="https://picsum.photos/seed/odx-hero-main/900/1000" alt="ODX Print Lab cinematic grade">
-    </div>
-    <!-- SVG geometric composition layer -->
-    <svg class="hero-marks" width="100%" height="100%" viewBox="0 0 600 900" preserveAspectRatio="xMidYMid slice">
-      <line x1="0" y1="180" x2="600" y2="180" stroke="rgba(245,245,245,0.05)" stroke-width="0.5"/>
-      <line x1="0" y1="720" x2="600" y2="720" stroke="rgba(245,245,245,0.04)" stroke-width="0.5"/>
-      <circle cx="480" cy="120" r="80" fill="none" stroke="rgba(245,245,245,0.05)" stroke-width="0.5"/>
-      <circle cx="480" cy="120" r="160" fill="none" stroke="rgba(245,245,245,0.03)" stroke-width="0.5"/>
-      <line x1="380" y1="0" x2="600" y2="300" stroke="rgba(245,245,245,0.04)" stroke-width="0.5"/>
-      <rect x="40" y="780" width="120" height="0.5" fill="rgba(245,245,245,0.08)"/>
-    </svg>
-    <div class="hero-meta-overlay">
-      <span class="mono">S-Log · D-Log M · Flat</span>
-      <span class="mono">12 LUTs · Free</span>
+<!-- MARQUEE -->
+<div class="mq-wrap">
+  <div class="mq-track">
+    <div class="mq-item"><span>12 Cinematic LUTs</span><div class="mq-dot"></div><span>S-Log 2/3</span><div class="mq-dot"></div><span>D-Log M</span><div class="mq-dot"></div><span>F-Log</span><div class="mq-dot"></div><span>Flat Profile</span><div class="mq-dot"></div><span>DaVinci Resolve</span><div class="mq-dot"></div><span>Adobe Premiere</span><div class="mq-dot"></div><span>Final Cut Pro</span><div class="mq-dot"></div><span>Lightroom</span><div class="mq-dot"></div><span>.cube Format</span><div class="mq-dot"></div><span>Vol 01 — Free</span><div class="mq-dot"></div><span>Built in Ulaanbaatar</span><div class="mq-dot"></div></div>
+    <div class="mq-item"><span>12 Cinematic LUTs</span><div class="mq-dot"></div><span>S-Log 2/3</span><div class="mq-dot"></div><span>D-Log M</span><div class="mq-dot"></div><span>F-Log</span><div class="mq-dot"></div><span>Flat Profile</span><div class="mq-dot"></div><span>DaVinci Resolve</span><div class="mq-dot"></div><span>Adobe Premiere</span><div class="mq-dot"></div><span>Final Cut Pro</span><div class="mq-dot"></div><span>Lightroom</span><div class="mq-dot"></div><span>.cube Format</span><div class="mq-dot"></div><span>Vol 01 — Free</span><div class="mq-dot"></div><span>Built in Ulaanbaatar</span><div class="mq-dot"></div></div>
+  </div>
+</div>
+
+<!-- STATEMENT -->
+<section id="statement">
+  <div class="wrap">
+    <div class="stmt-grid r">
+      <div>
+        <div class="stmt-kv"><span>Creator</span><span>Odbat Batsaikhan</span></div>
+        <div class="stmt-kv"><span>Handle</span><span>@odixbat</span></div>
+        <div class="stmt-kv"><span>Location</span><span>Ulaanbaatar, MN</span></div>
+        <div class="stmt-kv"><span>Discipline</span><span>Colorist · Filmmaker</span></div>
+        <div class="stmt-kv"><span>Experience</span><span>6 years</span></div>
+        <div class="stmt-kv"><span>Source</span><span>Real footage, real grading</span></div>
+      </div>
+      <div class="r d1">
+        <p class="stmt-body">Not built from presets. Not made from stock footage. Every LUT was graded from actual production shot in Mongolia — steppe light, urban tungsten, overcast Ulaanbaatar mornings.</p>
+        <p class="stmt-sub">Six years of grading distilled into 12 looks you can apply in one click. Built for the cameras most filmmakers in this region actually shoot with.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- SPECS BAR -->
-<div id="specs">
-  <div class="specs-inner">
-    <div class="spec-item r">
-      <span class="mono">Volume</span>
-      <span class="spec-val">01</span>
+<!-- BEFORE / AFTER -->
+<section id="ba">
+  <div class="wrap">
+    <div class="ba-header r">
+      <div>
+        <div class="label" style="margin-bottom:8px">N°02 · Demo</div>
+        <div class="ba-title">Drag to compare</div>
+      </div>
+      <span class="label" style="color:var(--td)">← Drag the handle →</span>
     </div>
-    <div class="spec-item r d1">
-      <span class="mono">LUTs included</span>
-      <span class="spec-val">12</span>
-    </div>
-    <div class="spec-item r d2">
-      <span class="mono">Profiles</span>
-      <span class="spec-val">S · D · Flat</span>
-    </div>
-    <div class="spec-item r d3">
-      <span class="mono">Price</span>
-      <span class="spec-val">Free</span>
-    </div>
-    <div class="spec-item r" style="transition-delay:320ms">
-      <span class="mono">Software</span>
-      <span class="spec-val" style="font-size:clamp(14px,1.8vw,22px);letter-spacing:-0.02em">DaVinci · Premiere</span>
+    <div class="r d1">
+      <div class="ba-outer" id="baOuter">
+        <div class="ba-after"><img src="https://picsum.photos/seed/odx-after/1600/900" alt="Graded"></div><!-- Replace: graded frame -->
+        <div class="ba-before" id="baBefore"><img src="https://picsum.photos/seed/odx-before/1600/900" alt="Flat"></div><!-- Replace: flat frame same shot -->
+        <div class="ba-line" id="baLine"></div>
+        <div class="ba-grip" id="baGrip">⟺</div>
+        <div class="ba-tag ba-tag--before">Log / Flat</div>
+        <div class="ba-tag ba-tag--after">ODX Print Lab</div>
+        <div class="ba-lut-id" id="baLutId">001 — Steppe Dawn</div>
+      </div>
+      <div class="ba-btns">
+        <button class="ba-btn on" data-lut="001 — Steppe Dawn">Steppe Dawn</button>
+        <button class="ba-btn" data-lut="003 — Desert Bleach">Desert Bleach</button>
+        <button class="ba-btn" data-lut="005 — Kodak Amber">Kodak Amber</button>
+        <button class="ba-btn" data-lut="011 — ODIX Signature">Signature</button>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- LUTS GRID -->
-<section id="luts">
+<!-- THE LOOKS -->
+<section id="looks">
   <div class="wrap">
-    <div class="section-header r">
-      <div style="display:flex;align-items:baseline;gap:16px;">
-        <span class="section-num">N°01</span>
-        <span class="mono" style="color:var(--text-body)">The Pack</span>
-      </div>
-      <span class="mono">Vol 01 · 12 Looks</span>
+    <div class="sec-hd r">
+      <div><div class="sec-n" style="margin-bottom:10px">N°03 · Vol 01</div><div class="sec-h">The 12 Looks</div></div>
+      <span class="label">Free · .cube · 12 LUTs</span>
     </div>
   </div>
-
   <div class="wrap">
-    <div class="luts-grid">
-
-      <div class="lut-card r">
-        <img src="https://picsum.photos/seed/lut01/400/300" alt="">
-        <div class="lut-info">
-          <div class="lut-num">001</div>
-          <div class="lut-name">Steppe Dawn</div>
-          <div class="lut-style">Warm · Open Shadow</div>
-        </div>
-      </div>
-
-      <div class="lut-card r d1">
-        <img src="https://picsum.photos/seed/lut02/400/300" alt="">
-        <div class="lut-info">
-          <div class="lut-num">002</div>
-          <div class="lut-name">Urban Grey</div>
-          <div class="lut-style">Neutral · Lifted Blacks</div>
-        </div>
-      </div>
-
-      <div class="lut-card r d2">
-        <img src="https://picsum.photos/seed/lut03/400/300" alt="">
-        <div class="lut-info">
-          <div class="lut-num">003</div>
-          <div class="lut-name">Desert Bleach</div>
-          <div class="lut-style">Faded · High Key</div>
-        </div>
-      </div>
-
-      <div class="lut-card r d3">
-        <img src="https://picsum.photos/seed/lut04/400/300" alt="">
-        <div class="lut-info">
-          <div class="lut-num">004</div>
-          <div class="lut-name">Silver Print</div>
-          <div class="lut-style">Cool · Film Grain</div>
-        </div>
-      </div>
-
-      <div class="lut-card r">
-        <img src="https://picsum.photos/seed/lut05/400/300" alt="">
-        <div class="lut-info">
-          <div class="lut-num">005</div>
-          <div class="lut-name">Kodak Amber</div>
-          <div class="lut-style">Warm · Film Reference</div>
-        </div>
-      </div>
-
-      <div class="lut-card r d1">
-        <img src="https://picsum.photos/seed/lut06/400/300" alt="">
-        <div class="lut-info">
-          <div class="lut-num">006</div>
-          <div class="lut-name">Night Flat</div>
-          <div class="lut-style">Low Contrast · Tungsten</div>
-        </div>
-      </div>
-
-      <div class="lut-card r d2">
-        <img src="https://picsum.photos/seed/lut07/400/300" alt="">
-        <div class="lut-info">
-          <div class="lut-num">007</div>
-          <div class="lut-name">Raw Landscape</div>
-          <div class="lut-style">Natural · Wide Gamut</div>
-        </div>
-      </div>
-
-      <div class="lut-card r d3">
-        <img src="https://picsum.photos/seed/lut08/400/300" alt="">
-        <div class="lut-info">
-          <div class="lut-num">008</div>
-          <div class="lut-name">Fuji Flat</div>
-          <div class="lut-style">Cool · Green Shadow</div>
-        </div>
-      </div>
-
-      <div class="lut-card r">
-        <img src="https://picsum.photos/seed/lut09/400/300" alt="">
-        <div class="lut-info">
-          <div class="lut-num">009</div>
-          <div class="lut-name">Print Black</div>
-          <div class="lut-style">Contrast · Crushed</div>
-        </div>
-      </div>
-
-      <div class="lut-card r d1">
-        <img src="https://picsum.photos/seed/lut10/400/300" alt="">
-        <div class="lut-info">
-          <div class="lut-num">010</div>
-          <div class="lut-name">Ember Tone</div>
-          <div class="lut-style">Warm Shadow · Mid Push</div>
-        </div>
-      </div>
-
-      <div class="lut-card r d2">
-        <img src="https://picsum.photos/seed/lut11/400/300" alt="">
-        <div class="lut-info">
-          <div class="lut-num">011</div>
-          <div class="lut-name">ODIX Signature</div>
-          <div class="lut-style">House Grade</div>
-        </div>
-      </div>
-
-      <div class="lut-card r d3">
-        <img src="https://picsum.photos/seed/lut12/400/300" alt="">
-        <div class="lut-info">
-          <div class="lut-num">012</div>
-          <div class="lut-name">UB Street</div>
-          <div class="lut-style">Urban · Desaturated</div>
-        </div>
-      </div>
-
+    <div class="luts-g">
+      <div class="lc lc--wide r"><img src="https://picsum.photos/seed/lw1/800/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-001</div><div class="lc-info"><div class="lc-id">001</div><div class="lc-name">Steppe Dawn</div><div class="lc-style">Warm · Open Shadow · Outdoor</div></div></div>
+      <div class="lc r d1"><img src="https://picsum.photos/seed/lp2/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-002</div><div class="lc-info"><div class="lc-id">002</div><div class="lc-name">Urban Grey</div><div class="lc-style">Neutral · Lifted Blacks</div></div></div>
+      <div class="lc r d2"><img src="https://picsum.photos/seed/lp3/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-003</div><div class="lc-info"><div class="lc-id">003</div><div class="lc-name">Desert Bleach</div><div class="lc-style">Faded · High Key</div></div></div>
+      <div class="lc r"><img src="https://picsum.photos/seed/lp4/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-004</div><div class="lc-info"><div class="lc-id">004</div><div class="lc-name">Silver Print</div><div class="lc-style">Cool · Film Grain</div></div></div>
+      <div class="lc r d1"><img src="https://picsum.photos/seed/lp5/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-005</div><div class="lc-info"><div class="lc-id">005</div><div class="lc-name">Kodak Amber</div><div class="lc-style">Warm · Film Reference</div></div></div>
+      <div class="lc r d2"><img src="https://picsum.photos/seed/lp6/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-006</div><div class="lc-info"><div class="lc-id">006</div><div class="lc-name">Night Flat</div><div class="lc-style">Low Contrast · Tungsten</div></div></div>
+      <div class="lc lc--wide r"><img src="https://picsum.photos/seed/lw2/800/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-007</div><div class="lc-info"><div class="lc-id">007</div><div class="lc-name">Raw Landscape</div><div class="lc-style">Natural · Wide Gamut · Outdoors</div></div></div>
+      <div class="lc r d1"><img src="https://picsum.photos/seed/lp8/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-008</div><div class="lc-info"><div class="lc-id">008</div><div class="lc-name">Fuji Flat</div><div class="lc-style">Cool · Green Shadow</div></div></div>
+      <div class="lc r d2"><img src="https://picsum.photos/seed/lp9/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-009</div><div class="lc-info"><div class="lc-id">009</div><div class="lc-name">Print Black</div><div class="lc-style">Contrast · Crushed Blacks</div></div></div>
+      <div class="lc r"><img src="https://picsum.photos/seed/lp10/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-010</div><div class="lc-info"><div class="lc-id">010</div><div class="lc-name">Ember Tone</div><div class="lc-style">Warm Shadow · Mid Push</div></div></div>
+      <div class="lc r d1"><img src="https://picsum.photos/seed/lp11/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-011</div><div class="lc-info"><div class="lc-id">011</div><div class="lc-name">ODIX Signature</div><div class="lc-style">House Grade · All-round</div></div></div>
+      <div class="lc r d2"><img src="https://picsum.photos/seed/lp12/400/540" alt=""><div class="lc-frame"></div><div class="lc-badge">DX-012</div><div class="lc-info"><div class="lc-id">012</div><div class="lc-name">UB Street</div><div class="lc-style">Urban · Desaturated</div></div></div>
+    </div>
+    <div class="luts-strip r">
+      <div class="luts-strip-item"><div class="label" style="margin-bottom:6px">Format</div><div style="font-size:13px;color:var(--tb)">.cube — industry standard</div></div>
+      <div class="luts-strip-item"><div class="label" style="margin-bottom:6px">Profiles</div><div style="font-size:13px;color:var(--tb)">S-Log · D-Log M · Flat</div></div>
+      <div class="luts-strip-item"><div class="label" style="margin-bottom:6px">Intensity</div><div style="font-size:13px;color:var(--tb)">Apply at 60–80%</div></div>
+      <div class="luts-strip-item"><div class="label" style="margin-bottom:6px">Vol 01</div><div style="font-size:13px;color:var(--tb)">12 looks · Free forever</div></div>
     </div>
   </div>
 </section>
@@ -680,140 +334,139 @@
 <!-- COMPAT -->
 <section id="compat">
   <div class="wrap">
-    <div class="section-header r">
-      <div style="display:flex;align-items:baseline;gap:16px;">
-        <span class="section-num">N°02</span>
-        <span class="mono" style="color:var(--text-body)">Compatibility</span>
+    <div class="sec-hd r"><div><div class="sec-n" style="margin-bottom:10px">N°04 · Specs</div><div class="sec-h">Works everywhere</div></div></div>
+    <div class="compat-g r d1">
+      <div class="compat-col">
+        <div class="compat-col-label">Camera profiles</div>
+        <div class="compat-col-h">Every major log<br>and flat profile.</div>
+        <p class="compat-col-b">Graded and tested on Sony, Fuji, DJI, and Canon cameras. If your camera shoots log or flat — these LUTs work.</p>
       </div>
-    </div>
-    <div class="compat-grid">
-      <div class="compat-panel r">
-        <div class="compat-label">What you need</div>
-        <h2 class="compat-title">Built for real cameras<br>and real software.</h2>
-        <p class="compat-body">
-          Every LUT was graded from actual S-Log, D-Log M, and flat profile footage shot in Ulaanbaatar. They work on Sony, Fuji, DJI, and any camera shooting a log or flat profile.
-        </p>
-      </div>
-      <div class="compat-panel compat-panel-el r d1">
-        <div class="compat-label">Tested profiles</div>
-        <ul class="compat-list">
-          <li class="compat-item">
-            <span class="compat-key">Sony S-Log 2 / 3</span>
-            <span class="compat-check">✓ Ready</span>
-          </li>
-          <li class="compat-item">
-            <span class="compat-key">DJI D-Log M</span>
-            <span class="compat-check">✓ Ready</span>
-          </li>
-          <li class="compat-item">
-            <span class="compat-key">Fuji F-Log</span>
-            <span class="compat-check">✓ Ready</span>
-          </li>
-          <li class="compat-item">
-            <span class="compat-key">Flat / Picture Profile</span>
-            <span class="compat-check">✓ Ready</span>
-          </li>
-          <li class="compat-item">
-            <span class="compat-key">DaVinci Resolve</span>
-            <span class="compat-check">✓ .cube</span>
-          </li>
-          <li class="compat-item">
-            <span class="compat-key">Adobe Premiere</span>
-            <span class="compat-check">✓ .cube</span>
-          </li>
-          <li class="compat-item">
-            <span class="compat-key">Final Cut Pro</span>
-            <span class="compat-check">✓ .cube</span>
-          </li>
-          <li class="compat-item">
-            <span class="compat-key">Lightroom / Camera Raw</span>
-            <span class="compat-check">✓ .xmp</span>
-          </li>
-        </ul>
+      <div class="compat-col compat-col--alt">
+        <div class="compat-col-label">Compatibility</div>
+        <div class="compat-row"><span class="compat-key">Sony S-Log 2 / S-Log 3</span><span class="compat-val">✓ Tested</span></div>
+        <div class="compat-row"><span class="compat-key">DJI D-Log M</span><span class="compat-val">✓ Tested</span></div>
+        <div class="compat-row"><span class="compat-key">Fuji F-Log / F-Log 2</span><span class="compat-val">✓ Tested</span></div>
+        <div class="compat-row"><span class="compat-key">Canon C-Log 2 / 3</span><span class="compat-val">✓ Compatible</span></div>
+        <div class="compat-row"><span class="compat-key">Flat / Picture Profile</span><span class="compat-val">✓ Tested</span></div>
+        <div class="compat-row"><span class="compat-key">DaVinci Resolve 18/19</span><span class="compat-val">✓ .cube</span></div>
+        <div class="compat-row"><span class="compat-key">Adobe Premiere Pro</span><span class="compat-val">✓ .cube</span></div>
+        <div class="compat-row"><span class="compat-key">Final Cut Pro</span><span class="compat-val">✓ .cube</span></div>
+        <div class="compat-row"><span class="compat-key">Lightroom / Camera Raw</span><span class="compat-val">✓ .xmp</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- HOW TO USE -->
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="sec-hd r"><div><div class="sec-n" style="margin-bottom:10px">N°05 · Collection</div><div class="sec-h">Two volumes</div></div></div>
+    <div class="pricing-g r d1">
+      <div class="pc">
+        <span class="pc-badge">Vol 01 — Free forever</span>
+        <div class="pc-name">ODX Print Lab Vol 01</div>
+        <div class="pc-price">Free</div>
+        <div class="pc-price-sub">DM "LUT" on Instagram</div>
+        <div class="pc-features">
+          <div class="pc-feature"><span class="pc-check">—</span><span>12 cinematic LUTs (.cube)</span></div>
+          <div class="pc-feature"><span class="pc-check">—</span><span>S-Log, D-Log M, Flat profiles</span></div>
+          <div class="pc-feature"><span class="pc-check">—</span><span>DaVinci · Premiere · FCP · LR</span></div>
+          <div class="pc-feature"><span class="pc-check">—</span><span>Application guide included</span></div>
+          <div class="pc-feature"><span class="pc-check">—</span><span>Personal &amp; commercial use</span></div>
+        </div>
+        <a href="https://instagram.com/odixbat" target="_blank" class="btn btn-solid" style="width:100%;justify-content:center">DM to Get It ↗</a>
+      </div>
+      <div class="pc pc--alt">
+        <span class="pc-badge">Vol 02 — Available now</span>
+        <div class="pc-name">ODX Print Lab Vol 02</div>
+        <div class="pc-price">DM</div>
+        <div class="pc-price-sub">Pricing via Instagram</div>
+        <div class="pc-features">
+          <div class="pc-feature"><span class="pc-check">—</span><span>Expanded film stock references</span></div>
+          <div class="pc-feature"><span class="pc-check">—</span><span>Kodak · Fuji · ODIX originals</span></div>
+          <div class="pc-feature"><span class="pc-check">—</span><span>All Vol 01 profiles + F-Log 2</span></div>
+          <div class="pc-feature"><span class="pc-check">—</span><span>Node tree presets for DaVinci</span></div>
+          <div class="pc-feature"><span class="pc-check">—</span><span>PDF reference card</span></div>
+        </div>
+        <a href="https://instagram.com/odixbat" target="_blank" class="btn btn-solid" style="width:100%;justify-content:center">Inquire ↗</a>
+      </div>
+      <div class="pc">
+        <span class="pc-badge">Coming soon</span>
+        <div class="pc-name">DaVinci Masterclass</div>
+        <div class="pc-price">—</div>
+        <div class="pc-price-sub">Subscribe for updates</div>
+        <div class="pc-features">
+          <div class="pc-feature"><span class="pc-check">—</span><span>Full color grading course</span></div>
+          <div class="pc-feature"><span class="pc-check">—</span><span>Real production node trees</span></div>
+          <div class="pc-feature"><span class="pc-check">—</span><span>Film emulation workflow</span></div>
+          <div class="pc-feature"><span class="pc-check">—</span><span>Grading for Mongolian light</span></div>
+          <div class="pc-feature"><span class="pc-check">—</span><span>Lifetime access</span></div>
+        </div>
+        <a href="/" class="btn btn-ghost" style="width:100%;justify-content:center">Subscribe ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO -->
 <section id="howto">
   <div class="wrap">
-    <div class="section-header r">
-      <div style="display:flex;align-items:baseline;gap:16px;">
-        <span class="section-num">N°03</span>
-        <span class="mono" style="color:var(--text-body)">How to use</span>
-      </div>
-    </div>
-    <div class="steps-grid">
-      <div class="step r">
-        <span class="step-n">Step 01</span>
-        <div class="step-title">DM the keyword</div>
-        <p class="step-body">Send "LUT" to @odixbat on Instagram. You'll get the download link directly. No email. No form.</p>
-      </div>
-      <div class="step r d1">
-        <span class="step-n">Step 02</span>
-        <div class="step-title">Download and import</div>
-        <p class="step-body">Unzip the pack. Import the .cube files into DaVinci Resolve via the LUT folder, or use the Creative Looks panel in Premiere.</p>
-      </div>
-      <div class="step r d2">
-        <span class="step-n">Step 03</span>
-        <div class="step-title">Grade at 50–70%</div>
-        <p class="step-body">Apply to your log or flat footage. Start at 70% opacity and adjust exposure before the LUT. Each LUT is named for its intent — trust the intent.</p>
-      </div>
+    <div class="sec-hd r"><div><div class="sec-n" style="margin-bottom:10px">N°06 · Process</div><div class="sec-h">Three steps</div></div></div>
+    <div class="steps">
+      <div class="step r"><span class="step-n">Step 01 — Get</span><div class="step-h">Send "LUT" to @odixbat</div><p class="step-b">Open Instagram, DM the word LUT to @odixbat. The download link arrives directly in your messages — no email, no form, no wait.</p></div>
+      <div class="step r d1"><span class="step-n">Step 02 — Import</span><div class="step-h">Drop the .cube files</div><p class="step-b">In DaVinci: Color Management → LUT folder → paste files → refresh. In Premiere: Lumetri Color → Creative → Browse to your .cube files.</p></div>
+      <div class="step r d2"><span class="step-n">Step 03 — Grade</span><div class="step-h">Apply at 60–80%</div><p class="step-b">Expose your log footage correctly before applying. Start at 70% opacity. Each LUT name tells you its intent — trust it, then refine to taste.</p></div>
     </div>
   </div>
 </section>
 
-<!-- GET -->
-<section id="get">
+<!-- CTA -->
+<section id="cta">
   <div class="wrap">
-    <div class="section-header r">
-      <div style="display:flex;align-items:baseline;gap:16px;">
-        <span class="section-num">N°04</span>
-        <span class="mono" style="color:var(--text-body)">Get the Pack</span>
-      </div>
-    </div>
-    <div class="get-inner r">
-      <!-- SVG marks -->
-      <svg class="get-marks" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice">
-        <circle cx="1100" cy="200" r="300" fill="none" stroke="rgba(245,245,245,0.04)" stroke-width="0.5"/>
-        <circle cx="1100" cy="200" r="200" fill="none" stroke="rgba(245,245,245,0.03)" stroke-width="0.5"/>
-        <line x1="0" y1="60" x2="700" y2="60" stroke="rgba(245,245,245,0.05)" stroke-width="0.5"/>
-        <line x1="0" y1="340" x2="600" y2="340" stroke="rgba(245,245,245,0.04)" stroke-width="0.5"/>
-        <rect x="60" y="320" width="40" height="0.5" fill="rgba(245,245,245,0.1)"/>
+    <div class="cta-inner r">
+      <svg class="cta-marks" viewBox="0 0 1200 480" preserveAspectRatio="xMidYMid slice">
+        <circle cx="1100" cy="240" r="320" fill="none" stroke="rgba(245,245,245,0.04)" stroke-width="0.5"/>
+        <circle cx="1100" cy="240" r="200" fill="none" stroke="rgba(245,245,245,0.03)" stroke-width="0.5"/>
+        <line x1="0" y1="80" x2="720" y2="80" stroke="rgba(245,245,245,0.05)" stroke-width="0.5"/>
+        <line x1="0" y1="400" x2="580" y2="400" stroke="rgba(245,245,245,0.04)" stroke-width="0.5"/>
+        <rect x="80" y="372" width="48" height="0.5" fill="rgba(245,245,245,0.1)"/>
       </svg>
-
-      <span class="get-label">ODX Print Lab · Vol 01 · Free</span>
-      <h2 class="get-headline">12 LUTs.<br>DM to get it.</h2>
-      <p class="get-sub">Send the word "LUT" to @odixbat on Instagram. Pack arrives in your DMs — no form, no email, no wait.</p>
-      <div class="get-cta-row">
-        <a href="https://instagram.com/odixbat" target="_blank" class="btn-primary">
-          DM on Instagram — LUT
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8L8 2M8 2H3M8 2v5"/></svg>
-        </a>
-        <span class="get-note">Free forever · Vol 02 available separately</span>
+      <span class="cta-label">Vol 01 · Free · 12 LUTs</span>
+      <h2 class="cta-h">DM "LUT"<br>on Instagram.</h2>
+      <p class="cta-sub">Send the keyword to @odixbat. The pack arrives in your DMs — 12 cinematic LUTs, no strings. Free forever.</p>
+      <div class="cta-row">
+        <a href="https://instagram.com/odixbat" target="_blank" class="btn btn-solid btn-pill">Open Instagram ↗</a>
+        <span class="cta-note">@odixbat · keyword: LUT</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <div class="wrap">
-    <span class="mono">© 2026 ODIXBAT.COM · ULN / MN</span>
+    <span class="label">© 2026 ODIXBAT.COM · Ulaanbaatar / Mongolia</span>
     <div class="footer-links">
       <a href="https://instagram.com/odixbat" target="_blank" class="footer-link">Instagram</a>
       <a href="https://youtube.com/@odixbat" target="_blank" class="footer-link">YouTube</a>
-      <a href="https://odixbat.com" class="footer-link">ODIXBAT.COM</a>
+      <a href="/" class="footer-link">ODIXBAT.COM</a>
     </div>
   </div>
 </footer>
 
 <script>
-  const io = new IntersectionObserver((e) => {
-    e.forEach(el => { if (el.isIntersecting) { el.target.classList.add('in'); io.unobserve(el.target); } });
-  }, { threshold: 0.06, rootMargin: '0px 0px -24px 0px' });
-  document.querySelectorAll('.r').forEach(el => io.observe(el));
+const outer=document.getElementById('baOuter'),bfr=document.getElementById('baBefore'),line=document.getElementById('baLine'),grip=document.getElementById('baGrip'),lutId=document.getElementById('baLutId');
+let drag=false;
+function pos(p){p=Math.min(95,Math.max(5,p));bfr.style.clipPath=`inset(0 ${100-p}% 0 0)`;line.style.left=grip.style.left=p+'%'}
+pos(50);
+outer.addEventListener('mousedown',()=>drag=true);
+outer.addEventListener('touchstart',()=>drag=true,{passive:true});
+window.addEventListener('mouseup',()=>drag=false);
+window.addEventListener('touchend',()=>drag=false);
+window.addEventListener('mousemove',e=>{if(drag){const r=outer.getBoundingClientRect();pos(((e.clientX-r.left)/r.width)*100)}});
+window.addEventListener('touchmove',e=>{if(drag){const r=outer.getBoundingClientRect();pos(((e.touches[0].clientX-r.left)/r.width)*100)}},{passive:true});
+document.querySelectorAll('.ba-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.ba-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');lutId.textContent=b.dataset.lut;pos(50)})});
+const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:0.05,rootMargin:'0px 0px -32px 0px'});
+document.querySelectorAll('.r').forEach(el=>io.observe(el));
 </script>
 </body>
 </html>
