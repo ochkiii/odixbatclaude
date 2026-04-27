@@ -19,6 +19,17 @@
   to     = "/index.html"
   status = 200
 
+# ODX Print Lab
+[[redirects]]
+  from   = "/odixprintlab"
+  to     = "/odixprintlab/index.html"
+  status = 200
+
+[[redirects]]
+  from   = "/odixprintlab/"
+  to     = "/odixprintlab/index.html"
+  status = 200
+
 # Tools hub
 [[redirects]]
   from   = "/tools"
