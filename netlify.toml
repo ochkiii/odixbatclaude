@@ -13,11 +13,12 @@
 # intercepting the homepage and returning it as a 404.
 # ═════════════════════════════════════════════════════════════════
 
-# Homepage — explicit passthrough
+# Homepage → ODX Print Lab
 [[redirects]]
   from   = "/"
-  to     = "/index.html"
-  status = 200
+  to     = "/odixprintlab"
+  status = 301
+  force  = true
 
 # ODX Print Lab
 [[redirects]]
