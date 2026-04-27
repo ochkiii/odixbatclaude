@@ -432,6 +432,45 @@ img { display: block; max-width: 100%; }
 .mb-desc  { margin-top:6px; font-size:13px; line-height:1.6; color:var(--tb); max-width:420px; }
 
 /* ══════════════════════════════════════════════════════════════
+   PRINT LAB
+══════════════════════════════════════════════════════════════ */
+.pl-banner {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: rgba(255,255,255,.04);
+  margin-top: 48px;
+}
+.pl-left {
+  background: var(--bg); padding: 48px;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 32px;
+}
+.pl-right {
+  background: var(--sf); padding: 48px;
+  display: flex; flex-direction: column; gap: 0;
+}
+.pl-vols { display: flex; flex-direction: column; }
+.pl-vol {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 0; border-bottom: var(--dv);
+  transition: opacity .2s;
+}
+.pl-vol:first-child { border-top: var(--dv); }
+.pl-vol:hover { opacity: .65; }
+.pl-vol-name { font-size: 13px; color: var(--t); letter-spacing: -.01em; }
+.pl-vol-meta { display: flex; align-items: center; gap: 12px; }
+.pl-badge {
+  font-family: var(--fm); font-size: 8px;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--tc); padding: 3px 8px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.07);
+  border-radius: 2px;
+}
+.pl-arr { font-size: 11px; color: var(--tc); }
+@media (max-width: 768px) {
+  .pl-banner { grid-template-columns: 1fr; }
+  .pl-left, .pl-right { padding: 32px 24px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
    ABOUT
 ══════════════════════════════════════════════════════════════ */
 .ab-grid { display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start; margin-top:56px; }
@@ -1091,6 +1130,64 @@ footer {
       <p class="mb-desc">LUTs, node tree preset, and PDF reference card. Comment FOUNDATION on the pinned post — gets sent directly via DM.</p>
     </div>
     <a href="https://instagram.com/odixbat" target="_blank" rel="noopener" class="btn-pill">Get It Free ↗</a>
+  </div>
+</section>
+
+
+<!-- ══ PRINT LAB ══════════════════════════════════════════════════ -->
+<section class="sec" id="printlab">
+  <div class="rev">
+    <div class="sec-tag">007 · ODX Print Lab</div>
+    <h2 class="sec-h">Cinematic LUTs from<br>real Mongolian production.</h2>
+    <p style="margin-top:14px;font-size:15px;letter-spacing:-.16px;line-height:1.65;color:var(--tb);max-width:480px;margin-bottom:0">Every LUT graded from actual log footage shot in Ulaanbaatar — not theory, not stock. Designed for S-Log, D-Log M, and flat profiles.</p>
+  </div>
+
+  <div class="pl-banner rev d1">
+    <div class="pl-left">
+      <div>
+        <div class="sec-tag" style="margin-bottom:12px">The collection</div>
+        <div style="font-size:clamp(18px,2vw,26px);letter-spacing:-.8px;line-height:1.2;color:var(--t)">Two volumes.<br>One method.</div>
+      </div>
+      <div>
+        <p style="font-size:13px;line-height:1.7;color:var(--tb);margin-bottom:28px">Vol 01 is free — 12 LUTs covering the core looks from steppe dawn to urban night. Vol 02 expands into film stock references: Kodak, Fuji, and original ODIX signatures.</p>
+        <a href="/odixprintlab" class="btn-pill">View the full pack ↗</a>
+      </div>
+    </div>
+    <div class="pl-right">
+      <div class="sec-tag" style="margin-bottom:24px">Volumes</div>
+      <div class="pl-vols">
+        <a href="/odixprintlab" class="pl-vol">
+          <div>
+            <div class="pl-vol-name">ODX Print Lab Vol 01</div>
+            <div style="font-family:var(--fm);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--tc);margin-top:3px">12 LUTs · S-Log · D-Log M · Flat</div>
+          </div>
+          <div class="pl-vol-meta">
+            <span class="pl-badge">Free</span>
+            <span class="pl-arr">↗</span>
+          </div>
+        </a>
+        <a href="/odixprintlab" class="pl-vol">
+          <div>
+            <div class="pl-vol-name">ODX Print Lab Vol 02</div>
+            <div style="font-family:var(--fm);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--tc);margin-top:3px">Kodak · Fuji · Original ODIX Signatures</div>
+          </div>
+          <div class="pl-vol-meta">
+            <span class="pl-badge">Available</span>
+            <span class="pl-arr">↗</span>
+          </div>
+        </a>
+        <a href="/odixprintlab" class="pl-vol">
+          <div>
+            <div class="pl-vol-name">DaVinci Masterclass</div>
+            <div style="font-family:var(--fm);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--tc);margin-top:3px">Full grading course · Node trees</div>
+          </div>
+          <div class="pl-vol-meta">
+            <span class="pl-badge">Soon</span>
+            <span class="pl-arr">↗</span>
+          </div>
+        </a>
+      </div>
+    </div>
   </div>
 </section>
 
