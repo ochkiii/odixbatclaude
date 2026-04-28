@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Post — Odixbat</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#040404;--ink:#f0ece2;--mute:rgba(240,236,226,.35);--border:rgba(240,236,226,.07);
+  --cyan:#00c9b1;
+  --disp:'Bebas Neue',sans-serif;--mono:'Space Mono',monospace;--body:'Inter',system-ui,sans-serif;
+}
+html{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px}
+body{min-height:100vh}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 2.5rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(4,4,4,.96);backdrop-filter:blur(12px);z-index:10}
+.nav-logo{font-family:var(--disp);font-size:1.1rem;letter-spacing:.18em;text-decoration:none;color:var(--ink)}
+.nav-back{font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--mute);transition:color .15s}
+.nav-back:hover{color:var(--ink)}
+
+.cover{width:100%;max-height:420px;object-fit:cover;filter:grayscale(1) contrast(1.05);display:block}
+
+.article{max-width:640px;margin:0 auto;padding:3rem 2.5rem 5rem}
+.article-meta{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:1.25rem}
+.article-title{font-family:var(--disp);font-size:clamp(2rem,5vw,3.5rem);letter-spacing:.04em;color:var(--ink);line-height:.95;margin-bottom:1.5rem}
+.article-excerpt{font-family:var(--body);font-size:1rem;color:rgba(240,236,226,.6);line-height:1.8;margin-bottom:2rem;border-left:2px solid var(--cyan);padding-left:1.25rem}
+.article-body{font-family:var(--body);font-size:.9rem;color:rgba(240,236,226,.75);line-height:1.9}
+.article-body h1,.article-body h2,.article-body h3{font-family:var(--disp);letter-spacing:.04em;color:var(--ink);margin:2rem 0 .75rem}
+.article-body h1{font-size:2rem}.article-body h2{font-size:1.6rem}.article-body h3{font-size:1.3rem}
+.article-body p{margin-bottom:1.2rem}
+.article-body a{color:var(--cyan);text-decoration:none}
+.article-body a:hover{text-decoration:underline}
+.article-body code{font-family:var(--mono);font-size:.8rem;background:rgba(240,236,226,.06);padding:.15rem .35rem;color:var(--ink)}
+.article-body pre{background:rgba(240,236,226,.04);border:1px solid var(--border);padding:1.25rem;overflow-x:auto;margin:1.5rem 0}
+.article-body pre code{background:none;padding:0}
+.article-body ul,.article-body ol{margin:0 0 1.2rem 1.5rem}
+.article-body li{margin-bottom:.4rem}
+.article-body img{max-width:100%;height:auto;margin:1.5rem 0;filter:grayscale(.5)}
+.article-body blockquote{border-left:2px solid var(--border);padding-left:1.25rem;color:var(--mute);margin:1.5rem 0;font-style:italic}
+.article-body hr{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+.article-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.article-tag{font-family:var(--mono);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--border);color:var(--mute);padding:.15rem .4rem}
+
+.not-found{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;text-align:center;padding:4rem 2rem}
+.not-found-title{font-family:var(--disp);font-size:4rem;color:rgba(240,236,226,.06);margin-bottom:.5rem}
+.not-found-txt{font-family:var(--mono);font-size:.55rem;color:var(--mute);letter-spacing:.1em;text-transform:uppercase}
+
+footer{border-top:1px solid var(--border);padding:2rem 2.5rem;display:flex;align-items:center;justify-content:space-between}
+.ft-logo{font-family:var(--disp);font-size:.9rem;letter-spacing:.18em;color:var(--mute)}
+.ft-links{display:flex;gap:1.5rem}
+.ft-links a{font-family:var(--mono);font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--mute);transition:color .15s}
+.ft-links a:hover{color:var(--ink)}
+
+@media(max-width:600px){nav{padding:1rem 1.25rem}.article{padding:2rem 1.25rem 4rem}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">ODIXBAT</a>
+  <a href="/blog" class="nav-back">← All Posts</a>
+</nav>
+
+<div id="content">
+  <div class="not-found"><div class="not-found-title">...</div><div class="not-found-txt">Loading</div></div>
+</div>
+
+<footer>
+  <div class="ft-logo">ODIXBAT</div>
+  <div class="ft-links">
+    <a href="/blog">Blog</a>
+    <a href="/portfolio">Portfolio</a>
+    <a href="/odixprintlab">Print Lab</a>
+  </div>
+</footer>
+
+<script>
+var slug = new URLSearchParams(location.search).get('slug');
+if (!slug) {
+  document.getElementById('content').innerHTML = '<div class="not-found"><div class="not-found-title">404</div><div class="not-found-txt">No post specified</div></div>';
+} else {
+  fetch('/api/blog?slug=' + encodeURIComponent(slug))
+    .then(function(r){ return r.json(); })
+    .then(function(post){
+      if (!post || post.status === 'draft') {
+        document.getElementById('content').innerHTML = '<div class="not-found"><div class="not-found-title">404</div><div class="not-found-txt">Post not found</div></div>';
+        return;
+      }
+      document.title = post.title + ' — Odixbat';
+      var cover = post.cover ? '<img class="cover" src="'+esc(post.cover)+'" alt="">' : '';
+      var tags = (post.tags||'').split(',').map(function(t){ return t.trim(); }).filter(Boolean);
+      var tagHtml = tags.length ? '<div class="article-tags">'+tags.map(function(t){ return '<span class="article-tag">'+esc(t)+'</span>'; }).join('')+'</div>' : '';
+      document.getElementById('content').innerHTML =
+        cover
+        + '<div class="article">'
+        + '<div class="article-meta">'+esc(post.date||'')+(post.tags?' · '+esc(tags[0]||''):'')+'</div>'
+        + '<div class="article-title">'+esc(post.title||'')+'</div>'
+        + (post.excerpt ? '<div class="article-excerpt">'+esc(post.excerpt)+'</div>' : '')
+        + '<div class="article-body" id="article-body"></div>'
+        + tagHtml
+        + '</div>';
+      // Basic markdown rendering
+      document.getElementById('article-body').innerHTML = md(post.body || '');
+    })
+    .catch(function(){
+      document.getElementById('content').innerHTML = '<div class="not-found"><div class="not-found-title">Error</div><div class="not-found-txt">Could not load post</div></div>';
+    });
+}
+
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function md(src) {
+  return src
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/^---$/gm,'<hr>')
+    .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs,function(m){ return '<ul>'+m+'</ul>'; })
+    .replace(/\n\n/g,'</p><p>')
+    .replace(/^(?!<[h|u|b|l|h])/gm,'')
+    .split('\n\n').map(function(b){ return b.startsWith('<') ? b : '<p>'+b+'</p>'; }).join('\n');
+}
+</script>
+</body>
+</html>

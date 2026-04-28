@@ -339,9 +339,54 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13
 
 /* ── SCROLLABLE CONTENT ── */
 .scroll-content{flex:1;overflow-y:auto}
+
+/* ── AUTH GATE ── */
+.auth-overlay{
+  position:fixed;inset:0;background:var(--bg);z-index:999;
+  display:flex;align-items:center;justify-content:center;
+}
+.auth-overlay.gone{display:none}
+.auth-box{
+  width:320px;text-align:center;
+  border:1px solid var(--border);background:var(--panel);padding:2.5rem 2rem;
+}
+.auth-wordmark{font-family:var(--disp);font-size:2rem;letter-spacing:.18em;color:var(--text);margin-bottom:.2rem}
+.auth-sub{font-family:var(--mono);font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin-bottom:2rem}
+.auth-input{
+  width:100%;background:var(--surface);border:1px solid var(--border2);
+  font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;
+  color:var(--text);padding:.75rem 1rem;outline:none;
+  transition:border-color .15s;margin-bottom:1rem;text-align:center;
+}
+.auth-input:focus{border-color:var(--cyan)}
+.auth-btn{
+  width:100%;background:var(--cyan);color:var(--bg);border:none;cursor:pointer;
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;
+  font-weight:700;padding:.75rem;transition:background .15s;
+}
+.auth-btn:hover{background:rgba(0,201,177,.85)}
+.auth-err{font-family:var(--mono);font-size:.5rem;color:var(--red);letter-spacing:.06em;margin-top:.75rem;min-height:1.2em}
+.auth-hint{font-family:var(--mono);font-size:.44rem;color:var(--mute);letter-spacing:.06em;margin-top:1.5rem;line-height:1.8}
+
+/* ── STATUS BADGES ── */
+.badge-published{border-color:rgba(76,175,110,.3);color:var(--green);background:rgba(76,175,110,.06)}
+.badge-draft{border-color:var(--border2);color:var(--mute)}
 </style>
 </head>
 <body>
+
+<!-- ── AUTH GATE ── -->
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-box">
+    <div class="auth-wordmark">ODIXBAT</div>
+    <div class="auth-sub">Studio · Admin Access</div>
+    <input class="auth-input" id="auth-pw" type="password" placeholder="Password"
+      autocomplete="current-password" onkeydown="if(event.key==='Enter')checkAuth()">
+    <button class="auth-btn" onclick="checkAuth()">Enter Studio</button>
+    <div class="auth-err" id="auth-err"></div>
+    <div class="auth-hint">Access restricted to studio team.</div>
+  </div>
+</div>
 
 <div class="toast" id="toast"><div class="toast-dot"></div><span id="toast-msg"></span></div>
 
@@ -391,6 +436,28 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13
       <span class="sb-count" id="tools-cnt">0</span>
     </div>
 
+    <div class="sb-section">Live Content</div>
+    <div class="sb-item" onclick="switchPanel('portmgr')" id="nav-portmgr">
+      <svg class="sb-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10"/><path d="M5 3V1h6v2"/></svg>
+      Portfolio
+      <span class="sb-count" id="pm-cnt">—</span>
+    </div>
+    <div class="sb-item" onclick="switchPanel('blog')" id="nav-blog">
+      <svg class="sb-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h12v12H2z"/><path d="M5 6h6M5 9h4"/></svg>
+      Blog
+      <span class="sb-count" id="blog-cnt">—</span>
+    </div>
+    <div class="sb-item" onclick="switchPanel('store')" id="nav-store">
+      <svg class="sb-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h2l2 8h6l2-6H5"/><circle cx="7" cy="13" r="1"/><circle cx="11" cy="13" r="1"/></svg>
+      Store
+      <span class="sb-count" id="store-cnt">—</span>
+    </div>
+    <div class="sb-item" onclick="switchPanel('bookings')" id="nav-bookings">
+      <svg class="sb-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11"/><path d="M5 1v4M11 1v4M2 7h12"/></svg>
+      Bookings
+      <span class="sb-count" id="bk-cnt">—</span>
+    </div>
+
     <div class="sb-section">Print Lab</div>
     <div class="sb-item" onclick="switchPanel('printlab')" id="nav-printlab">
       <svg class="sb-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="14" height="10"/><path d="M4 14h8M8 11v3"/></svg>
@@ -407,7 +474,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13
     <hr class="sb-divider">
 
     <div class="sb-footer">
-      <div class="sb-hint">Data autosaved in browser.<br>Generate code → paste into<br>GitHub to go live.</div>
+      <div class="sb-hint">Live Content saves instantly.<br>Print Lab · Portfolio · Blog<br>Store · Bookings → API.</div>
     </div>
   </aside>
 
@@ -546,6 +613,102 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13
         <div style="margin-top:2rem">
           <button class="btn btn-primary" onclick="savePrintLab()">Save Print Lab Changes</button>
           <span style="font-family:var(--mono);font-size:.48rem;color:var(--mute);letter-spacing:.06em;margin-left:1rem">Changes are saved to browser storage and appear instantly on the Print Lab page</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PORTFOLIO MANAGER -->
+    <div class="panel" id="panel-portmgr">
+      <div class="page-hd">
+        <div class="page-hd-l">
+          <div class="page-title">PORTFOLIO</div>
+          <div class="page-sub">Live — changes appear instantly at odixbat.com/portfolio</div>
+        </div>
+        <div class="page-hd-r">
+          <a href="/portfolio" target="_blank" class="btn btn-ghost">↗ Preview</a>
+          <button class="btn btn-primary" onclick="openPMDrawer()">+ Add Work</button>
+        </div>
+      </div>
+      <div class="scroll-content">
+        <div class="content" style="padding-bottom:2rem">
+          <div id="pm-loading" style="font-family:var(--mono);font-size:.55rem;color:var(--mute);padding:2rem 0;letter-spacing:.1em">Loading from server...</div>
+          <div class="proj-grid" id="pm-grid"></div>
+          <div id="pm-empty" class="empty-state" style="display:none">
+            <div class="empty-num">0</div>
+            <div class="empty-txt">No portfolio works yet<br>Click + Add Work to get started</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOG -->
+    <div class="panel" id="panel-blog">
+      <div class="page-hd">
+        <div class="page-hd-l">
+          <div class="page-title">BLOG</div>
+          <div class="page-sub">Posts appear live at odixbat.com/blog</div>
+        </div>
+        <div class="page-hd-r">
+          <a href="/blog" target="_blank" class="btn btn-ghost">↗ Preview</a>
+          <button class="btn btn-primary" onclick="openBlogDrawer()">+ New Post</button>
+        </div>
+      </div>
+      <div class="scroll-content">
+        <div class="content" style="padding-bottom:2rem">
+          <div id="blog-loading" style="font-family:var(--mono);font-size:.55rem;color:var(--mute);padding:2rem 0;letter-spacing:.1em">Loading from server...</div>
+          <div class="tools-list" id="blog-list"></div>
+          <div id="blog-empty" class="empty-state" style="display:none">
+            <div class="empty-num">0</div>
+            <div class="empty-txt">No posts yet<br>Click + New Post to get started</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORE -->
+    <div class="panel" id="panel-store">
+      <div class="page-hd">
+        <div class="page-hd-l">
+          <div class="page-title">STORE</div>
+          <div class="page-sub">Digital products sold at odixbat.com/store via Stripe</div>
+        </div>
+        <div class="page-hd-r">
+          <a href="/store" target="_blank" class="btn btn-ghost">↗ Preview</a>
+          <button class="btn btn-primary" onclick="openStoreDrawer()">+ Add Product</button>
+        </div>
+      </div>
+      <div class="scroll-content">
+        <div class="content" style="padding-bottom:2rem">
+          <div id="store-loading" style="font-family:var(--mono);font-size:.55rem;color:var(--mute);padding:2rem 0;letter-spacing:.1em">Loading from server...</div>
+          <div class="tools-list" id="store-list"></div>
+          <div id="store-empty" class="empty-state" style="display:none">
+            <div class="empty-num">0</div>
+            <div class="empty-txt">No products yet<br>Click + Add Product to get started</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOKINGS -->
+    <div class="panel" id="panel-bookings">
+      <div class="page-hd">
+        <div class="page-hd-l">
+          <div class="page-title">BOOKINGS</div>
+          <div class="page-sub">Client enquiries submitted at odixbat.com/book</div>
+        </div>
+        <div class="page-hd-r">
+          <a href="/book" target="_blank" class="btn btn-ghost">↗ Booking Form</a>
+          <button class="btn btn-ghost" onclick="loadBookings()">↺ Refresh</button>
+        </div>
+      </div>
+      <div class="scroll-content">
+        <div class="content" style="padding-bottom:2rem">
+          <div id="bk-loading" style="font-family:var(--mono);font-size:.55rem;color:var(--mute);padding:2rem 0;letter-spacing:.1em">Loading from server...</div>
+          <div class="tools-list" id="bk-list"></div>
+          <div id="bk-empty" class="empty-state" style="display:none">
+            <div class="empty-num">0</div>
+            <div class="empty-txt">No bookings yet<br>Share odixbat.com/book with clients</div>
+          </div>
         </div>
       </div>
     </div>
@@ -835,6 +998,195 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13
   </div>
 </div>
 
+<!-- ── PORTFOLIO MANAGER DRAWER ── -->
+<div class="drawer-bg" id="pm-drawer-bg" onclick="closePMDrawer()"></div>
+<div class="drawer" id="pm-drawer">
+  <div class="drawer-hd">
+    <div class="drawer-title" id="pm-drawer-title">ADD WORK</div>
+    <button class="drawer-close" onclick="closePMDrawer()">✕ Close</button>
+  </div>
+  <div class="drawer-body">
+    <div class="form-group">
+      <label class="form-label">Title <span>*</span></label>
+      <input class="form-input" id="pm-title" type="text" placeholder="e.g. STEPPE LIGHT">
+    </div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">Category</label>
+        <select class="form-select" id="pm-cat">
+          <option value="film">Film</option>
+          <option value="commercial">Commercial</option>
+          <option value="bts">BTS</option>
+          <option value="colorgrade">Color Grade</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Date</label>
+        <input class="form-input" id="pm-date" type="text" placeholder="2025">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Client</label>
+      <input class="form-input" id="pm-client" type="text" placeholder="Client name or brand">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Thumbnail URL</label>
+      <input class="form-input" id="pm-thumb" type="text" placeholder="https://..." oninput="pmPreviewThumb()">
+      <img id="pm-thumb-preview" style="width:100%;height:100px;object-fit:cover;margin-top:.5rem;display:none;border:1px solid var(--border)" alt="">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Video Embed URL</label>
+      <input class="form-input" id="pm-video" type="text" placeholder="https://www.youtube.com/embed/...">
+      <div class="form-hint">Use YouTube or Vimeo embed URL (not the watch URL)</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-textarea" id="pm-desc" rows="3" placeholder="Brief project description..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Published</label>
+      <select class="form-select" id="pm-published">
+        <option value="true">Published — visible on site</option>
+        <option value="false">Draft — hidden from site</option>
+      </select>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="btn btn-danger" id="pm-delete-btn" onclick="deletePMConfirm()" style="display:none">Delete</button>
+    <div style="display:flex;gap:.5rem;margin-left:auto">
+      <button class="btn btn-ghost" onclick="closePMDrawer()">Cancel</button>
+      <button class="btn btn-primary" onclick="savePM()">Save Work</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── BLOG DRAWER ── -->
+<div class="drawer-bg" id="blog-drawer-bg" onclick="closeBlogDrawer()"></div>
+<div class="drawer" id="blog-drawer">
+  <div class="drawer-hd">
+    <div class="drawer-title" id="blog-drawer-title">NEW POST</div>
+    <button class="drawer-close" onclick="closeBlogDrawer()">✕ Close</button>
+  </div>
+  <div class="drawer-body">
+    <div class="form-group">
+      <label class="form-label">Title <span>*</span></label>
+      <input class="form-input" id="blog-title" type="text" placeholder="Post title">
+    </div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">Slug <span>*</span></label>
+        <input class="form-input" id="blog-slug" type="text" placeholder="my-post-title" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'-')">
+      </div>
+      <div>
+        <label class="form-label">Tags (comma-sep)</label>
+        <input class="form-input" id="blog-tags" type="text" placeholder="color, davinci, lut">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Cover Image URL</label>
+      <input class="form-input" id="blog-cover" type="text" placeholder="https://...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Excerpt</label>
+      <textarea class="form-textarea" id="blog-excerpt" rows="2" placeholder="Short preview shown in the blog index..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Body (Markdown)</label>
+      <textarea class="form-textarea" id="blog-body" rows="10" placeholder="Write your post in Markdown..." style="min-height:200px;font-size:.58rem;line-height:1.8"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Status</label>
+      <select class="form-select" id="blog-status">
+        <option value="published">Published</option>
+        <option value="draft">Draft — hidden from site</option>
+      </select>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="btn btn-danger" id="blog-delete-btn" onclick="deleteBlogConfirm()" style="display:none">Delete</button>
+    <div style="display:flex;gap:.5rem;margin-left:auto">
+      <button class="btn btn-ghost" onclick="closeBlogDrawer()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveBlogPost()">Save Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── STORE DRAWER ── -->
+<div class="drawer-bg" id="store-drawer-bg" onclick="closeStoreDrawer()"></div>
+<div class="drawer" id="store-drawer">
+  <div class="drawer-hd">
+    <div class="drawer-title" id="store-drawer-title">ADD PRODUCT</div>
+    <button class="drawer-close" onclick="closeStoreDrawer()">✕ Close</button>
+  </div>
+  <div class="drawer-body">
+    <div class="form-group">
+      <label class="form-label">Product Name <span>*</span></label>
+      <input class="form-input" id="sp-name" type="text" placeholder="e.g. ODX Print Lab Vol 02">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-textarea" id="sp-desc" rows="3" placeholder="What's included, who it's for..."></textarea>
+    </div>
+    <div class="form-row">
+      <div>
+        <label class="form-label">Price (USD) <span>*</span></label>
+        <input class="form-input" id="sp-price" type="number" min="1" step="1" placeholder="25">
+      </div>
+      <div>
+        <label class="form-label">Stripe Price ID <span>*</span></label>
+        <input class="form-input" id="sp-stripe-id" type="text" placeholder="price_xxx">
+        <div class="form-hint">From Stripe Dashboard → Products</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Cover Image URL</label>
+      <input class="form-input" id="sp-image" type="text" placeholder="https://...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Download File URL</label>
+      <input class="form-input" id="sp-file" type="text" placeholder="https://... (direct download link)">
+      <div class="form-hint">This URL is only exposed to verified buyers — never public</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Features (one per line)</label>
+      <textarea class="form-textarea" id="sp-features" rows="4" placeholder="12 LUT files (.cube)&#10;S-Log, D-Log M support&#10;DaVinci · Premiere · LR"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Status</label>
+      <select class="form-select" id="sp-status">
+        <option value="active">Active — visible in store</option>
+        <option value="draft">Draft — hidden</option>
+      </select>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="btn btn-danger" id="sp-delete-btn" onclick="deleteStoreConfirm()" style="display:none">Delete</button>
+    <div style="display:flex;gap:.5rem;margin-left:auto">
+      <button class="btn btn-ghost" onclick="closeStoreDrawer()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveStoreProduct()">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── BOOKING DETAIL DRAWER ── -->
+<div class="drawer-bg" id="bk-drawer-bg" onclick="closeBKDrawer()"></div>
+<div class="drawer" id="bk-drawer">
+  <div class="drawer-hd">
+    <div class="drawer-title" id="bk-drawer-title">BOOKING</div>
+    <button class="drawer-close" onclick="closeBKDrawer()">✕ Close</button>
+  </div>
+  <div class="drawer-body" id="bk-drawer-body"></div>
+  <div class="drawer-footer">
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <button class="btn btn-ghost" onclick="setBKStatus('new')">New</button>
+      <button class="btn btn-ghost" onclick="setBKStatus('reviewed')">Reviewed</button>
+      <button class="btn btn-primary" onclick="setBKStatus('confirmed')">Confirm</button>
+      <button class="btn btn-danger" onclick="setBKStatus('declined')">Decline</button>
+    </div>
+    <button class="btn btn-ghost" onclick="closeBKDrawer()" style="margin-left:auto">Close</button>
+  </div>
+</div>
+
 <script>
 // ════════════════════════════════
 // STATE
@@ -845,6 +1197,7 @@ var editType = null;
 var dirty = false;
 var pfFilter = 'all';
 var pfImageData = '';
+var PW_KEY = 'odix_admin_pw';
 
 // ════════════════════════════════
 // PERSIST
@@ -900,6 +1253,10 @@ function switchPanel(name) {
   if (nav) nav.classList.add('active');
   if (name === 'generate') generateAll();
   if (name === 'printlab') renderPrintLab();
+  if (name === 'portmgr') loadPM();
+  if (name === 'blog') loadBlog();
+  if (name === 'store') loadStore();
+  if (name === 'bookings') loadBookings();
 }
 
 // ════════════════════════════════
@@ -1516,9 +1873,429 @@ function previewLutUrl() {
 }
 
 // ════════════════════════════════
+// AUTH GATE
+// ════════════════════════════════
+function checkAuth() {
+  var input = document.getElementById('auth-pw').value;
+  var stored = localStorage.getItem(PW_KEY) || 'odix2026';
+  if (input === stored) {
+    sessionStorage.setItem('odix_auth', '1');
+    document.getElementById('auth-overlay').classList.add('gone');
+    document.getElementById('auth-pw').value = '';
+  } else {
+    var err = document.getElementById('auth-err');
+    err.textContent = 'Incorrect password.';
+    document.getElementById('auth-pw').value = '';
+    document.getElementById('auth-pw').focus();
+    setTimeout(function(){ err.textContent = ''; }, 3000);
+  }
+}
+
+// ════════════════════════════════
+// API HELPERS
+// ════════════════════════════════
+function apiToken() { return localStorage.getItem(PW_KEY) || 'odix2026'; }
+function apiGet(path) { return fetch(path).then(function(r){ return r.json(); }); }
+function apiPost(path, data) {
+  return fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-token': apiToken() },
+    body: JSON.stringify(data)
+  }).then(function(r){ return r.json(); });
+}
+
+// ════════════════════════════════
+// PORTFOLIO MANAGER (Live API)
+// ════════════════════════════════
+var PM = [];
+var pmEditId = null;
+
+function loadPM() {
+  document.getElementById('pm-loading').style.display = '';
+  document.getElementById('pm-grid').innerHTML = '';
+  document.getElementById('pm-empty').style.display = 'none';
+  apiGet('/api/portfolio').then(function(data) {
+    PM = Array.isArray(data) ? data : [];
+    document.getElementById('pm-loading').style.display = 'none';
+    document.getElementById('pm-cnt').textContent = PM.length;
+    renderPM();
+  }).catch(function() {
+    document.getElementById('pm-loading').textContent = 'Error loading — check function logs';
+  });
+}
+
+function renderPM() {
+  var grid = document.getElementById('pm-grid');
+  var empty = document.getElementById('pm-empty');
+  var pub = PM.filter(function(p){ return p.published !== false; });
+  if (!PM.length) { grid.innerHTML = ''; empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+  grid.innerHTML = PM.map(function(p, i) {
+    var thumb = p.thumbnail
+      ? '<img src="'+p.thumbnail+'" alt="" style="width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.1)">'
+      : '<div class="pc-thumb-empty">No image</div>';
+    var pubBadge = p.published !== false ? '<span class="badge badge-published">Live</span>' : '<span class="badge badge-draft">Draft</span>';
+    var catBadge = '<span class="badge badge-film">'+esc(p.category||'film')+'</span>';
+    return '<div class="proj-card" onclick="openPMDrawer('+i+')">'
+      + '<div class="pc-thumb" style="height:120px;background:var(--faint)">'+thumb+'</div>'
+      + '<div class="pc-actions"><button class="btn btn-ghost btn-icon" onclick="event.stopPropagation();openPMDrawer('+i+')" title="Edit">✏</button></div>'
+      + '<div class="pc-body">'
+      + '<div class="pc-cat">'+catBadge+' '+pubBadge+'</div>'
+      + '<div class="pc-name" style="font-size:.85rem">'+esc(p.title||'Untitled')+'</div>'
+      + '<div class="pc-meta">'+esc(p.client||'')+(p.date?' · '+esc(p.date):'')+'</div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function openPMDrawer(idx) {
+  pmEditId = idx !== undefined ? idx : null;
+  document.getElementById('pm-drawer-title').textContent = idx !== undefined ? 'EDIT WORK' : 'ADD WORK';
+  document.getElementById('pm-delete-btn').style.display = idx !== undefined ? 'inline-flex' : 'none';
+  ['pm-title','pm-client','pm-date','pm-thumb','pm-video','pm-desc'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('pm-cat').value = 'film';
+  document.getElementById('pm-published').value = 'true';
+  document.getElementById('pm-thumb-preview').style.display = 'none';
+  if (idx !== undefined) {
+    var p = PM[idx];
+    document.getElementById('pm-title').value = p.title || '';
+    document.getElementById('pm-cat').value = p.category || 'film';
+    document.getElementById('pm-client').value = p.client || '';
+    document.getElementById('pm-date').value = p.date || '';
+    document.getElementById('pm-thumb').value = p.thumbnail || '';
+    document.getElementById('pm-video').value = p.video || '';
+    document.getElementById('pm-desc').value = p.description || '';
+    document.getElementById('pm-published').value = p.published !== false ? 'true' : 'false';
+    if (p.thumbnail) { var prev = document.getElementById('pm-thumb-preview'); prev.src = p.thumbnail; prev.style.display = 'block'; }
+  }
+  document.getElementById('pm-drawer-bg').classList.add('open');
+  document.getElementById('pm-drawer').classList.add('open');
+  setTimeout(function(){ document.getElementById('pm-title').focus(); }, 300);
+}
+function closePMDrawer() {
+  document.getElementById('pm-drawer-bg').classList.remove('open');
+  document.getElementById('pm-drawer').classList.remove('open');
+}
+function pmPreviewThumb() {
+  var url = document.getElementById('pm-thumb').value.trim();
+  var prev = document.getElementById('pm-thumb-preview');
+  if (url) { prev.src = url; prev.style.display = 'block'; }
+  else { prev.style.display = 'none'; }
+}
+function savePM() {
+  var title = document.getElementById('pm-title').value.trim();
+  if (!title) { toast('Enter a title', 'err'); document.getElementById('pm-title').focus(); return; }
+  var item = {
+    id: pmEditId !== null ? PM[pmEditId].id : Date.now(),
+    title: title,
+    category: document.getElementById('pm-cat').value,
+    client: document.getElementById('pm-client').value.trim(),
+    date: document.getElementById('pm-date').value.trim(),
+    thumbnail: document.getElementById('pm-thumb').value.trim(),
+    video: document.getElementById('pm-video').value.trim(),
+    description: document.getElementById('pm-desc').value.trim(),
+    published: document.getElementById('pm-published').value === 'true'
+  };
+  if (pmEditId !== null) { PM[pmEditId] = item; } else { PM.unshift(item); }
+  apiPost('/api/portfolio', PM).then(function(j) {
+    if (j && j.ok) { toast('Portfolio saved — live ✓', 'ok'); }
+    else { toast('Server error: ' + (j.error||''), 'err'); }
+  }).catch(function(){ toast('Offline — not saved to server', 'err'); });
+  renderPM(); closePMDrawer();
+  document.getElementById('pm-cnt').textContent = PM.length;
+}
+function deletePMConfirm() {
+  if (pmEditId === null) return;
+  var name = PM[pmEditId].title;
+  confirm_('Delete Work', 'Delete "'+name+'"? This cannot be undone.', function(){
+    PM.splice(pmEditId, 1);
+    apiPost('/api/portfolio', PM).then(function(j){
+      if (j && j.ok) toast('Work deleted ✓', 'info');
+    });
+    renderPM(); closePMDrawer();
+    document.getElementById('pm-cnt').textContent = PM.length;
+  });
+}
+
+// ════════════════════════════════
+// BLOG (Live API)
+// ════════════════════════════════
+var BLOG = [];
+var blogEditId = null;
+
+function loadBlog() {
+  document.getElementById('blog-loading').style.display = '';
+  document.getElementById('blog-list').innerHTML = '';
+  document.getElementById('blog-empty').style.display = 'none';
+  apiGet('/api/blog').then(function(data) {
+    BLOG = Array.isArray(data) ? data : [];
+    document.getElementById('blog-loading').style.display = 'none';
+    document.getElementById('blog-cnt').textContent = BLOG.length;
+    renderBlog();
+  }).catch(function() {
+    document.getElementById('blog-loading').textContent = 'Error loading';
+  });
+}
+
+function renderBlog() {
+  var list = document.getElementById('blog-list');
+  var empty = document.getElementById('blog-empty');
+  if (!BLOG.length) { list.innerHTML = ''; empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+  list.innerHTML = BLOG.map(function(p, i) {
+    var statusBadge = p.status === 'published'
+      ? '<span class="badge badge-published">Live</span>'
+      : '<span class="badge badge-draft">Draft</span>';
+    return '<div class="tool-row" onclick="openBlogDrawer('+i+')">'
+      + '<div class="tr-icon">.md</div>'
+      + '<div class="tr-body">'
+      + '<div class="tr-name">'+esc(p.title||'Untitled')+' &nbsp;'+statusBadge+'</div>'
+      + '<div class="tr-meta">/blog/'+esc(p.slug||'')+(p.tags?' &nbsp;·&nbsp; '+esc(p.tags):'')+'</div>'
+      + '</div>'
+      + '<div class="tr-actions"><button class="btn btn-ghost btn-icon" onclick="event.stopPropagation();openBlogDrawer('+i+')" title="Edit">✏</button></div>'
+      + '</div>';
+  }).join('');
+}
+
+function openBlogDrawer(idx) {
+  blogEditId = idx !== undefined ? idx : null;
+  document.getElementById('blog-drawer-title').textContent = idx !== undefined ? 'EDIT POST' : 'NEW POST';
+  document.getElementById('blog-delete-btn').style.display = idx !== undefined ? 'inline-flex' : 'none';
+  ['blog-title','blog-slug','blog-tags','blog-cover','blog-excerpt','blog-body'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('blog-status').value = 'published';
+  if (idx !== undefined) {
+    var p = BLOG[idx];
+    document.getElementById('blog-title').value = p.title || '';
+    document.getElementById('blog-slug').value = p.slug || '';
+    document.getElementById('blog-tags').value = p.tags || '';
+    document.getElementById('blog-cover').value = p.cover || '';
+    document.getElementById('blog-excerpt').value = p.excerpt || '';
+    document.getElementById('blog-body').value = p.body || '';
+    document.getElementById('blog-status').value = p.status || 'published';
+  }
+  document.getElementById('blog-drawer-bg').classList.add('open');
+  document.getElementById('blog-drawer').classList.add('open');
+  setTimeout(function(){ document.getElementById('blog-title').focus(); }, 300);
+}
+function closeBlogDrawer() {
+  document.getElementById('blog-drawer-bg').classList.remove('open');
+  document.getElementById('blog-drawer').classList.remove('open');
+}
+function saveBlogPost() {
+  var title = document.getElementById('blog-title').value.trim();
+  var slug = document.getElementById('blog-slug').value.trim();
+  if (!title) { toast('Enter a title', 'err'); document.getElementById('blog-title').focus(); return; }
+  if (!slug) { slug = title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); document.getElementById('blog-slug').value = slug; }
+  var post = {
+    id: blogEditId !== null ? BLOG[blogEditId].id : Date.now(),
+    title: title, slug: slug,
+    tags: document.getElementById('blog-tags').value.trim(),
+    cover: document.getElementById('blog-cover').value.trim(),
+    excerpt: document.getElementById('blog-excerpt').value.trim(),
+    body: document.getElementById('blog-body').value,
+    status: document.getElementById('blog-status').value,
+    date: blogEditId !== null ? (BLOG[blogEditId].date || new Date().toISOString().slice(0,10)) : new Date().toISOString().slice(0,10)
+  };
+  if (blogEditId !== null) { BLOG[blogEditId] = post; } else { BLOG.unshift(post); }
+  apiPost('/api/blog', BLOG).then(function(j) {
+    if (j && j.ok) toast('Post saved — live ✓', 'ok');
+    else toast('Server error: ' + (j.error||''), 'err');
+  }).catch(function(){ toast('Offline — not saved', 'err'); });
+  renderBlog(); closeBlogDrawer();
+  document.getElementById('blog-cnt').textContent = BLOG.length;
+}
+function deleteBlogConfirm() {
+  if (blogEditId === null) return;
+  var name = BLOG[blogEditId].title;
+  confirm_('Delete Post', 'Delete "'+name+'"? Cannot be undone.', function(){
+    BLOG.splice(blogEditId, 1);
+    apiPost('/api/blog', BLOG).then(function(j){ if (j&&j.ok) toast('Post deleted', 'info'); });
+    renderBlog(); closeBlogDrawer();
+    document.getElementById('blog-cnt').textContent = BLOG.length;
+  });
+}
+
+// ════════════════════════════════
+// STORE (Live API)
+// ════════════════════════════════
+var STORE_PRODUCTS = [];
+var spEditId = null;
+
+function loadStore() {
+  document.getElementById('store-loading').style.display = '';
+  document.getElementById('store-list').innerHTML = '';
+  document.getElementById('store-empty').style.display = 'none';
+  apiGet('/api/store').then(function(data) {
+    STORE_PRODUCTS = Array.isArray(data) ? data : [];
+    document.getElementById('store-loading').style.display = 'none';
+    document.getElementById('store-cnt').textContent = STORE_PRODUCTS.length;
+    renderStore();
+  }).catch(function() {
+    document.getElementById('store-loading').textContent = 'Error loading';
+  });
+}
+
+function renderStore() {
+  var list = document.getElementById('store-list');
+  var empty = document.getElementById('store-empty');
+  if (!STORE_PRODUCTS.length) { list.innerHTML = ''; empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+  list.innerHTML = STORE_PRODUCTS.map(function(p, i) {
+    var badge = p.status === 'active'
+      ? '<span class="badge badge-published">Active</span>'
+      : '<span class="badge badge-draft">Draft</span>';
+    return '<div class="tool-row" onclick="openStoreDrawer('+i+')">'
+      + '<div class="tr-icon">$</div>'
+      + '<div class="tr-body">'
+      + '<div class="tr-name">'+esc(p.name||'Unnamed')+' &nbsp;'+badge+'</div>'
+      + '<div class="tr-meta">$'+esc(String(p.price||0))+' USD &nbsp;·&nbsp; '+esc(p.stripeId||'no stripe ID')+'</div>'
+      + '</div>'
+      + '<div class="tr-actions"><button class="btn btn-ghost btn-icon" onclick="event.stopPropagation();openStoreDrawer('+i+')" title="Edit">✏</button></div>'
+      + '</div>';
+  }).join('');
+}
+
+function openStoreDrawer(idx) {
+  spEditId = idx !== undefined ? idx : null;
+  document.getElementById('store-drawer-title').textContent = idx !== undefined ? 'EDIT PRODUCT' : 'ADD PRODUCT';
+  document.getElementById('sp-delete-btn').style.display = idx !== undefined ? 'inline-flex' : 'none';
+  ['sp-name','sp-desc','sp-price','sp-stripe-id','sp-image','sp-file','sp-features'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('sp-status').value = 'active';
+  if (idx !== undefined) {
+    var p = STORE_PRODUCTS[idx];
+    document.getElementById('sp-name').value = p.name || '';
+    document.getElementById('sp-desc').value = p.description || '';
+    document.getElementById('sp-price').value = p.price || '';
+    document.getElementById('sp-stripe-id').value = p.stripeId || '';
+    document.getElementById('sp-image').value = p.image || '';
+    document.getElementById('sp-file').value = p.fileUrl || '';
+    document.getElementById('sp-features').value = (p.features||[]).join('\n');
+    document.getElementById('sp-status').value = p.status || 'active';
+  }
+  document.getElementById('store-drawer-bg').classList.add('open');
+  document.getElementById('store-drawer').classList.add('open');
+  setTimeout(function(){ document.getElementById('sp-name').focus(); }, 300);
+}
+function closeStoreDrawer() {
+  document.getElementById('store-drawer-bg').classList.remove('open');
+  document.getElementById('store-drawer').classList.remove('open');
+}
+function saveStoreProduct() {
+  var name = document.getElementById('sp-name').value.trim();
+  var stripeId = document.getElementById('sp-stripe-id').value.trim();
+  var price = parseFloat(document.getElementById('sp-price').value);
+  if (!name) { toast('Enter a product name', 'err'); return; }
+  if (!stripeId) { toast('Enter a Stripe Price ID', 'err'); return; }
+  if (!price || price < 1) { toast('Enter a valid price', 'err'); return; }
+  var prod = {
+    id: spEditId !== null ? STORE_PRODUCTS[spEditId].id : Date.now(),
+    name: name, description: document.getElementById('sp-desc').value.trim(),
+    price: price, stripeId: stripeId,
+    image: document.getElementById('sp-image').value.trim(),
+    fileUrl: document.getElementById('sp-file').value.trim(),
+    features: document.getElementById('sp-features').value.split('\n').filter(Boolean),
+    status: document.getElementById('sp-status').value
+  };
+  if (spEditId !== null) { STORE_PRODUCTS[spEditId] = prod; } else { STORE_PRODUCTS.unshift(prod); }
+  apiPost('/api/store', STORE_PRODUCTS).then(function(j) {
+    if (j && j.ok) toast('Product saved ✓', 'ok');
+    else toast('Server error: ' + (j.error||''), 'err');
+  }).catch(function(){ toast('Offline — not saved', 'err'); });
+  renderStore(); closeStoreDrawer();
+  document.getElementById('store-cnt').textContent = STORE_PRODUCTS.length;
+}
+function deleteStoreConfirm() {
+  if (spEditId === null) return;
+  var name = STORE_PRODUCTS[spEditId].name;
+  confirm_('Delete Product', 'Delete "'+name+'"?', function(){
+    STORE_PRODUCTS.splice(spEditId, 1);
+    apiPost('/api/store', STORE_PRODUCTS).then(function(j){ if(j&&j.ok) toast('Product deleted','info'); });
+    renderStore(); closeStoreDrawer();
+    document.getElementById('store-cnt').textContent = STORE_PRODUCTS.length;
+  });
+}
+
+// ════════════════════════════════
+// BOOKINGS (Live API)
+// ════════════════════════════════
+var BOOKINGS = [];
+var bkEditId = null;
+
+function loadBookings() {
+  document.getElementById('bk-loading').style.display = '';
+  document.getElementById('bk-list').innerHTML = '';
+  document.getElementById('bk-empty').style.display = 'none';
+  fetch('/api/bookings', { headers: { 'x-admin-token': apiToken() } }).then(function(r){ return r.json(); }).then(function(data) {
+    BOOKINGS = Array.isArray(data) ? data : [];
+    BOOKINGS.sort(function(a,b){ return (b.createdAt||0) - (a.createdAt||0); });
+    document.getElementById('bk-loading').style.display = 'none';
+    document.getElementById('bk-cnt').textContent = BOOKINGS.filter(function(b){ return b.status === 'new'; }).length || BOOKINGS.length;
+    renderBookings();
+  }).catch(function() {
+    document.getElementById('bk-loading').textContent = 'Error loading';
+  });
+}
+
+var bkStatusColor = { new:'badge-commercial', reviewed:'badge-film', confirmed:'badge-published', declined:'badge-draft' };
+function renderBookings() {
+  var list = document.getElementById('bk-list');
+  var empty = document.getElementById('bk-empty');
+  if (!BOOKINGS.length) { list.innerHTML = ''; empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+  list.innerHTML = BOOKINGS.map(function(b, i) {
+    var badge = '<span class="badge '+(bkStatusColor[b.status]||'badge-draft')+'">'+esc(b.status||'new')+'</span>';
+    var date = b.createdAt ? new Date(b.createdAt).toLocaleDateString() : '';
+    return '<div class="tool-row" onclick="openBKDrawer('+i+')">'
+      + '<div class="tr-icon" style="font-size:.42rem">BK</div>'
+      + '<div class="tr-body">'
+      + '<div class="tr-name">'+esc(b.name||'Anonymous')+' &nbsp;'+badge+'</div>'
+      + '<div class="tr-meta">'+esc(b.email||'')+(b.service?' · '+esc(b.service):'')+(date?' · '+date:'')+'</div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function openBKDrawer(idx) {
+  bkEditId = idx;
+  var b = BOOKINGS[idx];
+  document.getElementById('bk-drawer-title').textContent = 'BOOKING — ' + esc(b.name||'Client');
+  var html = '<div style="display:flex;flex-direction:column;gap:1rem">';
+  var fields = [['Name',b.name],['Email',b.email],['Service',b.service],['Budget',b.budget],['Timeline',b.timeline],['Message',b.message]];
+  fields.forEach(function(f){
+    if (!f[1]) return;
+    html += '<div style="border:1px solid var(--border);padding:1rem">'
+      + '<div class="form-label" style="margin-bottom:.4rem">'+esc(f[0])+'</div>'
+      + '<div style="font-family:var(--mono);font-size:.6rem;color:var(--text);line-height:1.7;white-space:pre-wrap">'+esc(f[1])+'</div>'
+      + '</div>';
+  });
+  html += '</div>';
+  document.getElementById('bk-drawer-body').innerHTML = html;
+  document.getElementById('bk-drawer-bg').classList.add('open');
+  document.getElementById('bk-drawer').classList.add('open');
+}
+function closeBKDrawer() {
+  document.getElementById('bk-drawer-bg').classList.remove('open');
+  document.getElementById('bk-drawer').classList.remove('open');
+}
+function setBKStatus(status) {
+  if (bkEditId === null) return;
+  BOOKINGS[bkEditId].status = status;
+  apiPost('/api/bookings', BOOKINGS).then(function(j){
+    if (j&&j.ok) toast('Status: '+status+' ✓','ok');
+    else toast('Server error','err');
+  }).catch(function(){ toast('Offline','err'); });
+  renderBookings(); closeBKDrawer();
+  document.getElementById('bk-cnt').textContent = BOOKINGS.filter(function(b){ return b.status==='new'; }).length || BOOKINGS.length;
+}
+
+// ════════════════════════════════
 // INIT
 // ════════════════════════════════
 restore();
+// Auth gate
+if (sessionStorage.getItem('odix_auth') === '1') {
+  document.getElementById('auth-overlay').classList.add('gone');
+} else {
+  setTimeout(function(){ document.getElementById('auth-pw').focus(); }, 100);
+}
 restorePrintLab();
 renderPortfolio();
 renderTools();

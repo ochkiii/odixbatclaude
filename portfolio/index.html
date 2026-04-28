@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Odixbat</title>
+<meta name="description" content="Film, commercial and color grading work by Odbat Batsaikhan / Odixbat — Ulaanbaatar, Mongolia.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#040404;--ink:#f0ece2;--mute:rgba(240,236,226,.35);--border:rgba(240,236,226,.07);
+  --cyan:#00c9b1;--yellow:#e8c840;
+  --disp:'Bebas Neue',sans-serif;--mono:'Space Mono',monospace;--body:'Inter',system-ui,sans-serif;
+}
+html{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px}
+body{min-height:100vh}
+
+/* NAV */
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.25rem 2.5rem;border-bottom:1px solid var(--border);
+  position:sticky;top:0;background:rgba(4,4,4,.96);backdrop-filter:blur(12px);z-index:10;
+}
+.nav-logo{font-family:var(--disp);font-size:1.1rem;letter-spacing:.18em;text-decoration:none;color:var(--ink)}
+.nav-links{display:flex;gap:2rem}
+.nav-links a{font-family:var(--mono);font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--mute);transition:color .15s}
+.nav-links a:hover,.nav-links a.active{color:var(--ink)}
+
+/* PAGE HEADER */
+.page-hd{padding:3.5rem 2.5rem 2rem;border-bottom:1px solid var(--border)}
+.page-eyebrow{font-family:var(--mono);font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin-bottom:.75rem}
+.page-title{font-family:var(--disp);font-size:clamp(2.5rem,6vw,4.5rem);letter-spacing:.04em;line-height:.95;color:var(--ink)}
+
+/* FILTER BAR */
+.filter-bar{
+  display:flex;gap:0;border-bottom:1px solid var(--border);
+  padding:0 2.5rem;overflow-x:auto;
+}
+.filter-btn{
+  font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--mute);background:none;border:none;cursor:pointer;
+  padding:.9rem 1.25rem;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;
+}
+.filter-btn:hover{color:var(--ink)}
+.filter-btn.active{color:var(--ink);border-bottom-color:var(--cyan)}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--border);margin:1px 0}
+.card{
+  background:var(--bg);position:relative;overflow:hidden;
+  cursor:pointer;aspect-ratio:4/3;
+}
+.card-thumb{position:absolute;inset:0}
+.card-thumb img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.1);transition:filter .4s,transform .4s}
+.card-thumb-empty{width:100%;height:100%;background:linear-gradient(135deg,#111 0%,#050505 100%);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.5rem;color:rgba(240,236,226,.15);letter-spacing:.1em;text-transform:uppercase}
+.card-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(4,4,4,.85) 0%,rgba(4,4,4,.2) 50%,transparent 100%);
+  display:flex;align-items:flex-end;padding:1.5rem;
+  opacity:0;transition:opacity .3s;
+}
+.card:hover .card-overlay{opacity:1}
+.card:hover .card-thumb img{filter:grayscale(.4) contrast(1.05);transform:scale(1.03)}
+.card-info{}
+.card-cat{font-family:var(--mono);font-size:.44rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-bottom:.4rem}
+.card-title{font-family:var(--disp);font-size:1.4rem;letter-spacing:.06em;color:var(--ink);line-height:1;margin-bottom:.3rem}
+.card-meta{font-family:var(--mono);font-size:.48rem;color:rgba(240,236,226,.5);letter-spacing:.04em}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(4,4,4,.95);z-index:100;align-items:center;justify-content:center;padding:2rem}
+.modal-bg.open{display:flex}
+.modal{width:100%;max-width:900px;background:#0a0a0a;border:1px solid var(--border);position:relative;max-height:90vh;overflow-y:auto}
+.modal-close{
+  position:absolute;top:1rem;right:1rem;background:none;border:1px solid var(--border);
+  color:var(--mute);font-family:var(--mono);font-size:.48rem;letter-spacing:.1em;
+  text-transform:uppercase;cursor:pointer;padding:.3rem .6rem;z-index:1;transition:all .15s;
+}
+.modal-close:hover{color:var(--ink);border-color:rgba(240,236,226,.2)}
+.modal-video{aspect-ratio:16/9;width:100%;background:#000}
+.modal-video iframe{width:100%;height:100%;border:none}
+.modal-body{padding:1.75rem 2rem}
+.modal-cat{font-family:var(--mono);font-size:.48rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-bottom:.5rem}
+.modal-title{font-family:var(--disp);font-size:2rem;letter-spacing:.06em;color:var(--ink);line-height:1;margin-bottom:.75rem}
+.modal-desc{font-family:var(--body);font-size:.875rem;color:rgba(240,236,226,.6);line-height:1.8}
+.modal-meta{display:flex;gap:2rem;margin-top:1.25rem}
+.modal-meta-item{}
+.modal-meta-label{font-family:var(--mono);font-size:.44rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:.25rem}
+.modal-meta-val{font-family:var(--mono);font-size:.55rem;color:var(--ink)}
+
+/* EMPTY */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:40vh;text-align:center;padding:4rem 2rem}
+.empty-num{font-family:var(--disp);font-size:6rem;line-height:1;color:rgba(240,236,226,.04);margin-bottom:.5rem}
+.empty-txt{font-family:var(--mono);font-size:.55rem;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;line-height:2}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:2rem 2.5rem;display:flex;align-items:center;justify-content:space-between;margin-top:4rem}
+.ft-logo{font-family:var(--disp);font-size:.9rem;letter-spacing:.18em;color:var(--mute)}
+.ft-links{display:flex;gap:1.5rem}
+.ft-links a{font-family:var(--mono);font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--mute);transition:color .15s}
+.ft-links a:hover{color:var(--ink)}
+
+@media(max-width:600px){
+  nav{padding:1rem 1.25rem}.page-hd{padding:2.5rem 1.25rem 1.5rem}.filter-bar{padding:0 1.25rem}
+  .modal-body{padding:1.25rem}.modal{border:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">ODIXBAT</a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/portfolio" class="active">Portfolio</a>
+    <a href="/tools">Tools</a>
+    <a href="/odixprintlab">Print Lab</a>
+  </div>
+</nav>
+
+<div class="page-hd">
+  <div class="page-eyebrow">Ulaanbaatar · Mongolia</div>
+  <div class="page-title">PORTFOLIO</div>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filter('all')">All</button>
+  <button class="filter-btn" onclick="filter('film')">Film</button>
+  <button class="filter-btn" onclick="filter('commercial')">Commercial</button>
+  <button class="filter-btn" onclick="filter('colorgrade')">Color Grade</button>
+  <button class="filter-btn" onclick="filter('bts')">BTS</button>
+</div>
+
+<div id="grid" class="grid"></div>
+<div id="empty" class="empty" style="display:none">
+  <div class="empty-num">0</div>
+  <div class="empty-txt">No works yet<br>Check back soon</div>
+</div>
+
+<!-- Video Modal -->
+<div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕ Close</button>
+    <div class="modal-video" id="modal-video"></div>
+    <div class="modal-body">
+      <div class="modal-cat" id="modal-cat"></div>
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-desc" id="modal-desc"></div>
+      <div class="modal-meta" id="modal-meta"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="ft-logo">ODIXBAT</div>
+  <div class="ft-links">
+    <a href="https://instagram.com/odixbat" target="_blank">Instagram</a>
+    <a href="/odixprintlab">Print Lab</a>
+    <a href="/tools">Tools</a>
+  </div>
+</footer>
+
+<script>
+var ALL = [];
+var currentFilter = 'all';
+
+fetch('/api/portfolio')
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    ALL = (Array.isArray(data) ? data : []).filter(function(p){ return p.published !== false; });
+    render();
+  })
+  .catch(function(){ document.getElementById('empty').style.display = 'flex'; });
+
+function filter(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  event.target.classList.add('active');
+  render();
+}
+
+function render() {
+  var items = currentFilter === 'all' ? ALL : ALL.filter(function(p){ return p.category === currentFilter; });
+  var grid = document.getElementById('grid');
+  var empty = document.getElementById('empty');
+  if (!items.length) { grid.innerHTML = ''; empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+  grid.innerHTML = items.map(function(p, i) {
+    var realIdx = ALL.indexOf(p);
+    var thumb = p.thumbnail
+      ? '<img src="'+esc(p.thumbnail)+'" alt="'+esc(p.title)+'" loading="lazy">'
+      : '<div class="card-thumb-empty">No image</div>';
+    return '<div class="card" onclick="openModal('+realIdx+')">'
+      + '<div class="card-thumb">'+thumb+'</div>'
+      + '<div class="card-overlay">'
+      + '<div class="card-info">'
+      + '<div class="card-cat">'+esc(p.category||'film')+'</div>'
+      + '<div class="card-title">'+esc(p.title||'')+'</div>'
+      + '<div class="card-meta">'+(p.client?esc(p.client)+' · ':'')+esc(p.date||'')+'</div>'
+      + '</div></div></div>';
+  }).join('');
+}
+
+function openModal(idx) {
+  var p = ALL[idx];
+  if (!p) return;
+  document.getElementById('modal-cat').textContent = p.category || '';
+  document.getElementById('modal-title').textContent = p.title || '';
+  document.getElementById('modal-desc').textContent = p.description || '';
+  var meta = '';
+  if (p.client) meta += '<div class="modal-meta-item"><div class="modal-meta-label">Client</div><div class="modal-meta-val">'+esc(p.client)+'</div></div>';
+  if (p.date)   meta += '<div class="modal-meta-item"><div class="modal-meta-label">Year</div><div class="modal-meta-val">'+esc(p.date)+'</div></div>';
+  document.getElementById('modal-meta').innerHTML = meta;
+  var videoEl = document.getElementById('modal-video');
+  if (p.video) {
+    videoEl.innerHTML = '<iframe src="'+esc(p.video)+'" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+    videoEl.style.display = '';
+  } else if (p.thumbnail) {
+    videoEl.innerHTML = '<img src="'+esc(p.thumbnail)+'" style="width:100%;height:100%;object-fit:cover">';
+    videoEl.style.display = '';
+  } else {
+    videoEl.style.display = 'none';
+  }
+  document.getElementById('modal-bg').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal-bg') && !e.target.classList.contains('modal-close')) return;
+  document.getElementById('modal-bg').classList.remove('open');
+  document.getElementById('modal-video').innerHTML = '';
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal({target:document.getElementById('modal-bg')}); });
+
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+</script>
+</body>
+</html>

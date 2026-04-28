@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Purchase Complete — Odixbat</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#040404;--ink:#f0ece2;--mute:rgba(240,236,226,.35);--border:rgba(240,236,226,.07);
+  --cyan:#00c9b1;
+  --disp:'Bebas Neue',sans-serif;--mono:'Space Mono',monospace;--body:'Inter',system-ui,sans-serif;
+}
+html{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;height:100%}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center}
+
+.icon{font-size:3rem;margin-bottom:1.5rem;color:var(--cyan)}
+.title{font-family:var(--disp);font-size:3rem;letter-spacing:.06em;color:var(--ink);margin-bottom:.75rem}
+.sub{font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:2.5rem;line-height:1.8}
+#dl-section{margin-bottom:2.5rem}
+.dl-btn{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  background:var(--cyan);color:var(--bg);border:none;cursor:pointer;
+  padding:.8rem 2rem;transition:background .15s;display:inline-block;text-decoration:none;
+}
+.dl-btn:hover{background:rgba(0,201,177,.85)}
+.dl-status{font-family:var(--mono);font-size:.52rem;color:var(--mute);letter-spacing:.08em}
+.back{font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--mute);transition:color .15s;border:1px solid var(--border);padding:.5rem 1rem;display:inline-block;margin-top:1rem}
+.back:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div class="icon">✓</div>
+<div class="title">PURCHASE COMPLETE</div>
+<div class="sub">Thank you for your order.<br>Your download link is ready below.</div>
+
+<div id="dl-section">
+  <div class="dl-status" id="dl-status">Preparing your download...</div>
+</div>
+
+<a href="/store" class="back">← Back to Store</a>
+
+<script>
+var sessionId = new URLSearchParams(location.search).get('session_id');
+if (!sessionId) {
+  document.getElementById('dl-status').textContent = 'No session found.';
+} else {
+  fetch('/api/download', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sessionId: sessionId })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(j){
+    if (j.downloadUrl) {
+      document.getElementById('dl-section').innerHTML =
+        '<a class="dl-btn" href="'+j.downloadUrl+'" download>Download Your Files</a>'
+        + '<div class="dl-status" style="margin-top:1rem">Link expires in 24 hours</div>';
+    } else {
+      document.getElementById('dl-status').textContent = j.error || 'Could not generate download link. Email odbat98@gmail.com with your order.';
+    }
+  })
+  .catch(function(){
+    document.getElementById('dl-status').textContent = 'Error. Email odbat98@gmail.com with your order.';
+  });
+}
+</script>
+</body>
+</html>

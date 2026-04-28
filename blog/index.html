@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Odixbat</title>
+<meta name="description" content="Color grading, filmmaking notes and insights from Odbat Batsaikhan — Ulaanbaatar, Mongolia.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#040404;--ink:#f0ece2;--mute:rgba(240,236,226,.35);--border:rgba(240,236,226,.07);
+  --cyan:#00c9b1;--yellow:#e8c840;
+  --disp:'Bebas Neue',sans-serif;--mono:'Space Mono',monospace;--body:'Inter',system-ui,sans-serif;
+}
+html{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px}
+body{min-height:100vh}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 2.5rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(4,4,4,.96);backdrop-filter:blur(12px);z-index:10}
+.nav-logo{font-family:var(--disp);font-size:1.1rem;letter-spacing:.18em;text-decoration:none;color:var(--ink)}
+.nav-links{display:flex;gap:2rem}
+.nav-links a{font-family:var(--mono);font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--mute);transition:color .15s}
+.nav-links a:hover,.nav-links a.active{color:var(--ink)}
+
+.page-hd{padding:3.5rem 2.5rem 2rem;border-bottom:1px solid var(--border)}
+.page-eyebrow{font-family:var(--mono);font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin-bottom:.75rem}
+.page-title{font-family:var(--disp);font-size:clamp(2.5rem,6vw,4.5rem);letter-spacing:.04em;line-height:.95;color:var(--ink)}
+
+.posts{max-width:720px;margin:0 auto;padding:2rem 2.5rem 4rem}
+.post-card{border-bottom:1px solid var(--border);padding:2rem 0;display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-start:flex-start;cursor:pointer;transition:all .15s}
+.post-card:hover .post-title{color:var(--cyan)}
+.post-card:first-child{padding-top:0}
+.post-meta{font-family:var(--mono);font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:.6rem}
+.post-title{font-family:var(--disp);font-size:1.8rem;letter-spacing:.04em;color:var(--ink);line-height:1;margin-bottom:.6rem;transition:color .2s}
+.post-excerpt{font-family:var(--body);font-size:.82rem;color:rgba(240,236,226,.5);line-height:1.7}
+.post-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.75rem}
+.post-tag{font-family:var(--mono);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--border);color:var(--mute);padding:.15rem .4rem}
+.post-cover{width:120px;height:80px;object-fit:cover;filter:grayscale(1);flex-shrink:0;display:block}
+
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:40vh;text-align:center;padding:4rem 2rem}
+.empty-num{font-family:var(--disp);font-size:6rem;line-height:1;color:rgba(240,236,226,.04);margin-bottom:.5rem}
+.empty-txt{font-family:var(--mono);font-size:.55rem;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;line-height:2}
+
+footer{border-top:1px solid var(--border);padding:2rem 2.5rem;display:flex;align-items:center;justify-content:space-between}
+.ft-logo{font-family:var(--disp);font-size:.9rem;letter-spacing:.18em;color:var(--mute)}
+.ft-links{display:flex;gap:1.5rem}
+.ft-links a{font-family:var(--mono);font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--mute);transition:color .15s}
+.ft-links a:hover{color:var(--ink)}
+
+@media(max-width:600px){nav{padding:1rem 1.25rem}.page-hd,.posts{padding-left:1.25rem;padding-right:1.25rem}.post-cover{display:none}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">ODIXBAT</a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/portfolio">Portfolio</a>
+    <a href="/tools">Tools</a>
+    <a href="/blog" class="active">Blog</a>
+  </div>
+</nav>
+
+<div class="page-hd">
+  <div class="page-eyebrow">Notes from the grade room</div>
+  <div class="page-title">BLOG</div>
+</div>
+
+<div class="posts" id="posts">
+  <div class="empty" id="loading">
+    <div class="empty-txt">Loading...</div>
+  </div>
+</div>
+<div id="empty" class="empty" style="display:none;margin:0 auto;max-width:720px">
+  <div class="empty-num">0</div>
+  <div class="empty-txt">No posts yet<br>Check back soon</div>
+</div>
+
+<footer>
+  <div class="ft-logo">ODIXBAT</div>
+  <div class="ft-links">
+    <a href="https://instagram.com/odixbat" target="_blank">Instagram</a>
+    <a href="/portfolio">Portfolio</a>
+    <a href="/odixprintlab">Print Lab</a>
+  </div>
+</footer>
+
+<script>
+fetch('/api/blog?index=1')
+  .then(function(r){ return r.json(); })
+  .then(function(posts){
+    var container = document.getElementById('posts');
+    var published = (Array.isArray(posts) ? posts : []).filter(function(p){ return p.status === 'published'; });
+    if (!published.length) {
+      container.innerHTML = '';
+      document.getElementById('empty').style.display = 'flex';
+      return;
+    }
+    container.innerHTML = published.map(function(p) {
+      var tags = (p.tags||'').split(',').map(function(t){ return t.trim(); }).filter(Boolean);
+      var cover = p.cover ? '<img class="post-cover" src="'+esc(p.cover)+'" alt="" loading="lazy">' : '';
+      return '<div class="post-card" onclick="location.href=\'/blog/post?slug='+esc(p.slug||'')+'\'">'
+        + '<div>'
+        + '<div class="post-meta">'+esc(p.date||'')+(tags.length?' · '+esc(tags[0]):'')+'</div>'
+        + '<div class="post-title">'+esc(p.title||'')+'</div>'
+        + '<div class="post-excerpt">'+esc(p.excerpt||'')+'</div>'
+        + (tags.length ? '<div class="post-tags">'+tags.map(function(t){ return '<span class="post-tag">'+esc(t)+'</span>'; }).join('')+'</div>' : '')
+        + '</div>'
+        + cover
+        + '</div>';
+    }).join('');
+  })
+  .catch(function(){
+    document.getElementById('posts').innerHTML = '';
+    document.getElementById('empty').style.display = 'flex';
+  });
+
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+</script>
+</body>
+</html>

@@ -104,6 +104,60 @@
   to     = "/dctl/ODIX_BleachBP_v1.dctl"
   status = 200
 
+# Portfolio
+[[redirects]]
+  from   = "/portfolio"
+  to     = "/portfolio/index.html"
+  status = 200
+
+[[redirects]]
+  from   = "/portfolio/"
+  to     = "/portfolio/index.html"
+  status = 200
+
+# Blog
+[[redirects]]
+  from   = "/blog"
+  to     = "/blog/index.html"
+  status = 200
+
+[[redirects]]
+  from   = "/blog/"
+  to     = "/blog/index.html"
+  status = 200
+
+[[redirects]]
+  from   = "/blog/post"
+  to     = "/blog/post.html"
+  status = 200
+
+# Store
+[[redirects]]
+  from   = "/store"
+  to     = "/store/index.html"
+  status = 200
+
+[[redirects]]
+  from   = "/store/"
+  to     = "/store/index.html"
+  status = 200
+
+[[redirects]]
+  from   = "/store/success"
+  to     = "/store/success.html"
+  status = 200
+
+# Book
+[[redirects]]
+  from   = "/book"
+  to     = "/book/index.html"
+  status = 200
+
+[[redirects]]
+  from   = "/book/"
+  to     = "/book/index.html"
+  status = 200
+
 # ═════════════════════════════════════════════════════════════════
 # HEADERS
 # ═════════════════════════════════════════════════════════════════
